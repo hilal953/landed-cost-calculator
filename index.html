@@ -2241,7 +2241,29 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
   // ==== AI VISION & CLOUD ENGINES ====
   async function callAiVision(base64, mediaType, isPdf) {
-    const key = state.apiKey.trim();
+    // 1. Try serverless backend endpoint (/api/parse)
+    try {
+      const res = await fetch('/api/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          base64,
+          mimeType: mediaType,
+          isPdf,
+          apiKey: state.apiKey || ''
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.items && data.items.length > 0) {
+          return data.items;
+        }
+      }
+    } catch (e) {
+      console.warn("Backend /api/parse skipped:", e);
+    }
+
+    const key = (state.apiKey || '').trim();
     if (!key) return null;
 
     const prompt = `This ${isPdf ? 'PDF' : 'image'} is a packing list or commercial invoice from China/supplier.
