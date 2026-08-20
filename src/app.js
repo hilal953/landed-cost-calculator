@@ -1065,20 +1065,35 @@
     return parsedItems;
   }
 
-  // Load structured items into mapping UI
+  // Load structured items into manifest
   function loadExtractedItems(items, sourceName) {
     if (!items || items.length === 0) {
       throw new Error("No product rows could be recognized. Please check the document or paste rows manually.");
     }
     
-    currentRows = [
-      ['Description', 'Quantity', 'Unit Price', 'Total CBM'],
-      ...items.map(it => [it.desc, it.qty, it.price, it.cbm])
-    ];
-    currentHeaderRowIdx = 0;
+    items.forEach(it => {
+      current.items.push({
+        id: 'it' + (current.itemSeq++),
+        desc: it.desc || '',
+        qty: it.qty || 0,
+        price: it.price || 0,
+        cbm: it.cbm || 0
+      });
+    });
     
-    showParseStatus(`Successfully read ${items.length} item(s) from ${sourceName}! Check column matches below.`, false);
-    buildMappingUI();
+    renderItems();
+    calculate();
+    debouncedSave();
+    
+    showParseStatus(`✓ Scanned and imported ${items.length} item(s) from ${sourceName}!`, false);
+    showToast(`Added ${items.length} item(s) from ${sourceName}`);
+    
+    // Hide mapping panel and scroll to items table
+    document.getElementById('mappingPanel').classList.add('hidden');
+    const tableWrap = document.getElementById('itemsTableWrap');
+    if (tableWrap) {
+      tableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   // Primary file router
@@ -1152,7 +1167,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // ==== COLUMN MAPPING & IMPORT ====
+  // ==== COLUMN MAPPING & IMPORT (For Spreadsheets) ====
   const KEYWORDS = {
     qty: ['qty','quantity','数量','deliver','pcs','只'],
     price: ['price','unit price','单价','unit/price','amount','rmb'],
@@ -1256,13 +1271,14 @@
     const out = [];
     for(let r = currentHeaderRowIdx + 1; r < currentRows.length; r++) {
       const row = currentRows[r];
-      if(!row) continue;
-      const joined = row.join(' ').toLowerCase();
-      if(/\btotal\b|\bsubtotal\b|合计|唛头/.test(joined)) break; // stop row
+      if(!row || !row.length) continue;
       
-      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
-      const price = pIdx >= 0 ? parseFloat(String(row[pIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
-      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const firstCell = String(row[0] || '').trim().toLowerCase();
+      if(/^(total|subtotal|grand total|合计|总计|小计)\b/i.test(firstCell)) break; // stop row
+      
+      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
+      const price = pIdx >= 0 ? parseFloat(String(row[pIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
+      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
       const desc = dIdx.map(i => String(row[i] || '').trim()).filter(Boolean).join(' - ');
       
       if (!desc && !(qty > 0) && !(price > 0)) continue;
