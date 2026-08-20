@@ -685,7 +685,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   color: var(--accent);
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE & MOBILE POLISH */
 @media (max-width: 900px) {
   .app-container { flex-direction: column; }
   .sidebar {
@@ -695,12 +695,91 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     border-bottom: 1px solid var(--border);
     position: static;
   }
-  .history-list { display: flex; overflow-x: auto; padding: 12px 24px; gap: 12px; }
-  .history-item { min-width: 200px; margin-bottom: 0; }
+  .history-list { 
+    display: flex; 
+    overflow-x: auto; 
+    padding: 12px 16px; 
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .history-item { min-width: 210px; margin-bottom: 0; flex-shrink: 0; }
   .main-content { padding: 0 16px 40px; }
+  
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  
+  .topbar-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .topbar-actions button {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .manifest-route-bar {
+    gap: 6px;
+  }
+  .route-node {
+    padding: 2px 6px;
+  }
+  .route-input {
+    width: 72px;
+    font-size: 11px;
+  }
+
   .fee-header, .fee-item { grid-template-columns: 1fr; gap: 8px; }
   .fee-header { display: none; }
-  .fee-item { border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); margin-bottom: 12px; background: var(--bg-color); }
+  .fee-item { border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); margin-bottom: 12px; background: var(--bg-color); }
+}
+
+@media (max-width: 600px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .summary-card {
+    padding: 14px;
+  }
+  .summary-value {
+    font-size: 18px;
+  }
+  
+  .card {
+    padding: 16px;
+    border-radius: var(--radius);
+  }
+  
+  .step-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .toast {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Touch optimizations & iOS Zoom Prevention */
+@media (max-width: 768px) {
+  input[type="text"], input[type="number"], select, textarea {
+    font-size: 16px !important;
+  }
+  .inline-input {
+    font-size: 14px !important;
+  }
 }
 
 /* PRINT */
