@@ -6,8 +6,8 @@
     apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
   };
 
-  const DEFAULT_SHIPMENT = (num = 1) => ({
-    name: 'Shipment #' + String(num).padStart(2, '0') + ' (' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ')',
+  const DEFAULT_SHIPMENT = (name = 'Guangzhou Cargo') => ({
+    name: name,
     route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
     baseCurrency: 'RMB', // RMB or USD
     exRate: '',
@@ -88,7 +88,7 @@
     if (!state.currentId || !state.history[state.currentId]) {
       const id = generateId();
       state.currentId = id;
-      state.history[id] = DEFAULT_SHIPMENT(1);
+      state.history[id] = DEFAULT_SHIPMENT('Guangzhou Cargo');
     }
     current = state.history[state.currentId];
     renderHistory();
@@ -129,14 +129,19 @@
 
   function newShipment() {
     saveState();
-    const count = Object.keys(state.history).length + 1;
+    const existingNames = Object.values(state.history).map(s => s.name || '');
+    let num = 2;
+    while (existingNames.some(n => n.toLowerCase() === `shipment ${num}`.toLowerCase())) {
+      num++;
+    }
+    const name = `Shipment ${num}`;
     const id = generateId();
     state.currentId = id;
-    state.history[id] = DEFAULT_SHIPMENT(count);
+    state.history[id] = DEFAULT_SHIPMENT(name);
     current = state.history[id];
     populateUI();
     saveState();
-    showToast(`Shipment #${String(count).padStart(2, '0')} created`);
+    showToast(`${name} created`);
   }
 
   function deleteShipment(id, e) {

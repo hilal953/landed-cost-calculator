@@ -494,17 +494,24 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   margin-bottom: 24px;
 }
 .summary-card {
-  background: var(--bg-color);
-  padding: 20px;
+  background: var(--surface);
+  padding: 18px 20px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
+  transition: var(--transition);
+}
+.summary-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border-strong);
 }
 .summary-card.highlight {
   background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   color: #fff;
   border-color: #0F172A;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
 }
 .summary-card.highlight::before {
   content: "";
@@ -513,35 +520,53 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   right: -30px;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.28) 0%, transparent 70%);
   pointer-events: none;
 }
 .summary-label {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--ink-soft);
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.summary-card.highlight .summary-label { color: rgba(255,255,255,0.8); }
+.summary-card.highlight .summary-label { color: rgba(255,255,255,0.75); }
 .summary-value {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 24px;
   font-weight: 700;
+  display: flex;
+  align-items: baseline;
+}
+.summary-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-left: 4px;
+}
+.summary-currency {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: 4px;
 }
 .summary-stamp {
   position: absolute;
   top: 12px;
   right: 12px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  border: 2px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.8);
-  padding: 4px 8px;
-  border-radius: 4px;
-  transform: rotate(15deg);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.85);
+  padding: 2px 6px;
+  border-radius: 3px;
+  transform: rotate(12deg);
+  letter-spacing: 0.08em;
 }
 
 /* TOASTS */
@@ -1077,21 +1102,21 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
       
       <div class="summary-grid">
         <div class="summary-card">
-          <div class="summary-label">Total CBM</div>
-          <div class="summary-value" id="sumCbm">0.00</div>
+          <div class="summary-label"><span>📦 Total Volume</span></div>
+          <div class="summary-value"><span id="sumCbm">0.00</span> <span class="summary-unit">CBM</span></div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Goods (LKR)</div>
-          <div class="summary-value" id="sumValue">0</div>
+          <div class="summary-label"><span>🏷️ Goods Value</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumValue">0</span></div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Freight & Fees (LKR)</div>
-          <div class="summary-value" id="sumFees">0</div>
+          <div class="summary-label"><span>⚓ Freight & Fees</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumFees">0</span></div>
         </div>
         <div class="summary-card highlight">
           <div class="summary-stamp">LANDED</div>
-          <div class="summary-label">Total Landed Cost</div>
-          <div class="summary-value" id="sumTotal">0</div>
+          <div class="summary-label"><span>💎 Total Landed Cost</span></div>
+          <div class="summary-value"><span class="summary-currency" style="color:rgba(255,255,255,0.75);">LKR</span> <span id="sumTotal">0</span></div>
         </div>
       </div>
 
@@ -1157,8 +1182,8 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
   };
 
-  const DEFAULT_SHIPMENT = (num = 1) => ({
-    name: 'Shipment #' + String(num).padStart(2, '0') + ' (' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ')',
+  const DEFAULT_SHIPMENT = (name = 'Guangzhou Cargo') => ({
+    name: name,
     route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
     baseCurrency: 'RMB', // RMB or USD
     exRate: '',
@@ -1239,7 +1264,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     if (!state.currentId || !state.history[state.currentId]) {
       const id = generateId();
       state.currentId = id;
-      state.history[id] = DEFAULT_SHIPMENT(1);
+      state.history[id] = DEFAULT_SHIPMENT('Guangzhou Cargo');
     }
     current = state.history[state.currentId];
     renderHistory();
@@ -1280,14 +1305,19 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
 
   function newShipment() {
     saveState();
-    const count = Object.keys(state.history).length + 1;
+    const existingNames = Object.values(state.history).map(s => s.name || '');
+    let num = 2;
+    while (existingNames.some(n => n.toLowerCase() === `shipment ${num}`.toLowerCase())) {
+      num++;
+    }
+    const name = `Shipment ${num}`;
     const id = generateId();
     state.currentId = id;
-    state.history[id] = DEFAULT_SHIPMENT(count);
+    state.history[id] = DEFAULT_SHIPMENT(name);
     current = state.history[id];
     populateUI();
     saveState();
-    showToast(`Shipment #${String(count).padStart(2, '0')} created`);
+    showToast(`${name} created`);
   }
 
   function deleteShipment(id, e) {

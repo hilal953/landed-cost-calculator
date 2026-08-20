@@ -266,21 +266,21 @@ html_body = r"""
       
       <div class="summary-grid">
         <div class="summary-card">
-          <div class="summary-label">Total CBM</div>
-          <div class="summary-value" id="sumCbm">0.00</div>
+          <div class="summary-label"><span>📦 Total Volume</span></div>
+          <div class="summary-value"><span id="sumCbm">0.00</span> <span class="summary-unit">CBM</span></div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Goods (LKR)</div>
-          <div class="summary-value" id="sumValue">0</div>
+          <div class="summary-label"><span>🏷️ Goods Value</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumValue">0</span></div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Freight & Fees (LKR)</div>
-          <div class="summary-value" id="sumFees">0</div>
+          <div class="summary-label"><span>⚓ Freight & Fees</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumFees">0</span></div>
         </div>
         <div class="summary-card highlight">
           <div class="summary-stamp">LANDED</div>
-          <div class="summary-label">Total Landed Cost</div>
-          <div class="summary-value" id="sumTotal">0</div>
+          <div class="summary-label"><span>💎 Total Landed Cost</span></div>
+          <div class="summary-value"><span class="summary-currency" style="color:rgba(255,255,255,0.75);">LKR</span> <span id="sumTotal">0</span></div>
         </div>
       </div>
 
