@@ -625,38 +625,10 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
-      document.getElementById('tab-' + tab.getAttribute('data-tab')).classList.add('active');
+      const targetContent = document.getElementById('tab-' + tab.getAttribute('data-tab'));
+      if (targetContent) targetContent.classList.add('active');
     };
   });
-
-  document.getElementById('setApiKeyBtn').onclick = () => {
-    document.getElementById('apiKeyInput').value = state.apiKey;
-    document.getElementById('apiKeyPanel').classList.remove('hidden');
-  };
-  document.getElementById('cancelApiKeyBtn').onclick = () => {
-    document.getElementById('apiKeyPanel').classList.add('hidden');
-  };
-  document.getElementById('saveApiKeyBtn').onclick = () => {
-    state.apiKey = document.getElementById('apiKeyInput').value.trim();
-    if(state.apiKey) localStorage.setItem('landed-cost-anthropic-key', state.apiKey);
-    else localStorage.removeItem('landed-cost-anthropic-key');
-    document.getElementById('apiKeyPanel').classList.add('hidden');
-    refreshApiKeyStatus();
-    showToast("API Key saved");
-  };
-
-  function refreshApiKeyStatus() {
-    const setBtn = document.getElementById('setApiKeyBtn');
-    if (setBtn) {
-      setBtn.innerHTML = state.apiKey ? '⚙ Key Configured' : '⚙ Photo Scanner Key';
-    }
-  }
-  refreshApiKeyStatus();
-
-  // Dropzone & File parsing
-  let workbookSheets = {};
-  let currentRows = [];
-  let currentHeaderRowIdx = 0;
 
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
@@ -664,29 +636,490 @@
   const parseStatusDiv = document.getElementById('parseStatus');
   const parseSpinner = document.getElementById('parseSpinner');
 
-  dropzone.onclick = () => fileInput.click();
-  ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
-  ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
-  dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-  fileInput.onchange = e => { const f = e.target.files?.[0]; if(f) handleFile(f); };
+  const setApiKeyBtn = document.getElementById('setApiKeyBtn');
+  const apiKeyPanel = document.getElementById('apiKeyPanel');
+  const apiKeyInput = document.getElementById('apiKeyInput');
+  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+  const cancelApiKeyBtn = document.getElementById('cancelApiKeyBtn');
 
-  function showParseStatus(msg, loading = false, error = false) {
+  if (setApiKeyBtn && apiKeyPanel) {
+    setApiKeyBtn.onclick = () => {
+      if (apiKeyInput) apiKeyInput.value = state.apiKey || '';
+      apiKeyPanel.classList.remove('hidden');
+    };
+  }
+  if (cancelApiKeyBtn && apiKeyPanel) {
+    cancelApiKeyBtn.onclick = () => apiKeyPanel.classList.add('hidden');
+  }
+  if (saveApiKeyBtn && apiKeyPanel) {
+    saveApiKeyBtn.onclick = () => {
+      state.apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+      if (state.apiKey) localStorage.setItem('landed-cost-anthropic-key', state.apiKey);
+      else localStorage.removeItem('landed-cost-anthropic-key');
+      apiKeyPanel.classList.add('hidden');
+      showToast("API Key saved");
+    };
+  }
+
+  let workbookSheets = {};
+  let currentRows = [];
+  let currentHeaderRowIdx = 0;
+
+  if (dropzone && fileInput) {
+    dropzone.onclick = () => fileInput.click();
+    ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
+    dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
+    fileInput.onchange = e => { const f = e.target.files?.[0]; if(f) handleFile(f); };
+  }
+
+  // ==== IN-BROWSER DOCUMENT & OCR ENGINE ====
+  function showParseStatus(msg, loading = false, error = false, progressPct = null) {
+    if (!parseStatusDiv || !parseStatusText) return;
     parseStatusDiv.classList.remove('hidden');
     parseStatusText.textContent = msg;
     parseStatusText.style.color = error ? 'var(--danger)' : 'var(--primary)';
-    if(loading) parseSpinner.classList.remove('hidden');
-    else parseSpinner.classList.add('hidden');
+    
+    if (parseSpinner) {
+      if (loading) parseSpinner.classList.remove('hidden');
+      else parseSpinner.classList.add('hidden');
+    }
+    
+    const progressWrap = document.getElementById('ocrProgressBarWrap');
+    const progressBar = document.getElementById('ocrProgressBar');
+    if (progressWrap && progressBar) {
+      if (progressPct !== null && progressPct >= 0) {
+        progressWrap.classList.remove('hidden');
+        progressBar.style.width = Math.min(100, Math.round(progressPct * 100)) + '%';
+      } else {
+        progressWrap.classList.add('hidden');
+      }
+    }
   }
 
-  function handleFile(file) {
+  // Canvas Image Preprocessing (Contrast boost, auto-binarize, upscale for blurry WhatsApp photos)
+  async function preprocessImageForOcr(fileOrBlob) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(fileOrBlob);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          
+          // Determine upscale factor for high OCR clarity
+          let scale = 1.0;
+          if (img.width < 1200 || img.height < 1200) {
+            scale = Math.min(2.5, 1800 / Math.max(img.width, img.height));
+            if (scale < 1.2) scale = 1.5;
+          } else if (img.width > 3000 || img.height > 3000) {
+            scale = 2200 / Math.max(img.width, img.height);
+          }
+          
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          canvas.width = w;
+          canvas.height = h;
+          
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const data = imgData.data;
+          const len = data.length;
+          
+          // Contrast factor
+          const contrast = 1.4;
+          const factor = (259 * (contrast * 255 + 255)) / (255 * (259 - contrast * 255));
+          
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i], g = data[i+1], b = data[i+2];
+            // Grayscale
+            let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            // Contrast
+            gray = factor * (gray - 128) + 128;
+            
+            // Clean up colored table headers (e.g. yellow rows) and light backgrounds
+            if (gray > 190) {
+              gray = Math.min(255, gray + 40);
+            } else if (gray < 85) {
+              gray = Math.max(0, gray - 30);
+            }
+            
+            gray = Math.max(0, Math.min(255, gray));
+            data[i] = gray;
+            data[i+1] = gray;
+            data[i+2] = gray;
+          }
+          
+          ctx.putImageData(imgData, 0, 0);
+          resolve(canvas);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load image file.'));
+      };
+      img.src = url;
+    });
+  }
+
+  // In-Browser OCR using Tesseract.js
+  async function runBrowserOcr(fileOrCanvas, progressCb) {
+    if (typeof Tesseract === 'undefined') {
+      throw new Error("OCR engine is still loading. Please check your internet connection and try again.");
+    }
+    
+    let target = fileOrCanvas;
+    if (fileOrCanvas instanceof Blob || fileOrCanvas instanceof File) {
+      if (progressCb) progressCb({ status: 'Enhancing image resolution and contrast...', progress: 0.1 });
+      target = await preprocessImageForOcr(fileOrCanvas);
+    }
+    
+    if (progressCb) progressCb({ status: 'Loading OCR language models (English + Chinese)...', progress: 0.2 });
+    
+    let worker;
+    try {
+      worker = await Tesseract.createWorker(['eng', 'chi_sim'], 1, {
+        logger: m => {
+          if (m && m.status) {
+            const pct = m.progress != null ? Math.round(m.progress * 100) : null;
+            let msg = 'Scanning document...';
+            if (m.status === 'recognizing text') msg = `Reading text and numbers (${pct}%)...`;
+            else if (m.status.includes('load')) msg = `Loading language dictionaries (${pct != null ? pct + '%' : ''})...`;
+            if (progressCb) progressCb({ status: msg, progress: m.progress != null ? (0.2 + m.progress * 0.75) : 0.4 });
+          }
+        },
+        errorHandler: err => console.warn('Tesseract notice:', err)
+      });
+    } catch (e) {
+      // Fallback to English only if Chinese dictionary fails to download
+      worker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+          if (progressCb && m && m.progress != null) {
+            progressCb({ status: `Scanning text (${Math.round(m.progress * 100)}%)...`, progress: 0.2 + m.progress * 0.75 });
+          }
+        }
+      });
+    }
+    
+    try {
+      const result = await worker.recognize(target);
+      await worker.terminate();
+      return result.data;
+    } catch (err) {
+      try { await worker.terminate(); } catch(e){}
+      throw err;
+    }
+  }
+
+  // In-Browser PDF Parser using PDF.js
+  async function runPdfExtraction(file, progressCb) {
+    if (typeof pdfjsLib === 'undefined') {
+      throw new Error("PDF Reader library is loading. Please try again in a few seconds.");
+    }
+    
+    if (progressCb) progressCb({ status: 'Reading PDF document structure...', progress: 0.1 });
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdf.numPages;
+    
+    let allLines = [];
+    let totalWords = 0;
+    
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      if (progressCb) progressCb({ status: `Extracting page ${pageNum} of ${numPages}...`, progress: 0.1 + (pageNum / numPages) * 0.4 });
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      
+      if (textContent.items && textContent.items.length > 5) {
+        const items = textContent.items.map(it => ({
+          text: it.str,
+          x: it.transform[4],
+          y: it.transform[5],
+          w: it.width,
+          h: it.height
+        })).filter(it => it.text.trim().length > 0);
+        
+        totalWords += items.length;
+        
+        // Sort by Y descending (top to bottom)
+        items.sort((a, b) => b.y - a.y);
+        
+        const rows = [];
+        let currentRow = [];
+        let currentY = null;
+        
+        items.forEach(it => {
+          if (currentY === null || Math.abs(it.y - currentY) > 4) {
+            if (currentRow.length > 0) {
+              currentRow.sort((a, b) => a.x - b.x);
+              rows.push(currentRow);
+            }
+            currentRow = [it];
+            currentY = it.y;
+          } else {
+            currentRow.push(it);
+          }
+        });
+        if (currentRow.length > 0) {
+          currentRow.sort((a, b) => a.x - b.x);
+          rows.push(currentRow);
+        }
+        
+        rows.forEach(r => {
+          const lineText = r.map(it => it.text).join('\t');
+          if (lineText.trim()) allLines.push(lineText);
+        });
+      }
+    }
+    
+    // If no text layer found (scanned PDF), render pages to canvas and OCR
+    if (totalWords < 8) {
+      if (progressCb) progressCb({ status: 'Scanned PDF detected. Scanning with OCR engine...', progress: 0.5 });
+      allLines = [];
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        
+        const ocrData = await runBrowserOcr(canvas, progressCb);
+        const pageTextLines = (ocrData.text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        allLines.push(...pageTextLines);
+      }
+    }
+    
+    return allLines.join('\n');
+  }
+
+  // Universal unit and currency matchers
+  const UNIT_TOKENS = /^(pcs|pc|set|sets|ctn|ctns|box|boxes|pkg|pkgs|units?|prs|pairs?|只|个|件|套|箱|包|张|条|台|本|把|对|支|袋)$/i;
+  const CURRENCY_TOKENS = /^[¥$£€₩]|^(rmb|usd|eur|gbp|lkr|cny|cif|fob)$/i;
+
+  // Smart Invoice & Packing List Table Recognizer
+  function parseInvoiceAndPackingListText(rawText) {
+    if (!rawText || !rawText.trim()) return [];
+    
+    const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const parsedItems = [];
+    
+    // Header keywords across English & Chinese commercial docs
+    const headerTokens = ['item', 'style', 'desc', 'description', 'qty', 'quantity', 'deliver', 'price', 'amount', 'cbm', 'ctn', 'n.w', 'g.w', 'gross', '品名', '编号', '数量', '单价', '金额', '体积', '件数', 'photo', '图片', '款号', '货物名称', '规格'];
+    // Footer and summary stop tokens
+    const stopTokens = ['total', 'subtotal', 'grand total', '合计', '总计', '小计', 'buyer', 'seller', 'address', '地址', '唛头', 'shipping mark', 'warehouse', '仓库', 'bank', 'payment', 'terms', 'signature', 'contact', '入库', '联系人', '收货人', '发货人'];
+
+    let inTable = false;
+    let headerPassed = false;
+
+    // Detect currency if mentioned in headers / doc
+    const lowerFull = rawText.toLowerCase();
+    if (lowerFull.includes('rmb') || lowerFull.includes('¥') || lowerFull.includes('cny')) {
+      const baseCurrEl = document.getElementById('baseCurrency');
+      if (baseCurrEl && baseCurrEl.value !== 'RMB') {
+        baseCurrEl.value = 'RMB';
+        if (current) current.baseCurrency = 'RMB';
+        updateCurrencyLabels();
+      }
+    } else if (lowerFull.includes('usd') || lowerFull.includes('$')) {
+      const baseCurrEl = document.getElementById('baseCurrency');
+      if (baseCurrEl && baseCurrEl.value !== 'USD') {
+        baseCurrEl.value = 'USD';
+        if (current) current.baseCurrency = 'USD';
+        updateCurrencyLabels();
+      }
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const lower = line.toLowerCase();
+
+      // Check for stop keywords at line start or standalone
+      if (inTable) {
+        const isStop = stopTokens.some(st => lower.startsWith(st) || lower.includes(st + ':') || lower.includes(st + '：'));
+        if (isStop || /^(total|subtotal|grand total|合计|总计|小计)\b/i.test(lower)) {
+          break;
+        }
+      }
+
+      // Check header match
+      const hCount = headerTokens.filter(k => lower.includes(k)).length;
+      if (hCount >= 2) {
+        inTable = true;
+        headerPassed = true;
+        continue;
+      }
+
+      // Check if line looks like a product row (has code pattern or starts with item number)
+      const hasCode = /[A-Z0-9]{2,}[-_/][A-Z0-9]+|[A-Z]{2,}\d+|\b[A-Z]\d{2,}\b|\b(?:ITEM|MODEL|STYLE|PART|SKU|CODE|NO\.?)\b/i.test(line);
+      const hasNumbers = /\d+/.test(line);
+      if (!inTable && (hasCode || (headerPassed && hasNumbers))) {
+        inTable = true;
+      }
+
+      if (!inTable) continue;
+
+      // Clean line delimiters (e.g. OCR table lines |, +, _, etc.)
+      const cleanLine = line.replace(/[|+_]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!cleanLine || cleanLine.length < 3) continue;
+
+      // Parse tokens
+      const rawTokens = cleanLine.split(' ');
+      const textParts = [];
+      const numbers = [];
+      let itemCode = '';
+
+      rawTokens.forEach(tok => {
+        // Strip currency symbols and commas for number checking
+        const cleanNumStr = tok.replace(/^[¥$£€]/, '').replace(/,/g, '').trim();
+        const num = parseFloat(cleanNumStr);
+        
+        if (cleanNumStr && !isNaN(num) && /^-?\d+(\.\d+)?$/.test(cleanNumStr)) {
+          numbers.push(num);
+        } else {
+          // Identify product SKU / code
+          if (!itemCode && /^[A-Z0-9]{2,}[-_/][A-Z0-9]+$/i.test(tok)) {
+            itemCode = tok;
+          }
+          // Only add to description if not a unit or currency symbol
+          if (!UNIT_TOKENS.test(tok) && !CURRENCY_TOKENS.test(tok)) {
+            textParts.push(tok);
+          }
+        }
+      });
+
+      if (numbers.length === 0 && textParts.length === 0) continue;
+
+      // Assemble description
+      let desc = textParts.join(' ').replace(/^(Description|PHOTO|Item|图片|产品描述|款号|品名|货物名称)\s*/i, '').trim();
+      if (itemCode && !desc.includes(itemCode)) {
+        desc = `${itemCode} ${desc}`.trim();
+      }
+
+      // Filter out pure header remnants
+      if (!desc || /^(style\s*no|item\s*name|total|unit\s*price|delivery|qty)/i.test(desc)) {
+        if (numbers.length === 0) continue;
+      }
+
+      // Intelligent column heuristic from numbers array
+      let qty = 0;
+      let price = 0;
+      let cbm = 0;
+
+      if (numbers.length === 1) {
+        qty = numbers[0];
+      } else if (numbers.length === 2) {
+        // [qty, price] or [qty, cbm]
+        if (numbers[1] < 1 && numbers[1] > 0) {
+          qty = numbers[0];
+          cbm = numbers[1];
+        } else {
+          qty = numbers[0];
+          price = numbers[1];
+        }
+      } else if (numbers.length >= 3) {
+        // Find CBM values (decimals typically < 10 with floating point)
+        const decimals = numbers.filter(n => n > 0 && n < 10 && String(n).includes('.'));
+        const integers = numbers.filter(n => Number.isInteger(n) && n > 0);
+        
+        // Quantity is typically an integer > 0
+        if (integers.length > 0) {
+          qty = integers[0];
+        }
+        
+        // Unit price: calculate or select
+        if (Math.abs(numbers[0] * numbers[1] - numbers[2]) < 5) {
+          qty = numbers[0];
+          price = numbers[1];
+        } else if (numbers.length >= 4 && Math.abs(numbers[1] * numbers[2] - numbers[3]) < 5) {
+          qty = numbers[1];
+          price = numbers[2];
+        } else {
+          qty = numbers[0] || 0;
+          price = numbers[1] || 0;
+        }
+        
+        // Total CBM: pick the total volume
+        if (decimals.length > 0) {
+          cbm = decimals[decimals.length - 1];
+        }
+      }
+
+      if (desc || qty > 0 || price > 0 || cbm > 0) {
+        parsedItems.push({
+          desc: desc || `Item ${parsedItems.length + 1}`,
+          qty: isFinite(qty) ? qty : 0,
+          price: isFinite(price) ? price : 0,
+          cbm: isFinite(cbm) ? cbm : 0
+        });
+      }
+    }
+
+    return parsedItems;
+  }
+
+  // Load structured items into mapping UI
+  function loadExtractedItems(items, sourceName) {
+    if (!items || items.length === 0) {
+      throw new Error("No product rows could be recognized. Please check the document or paste rows manually.");
+    }
+    
+    currentRows = [
+      ['Description', 'Quantity', 'Unit Price', 'Total CBM'],
+      ...items.map(it => [it.desc, it.qty, it.price, it.cbm])
+    ];
+    currentHeaderRowIdx = 0;
+    
+    showParseStatus(`Successfully read ${items.length} item(s) from ${sourceName}! Check column matches below.`, false);
+    buildMappingUI();
+  }
+
+  // Primary file router
+  async function handleFile(file) {
     const isImg = /^image\//.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
     const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
-    if(isImg) { handleClaudeFile(file, 'image'); return; }
-    if(isPdf) { handleClaudeFile(file, 'pdf'); return; }
     
-    showParseStatus(`Reading ${file.name}...`, true);
     document.getElementById('mappingPanel').classList.add('hidden');
     
+    if (isImg) {
+      try {
+        showParseStatus(`Analyzing photo with built-in OCR...`, true, false, 0.1);
+        const ocrData = await runBrowserOcr(file, p => {
+          showParseStatus(p.status, true, false, p.progress);
+        });
+        const items = parseInvoiceAndPackingListText(ocrData.text || '');
+        loadExtractedItems(items, file.name);
+      } catch (err) {
+        console.error("Image OCR error:", err);
+        showParseStatus(`Image Scan Notice: ${err.message}`, false, true);
+      }
+      return;
+    }
+    
+    if (isPdf) {
+      try {
+        showParseStatus(`Extracting tables from PDF...`, true, false, 0.1);
+        const pdfText = await runPdfExtraction(file, p => {
+          showParseStatus(p.status, true, false, p.progress);
+        });
+        const items = parseInvoiceAndPackingListText(pdfText);
+        loadExtractedItems(items, file.name);
+      } catch (err) {
+        console.error("PDF Extraction error:", err);
+        showParseStatus(`PDF Parse Error: ${err.message}`, false, true);
+      }
+      return;
+    }
+    
+    // Excel / CSV Spreadsheets
+    showParseStatus(`Reading spreadsheet ${file.name}...`, true);
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -710,92 +1143,21 @@
         else sheetPicker.classList.add('hidden');
         
         sheetSelect.onchange = () => loadSheet(sheetSelect.value);
-        showParseStatus(`Parsed ${file.name} - ${wb.SheetNames.length} sheet(s) found.`, false);
+        showParseStatus(`Loaded ${file.name} (${wb.SheetNames.length} sheet(s)). Check mapping below.`, false);
         loadSheet(wb.SheetNames[0]);
       } catch(err) {
-        showParseStatus(`Error reading file: ${err.message}`, false, true);
+        showParseStatus(`Error reading Excel file: ${err.message}`, false, true);
       }
     };
     reader.readAsArrayBuffer(file);
   }
 
-  async function callClaude(base64, mediaType, isPdf) {
-    if (!state.apiKey) throw new Error("To read photos or PDFs, please enter your Anthropic API key below.");
-    
-    const prompt = `This ${isPdf?'PDF':'image'} shows a packing list or commercial invoice for a shipment of goods from China. 
-Extract every product line item (ignore header rows, packing-configuration sub-rows, and the Total summary row). 
-For each item give: description (combine the item code and item name), qty (total quantity), unitPrice (unit price in numbers), and cbmTotal (TOTAL or combined volume for that whole line item in CBM - use a column labelled like T/CBM or Total CBM). 
-Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,"cbmTotal":0}]}`;
-
-    const source = isPdf 
-      ? { type: 'base64', media_type: 'application/pdf', data: base64 }
-      : { type: 'base64', media_type: mediaType, data: base64 };
-      
-    const block = isPdf ? { type: 'document', source } : { type: 'image', source };
-
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620', // Upgraded model for better results
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: [block, { type: 'text', text: prompt }] }]
-      })
-    });
-    
-    if (!resp.ok) {
-      if(resp.status === 401) throw new Error("API Key rejected. Please check it.");
-      const err = await resp.json().catch(()=>({}));
-      throw new Error(err?.error?.message || `Request failed (${resp.status})`);
-    }
-    return await resp.json();
-  }
-
-  function handleClaudeFile(file, type) {
-    showParseStatus(`Analyzing with Claude Vision (this takes a few seconds)...`, true);
-    document.getElementById('mappingPanel').classList.add('hidden');
-    
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const base64 = e.target.result.split(',')[1];
-        const data = await callClaude(base64, file.type || 'image/jpeg', type === 'pdf');
-        
-        const textBlock = (data.content || []).map(b => b.text || '').join('\n');
-        const clean = textBlock.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(clean);
-        const rows = (parsed.items || []).filter(it => it && (it.qty > 0 || it.unitPrice > 0));
-        
-        if (!rows.length) throw new Error("No line items found.");
-        
-        currentRows = [
-          ['Description','Qty','Unit Price','CBM'],
-          ...rows.map(it => [it.description || '', it.qty || 0, it.unitPrice || 0, it.cbmTotal || 0])
-        ];
-        currentHeaderRowIdx = 0;
-        showParseStatus(`Read ${rows.length} items from ${file.name}. Check mapping below.`, false);
-        buildMappingUI();
-      } catch(err) {
-        showParseStatus(err.message, false, true);
-        if(err.message.includes("API Key")) {
-          document.getElementById('apiKeyPanel').classList.remove('hidden');
-        }
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // Auto-mapping Logic
+  // ==== COLUMN MAPPING & IMPORT ====
   const KEYWORDS = {
-    qty: ['qty','quantity','数量'],
-    price: ['price','unit price','单价'],
-    cbm: ['cbm total','cbm(total)','total cbm','cbm','材积'],
-    desc: ['model no','model','item','description','product','part','goods','name','货名']
+    qty: ['qty','quantity','数量','deliver','pcs','只'],
+    price: ['price','unit price','单价','unit/price','amount','rmb'],
+    cbm: ['cbm total','cbm(total)','total cbm','cbm','材积','总体积','t/cbm','u/cbm'],
+    desc: ['model no','model','item','description','product','part','goods','name','货名','品名','款号','style']
   };
 
   function scoreHeader(row) {

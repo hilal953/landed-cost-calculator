@@ -93,38 +93,44 @@ html_body = r"""
             <div class="dz-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
-            <div class="dz-title">Drop your packing list here</div>
+            <div class="dz-title">Drop your packing list or invoice here</div>
             <div class="dz-sub">Drag & drop files or click anywhere to browse</div>
             <div class="dz-badges">
               <span class="dz-badge">📊 Excel (.xlsx, .xls, .csv)</span>
-              <span class="dz-badge">📄 PDF Invoice</span>
-              <span class="dz-badge">📷 WhatsApp Photo</span>
+              <span class="dz-badge">📄 PDF Invoice (.pdf)</span>
+              <span class="dz-badge">📷 WhatsApp Photo / Scans (.jpg, .png)</span>
             </div>
             <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
           </div>
 
+          <div id="parseStatus" class="hidden mt-4" style="text-align:center;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+              <div class="spinner dark hidden" id="parseSpinner"></div>
+              <span id="parseStatusText" class="text-sm mono" style="font-weight:600; color:var(--primary);"></span>
+            </div>
+            <div id="ocrProgressBarWrap" class="hidden" style="width:100%; max-width:420px; margin:0 auto; height:6px; background:var(--border); border-radius:99px; overflow:hidden;">
+              <div id="ocrProgressBar" style="width:0%; height:100%; background:var(--accent); transition:width 0.2s ease;"></div>
+            </div>
+          </div>
+
           <div class="api-key-row" id="apiKeyRow" style="margin-top:12px; display:flex; align-items:center; justify-content:flex-end; gap:8px;">
-            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:12px; color:var(--ink-soft);">
-              ⚙ Photo Scanner Key
+            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:11.5px; color:var(--ink-soft); display:flex; align-items:center; gap:5px;">
+              ⚙ Optional Cloud AI Key
             </button>
           </div>
           <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
+            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">✨ AI Cloud Vision (Optional)</div>
+            <div class="text-sm text-muted mb-3">Built-in In-Browser OCR & PDF parsing is 100% free and active automatically. If you have an Anthropic Claude or OpenAI key and want to use cloud AI vision, you can enter it here.</div>
             <div class="input-group" style="margin-bottom:8px;">
-              <label>Anthropic API Key (for reading photos and PDFs)</label>
+              <label>API Key (Anthropic / OpenAI / Gemini)</label>
               <div class="input-field">
-                <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+                <input type="password" id="apiKeyInput" placeholder="sk-ant-... or sk-...">
               </div>
             </div>
             <div class="flex gap-2">
               <button class="btn-primary" id="saveApiKeyBtn">Save Key</button>
               <button class="btn-secondary" id="cancelApiKeyBtn">Close</button>
             </div>
-            <div class="text-sm text-muted mt-2">Saved safely in your browser only.</div>
-          </div>
-
-          <div id="parseStatus" class="hidden text-sm mono mt-4 text-center" style="color:var(--primary); display:flex; align-items:center; justify-content:center; gap:8px;">
-            <div class="spinner dark hidden" id="parseSpinner"></div>
-            <span id="parseStatusText"></span>
           </div>
 
           <!-- MAPPING PANEL -->
@@ -357,6 +363,15 @@ html_body = r"""
 
 <!-- SheetJS for XLSX support -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- PDF.js for in-browser PDF parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
+<!-- Tesseract.js for in-browser OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 """
 
 full_html = f"""<!DOCTYPE html>
