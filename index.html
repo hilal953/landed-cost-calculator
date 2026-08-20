@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landed Cost Manifest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@600;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#EDF0EA;
+  --paper-raised:#F7F8F4;
+  --ink:#16233D;
+  --ink-soft:#4A5568;
+  --rust:#C1502E;
+  --teal:#1F6F63;
+  --line:#C7CCC2;
+  --line-strong:#9AA298;
+  --stamp:#B23A2E;
+  --good:#1F6F63;
+  --radius:2px;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  padding:0 0 60px 0;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* ---- HEADER / MANIFEST BAND ---- */
+.manifest-header{
+  background:var(--ink);
+  color:var(--paper-raised);
+  padding:36px 0 28px 0;
+  border-bottom:6px solid var(--rust);
+  position:relative;
+  overflow:hidden;
+}
+.manifest-header::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background-image:repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 48px);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:10px;
+}
+.manifest-title{
+  font-family:'Archivo Expanded',sans-serif;
+  font-weight:800;
+  font-size:clamp(28px,4vw,44px);
+  letter-spacing:-0.01em;
+  margin:0 0 6px 0;
+  line-height:1.05;
+}
+.manifest-sub{
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  color:#AEB8C9;
+  max-width:560px;
+  line-height:1.5;
+}
+.route-line{
+  margin-top:20px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:#D8DEE8;
+  letter-spacing:0.04em;
+}
+.route-dot{width:6px;height:6px;border-radius:50%;background:var(--rust);}
+.route-line .seg{opacity:0.55;}
+
+/* ---- SECTION SHELL ---- */
+.section{
+  margin-top:34px;
+}
+.section-head{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--line-strong);
+  padding-bottom:10px;
+}
+.section-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--rust);
+  font-weight:600;
+}
+.section-title{
+  font-family:'Archivo Expanded',sans-serif;
+  font-weight:800;
+  font-size:19px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.section-note{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-left:auto;
+}
+
+.card{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+}
+
+/* ---- PASTE BOX ---- */
+.paste-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;}
+textarea.paste{
+  flex:1 1 380px;
+  min-height:88px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  padding:12px;
+  border:1px dashed var(--line-strong);
+  border-radius:var(--radius);
+  background:#fff;
+  color:var(--ink);
+  resize:vertical;
+}
+.paste-controls{display:flex;flex-direction:column;gap:8px;min-width:190px;}
+.checkbox-line{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);}
+.hint{font-size:11.5px;color:var(--ink-soft);line-height:1.5;font-family:'IBM Plex Mono',monospace;}
+
+/* ---- IMPORT TABS ---- */
+.import-tabs{display:flex;gap:2px;margin-bottom:16px;}
+.import-tab{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  padding:8px 14px;
+  cursor:pointer;
+  color:var(--ink-soft);
+  border:1px solid var(--line-strong);
+  border-bottom:none;
+  background:var(--paper);
+}
+.import-tab.active{background:var(--paper-raised);color:var(--ink);font-weight:600;}
+.import-pane{display:none;}
+.import-pane.active{display:block;}
+
+/* ---- DROPZONE ---- */
+.dropzone{
+  border:2px dashed var(--line-strong);
+  border-radius:var(--radius);
+  background:#fff;
+  padding:38px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:border-color .15s ease, background .15s ease;
+}
+.dropzone:hover, .dropzone.dragover{
+  border-color:var(--teal);
+  background:rgba(31,111,99,0.05);
+}
+.dropzone .dz-icon{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:22px;
+  color:var(--rust);
+  margin-bottom:8px;
+}
+.dropzone .dz-title{
+  font-family:'Archivo Expanded',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+.dropzone .dz-sub{font-size:12px;color:var(--ink-soft);}
+.dropzone input[type="file"]{display:none;}
+
+.parse-status{
+  margin-top:12px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--teal);
+}
+.parse-status.error{color:var(--stamp);}
+
+/* ---- API KEY ---- */
+.api-key-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.api-key-panel{
+  margin-top:12px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  background:#fff;
+  padding:16px;
+}
+.api-key-panel label{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+}
+.api-key-panel input{
+  width:100%;
+  max-width:360px;
+  padding:9px 10px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  margin-bottom:10px;
+}
+.api-key-panel input:focus{outline:none;border-color:var(--teal);}
+.api-key-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+
+/* ---- MAPPING PANEL ---- */
+.mapping-panel{
+  margin-top:18px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  background:#fff;
+  padding:18px;
+}
+.mapping-title{
+  font-family:'Archivo Expanded',sans-serif;
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:4px;
+}
+.mapping-sub{font-size:12px;color:var(--ink-soft);margin-bottom:16px;}
+.mapping-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;
+  margin-bottom:16px;
+}
+.mapping-field label{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+}
+.mapping-field select{width:100%;padding:8px;font-size:12px;}
+.mapping-field .desc-checks{
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  padding:8px;
+  max-height:120px;
+  overflow-y:auto;
+  background:#fff;
+}
+.desc-checks label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--ink);
+  padding:3px 0;
+  cursor:pointer;
+}
+.mapping-preview{margin-bottom:16px;overflow-x:auto;}
+.mapping-preview table{font-size:11.5px;}
+.mapping-preview th{background:var(--paper);}
+.sheet-picker{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:12.5px;color:var(--ink-soft);}
+.sheet-picker select{padding:6px 8px;font-size:12px;}
+.mapping-actions{display:flex;gap:10px;align-items:center;}
+.mapping-note{font-size:11.5px;color:var(--ink-soft);margin-left:auto;}
+
+/* ---- BUTTONS ---- */
+button{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:12.5px;
+  cursor:pointer;
+  border-radius:var(--radius);
+  border:1px solid var(--ink);
+  padding:9px 16px;
+  background:var(--ink);
+  color:#fff;
+  letter-spacing:0.01em;
+  transition:transform .08s ease, opacity .12s ease;
+}
+button:hover{opacity:0.88;}
+button:active{transform:translateY(1px);}
+button.secondary{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--line-strong);
+}
+button.rust{background:var(--rust);border-color:var(--rust);}
+button.secondary.danger{
+  color:var(--stamp);
+  border-color:var(--stamp);
+}
+button.secondary.danger:hover{background:rgba(178,58,46,0.08);}
+button.secondary.danger.confirming{
+  background:var(--stamp);
+  color:#fff;
+}
+.clear-note{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-soft);
+}
+button.ghost{
+  background:transparent;
+  border:none;
+  color:var(--rust);
+  padding:4px 8px;
+  font-size:12px;
+}
+button.tiny{padding:6px 10px;font-size:11.5px;}
+
+/* ---- TABLE ---- */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{
+  text-align:left;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  border-bottom:1px solid var(--line-strong);
+  padding:8px 10px;
+  white-space:nowrap;
+}
+tbody td{
+  padding:6px 10px;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+tbody tr:hover{background:rgba(31,111,99,0.04);}
+input[type="text"], input[type="number"]{
+  width:100%;
+  border:1px solid transparent;
+  background:transparent;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  padding:6px 7px;
+  border-radius:var(--radius);
+  color:var(--ink);
+}
+input[type="text"]:hover, input[type="number"]:hover{border-color:var(--line-strong);}
+input[type="text"]:focus, input[type="number"]:focus{
+  outline:none;
+  border-color:var(--teal);
+  background:#fff;
+}
+input.desc{font-family:'Inter',sans-serif;font-weight:500;}
+td.num, th.num{text-align:right;}
+select{
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  padding:6px 7px;
+  border-radius:var(--radius);
+  border:1px solid var(--line-strong);
+  background:#fff;
+  color:var(--ink);
+}
+.col-actions{width:32px;text-align:center;}
+
+/* ---- SETTINGS GRID ---- */
+.settings-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:18px;
+}
+.field label{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+}
+.field .input-shell{
+  display:flex;
+  align-items:center;
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  background:#fff;
+  overflow:hidden;
+}
+.field .input-shell span{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+  padding:0 10px;
+  border-right:1px solid var(--line);
+}
+.field input{padding:10px 10px;font-size:13px;}
+.field .input-shell:focus-within{border-color:var(--teal);}
+
+/* ---- FEES ---- */
+.fee-row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1.4fr auto;
+  gap:10px;
+  align-items:center;
+  padding:9px 0;
+  border-bottom:1px solid var(--line);
+}
+.fee-row:last-child{border-bottom:none;}
+.fee-quickadd{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.fee-head{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1.4fr auto;
+  gap:10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line-strong);
+}
+
+/* ---- RESULTS ---- */
+.results-wrap{overflow-x:auto;}
+.results-table thead th{background:var(--ink);color:#EDF0EA;border-bottom:none;}
+.results-table thead tr th:first-child{border-top-left-radius:var(--radius);}
+.results-table tbody td{font-family:'IBM Plex Mono',monospace;}
+.results-table tbody td.desc-cell{font-family:'Inter',sans-serif;font-weight:600;}
+.results-table tfoot td{
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:700;
+  border-top:2px solid var(--ink);
+  padding:12px 10px;
+  background:var(--paper);
+}
+
+.summary-bar{
+  display:flex;
+  gap:0;
+  margin-top:18px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.summary-cell{
+  flex:1;
+  padding:16px 18px;
+  border-right:1px solid var(--line);
+  background:var(--paper-raised);
+}
+.summary-cell:last-child{border-right:none;}
+.summary-cell .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+}
+.summary-cell .value{
+  font-family:'Archivo Expanded',sans-serif;
+  font-weight:800;
+  font-size:22px;
+  color:var(--ink);
+}
+.summary-cell.stamp .value{color:var(--stamp);}
+.summary-cell.stamp{background:#fff;position:relative;}
+.summary-cell.stamp::after{
+  content:"LANDED";
+  position:absolute;
+  top:8px;right:10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;
+  letter-spacing:0.14em;
+  color:var(--stamp);
+  border:1px solid var(--stamp);
+  padding:2px 6px;
+  border-radius:2px;
+  transform:rotate(3deg);
+  opacity:0.75;
+}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;margin-bottom:8px;}
+.save-status{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--ink-soft);
+  margin-right:auto;
+}
+.empty-note{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  padding:16px 4px;
+  font-style:italic;
+}
+
+@media (max-width:720px){
+  .fee-row, .fee-head{grid-template-columns:1fr;gap:4px;}
+  .fee-row{padding:12px 0;}
+}
+
+/* ---- PRINT / PDF EXPORT ---- */
+@media print{
+  @page{ size:A4 portrait; margin:14mm; }
+  html,body{ background:#fff !important; }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
+  .manifest-header{ padding:14px 0; border-bottom:3px solid var(--rust); }
+  .manifest-header::before{ display:none; }
+  .manifest-sub{ display:none; }
+  .toolbar, .import-tabs, .dropzone, .api-key-row, .api-key-panel,
+  .paste-row, .mapping-panel, .parse-status,
+  #addRowBtn, #clearItemsBtn, #addFeeBtn, [data-preset],
+  .col-actions, .ghost, .clear-note, .save-status,
+  .section-note{ display:none !important; }
+  .wrap{ max-width:100%; padding:0; }
+  .section{ margin-top:18px; page-break-inside:avoid; }
+  .card{ padding:12px; border:1px solid #999; }
+  table{ font-size:11px; }
+  th, td{ padding:6px 8px !important; }
+  input, textarea, select{
+    border:none !important;
+    background:transparent !important;
+    padding:2px 0 !important;
+    color:var(--ink) !important;
+    -webkit-appearance:none;
+  }
+  .summary-bar{ break-inside:avoid; }
+  .summary-cell.stamp::after{ opacity:1; }
+  button{ display:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="manifest-header">
+  <div class="wrap">
+    <div class="eyebrow">Import Costing Worksheet</div>
+    <h1 class="manifest-title">Landed Cost Manifest</h1>
+    <div class="manifest-sub">Drop in your packing list — spreadsheet or a photo of it — set the freight rate and local charges, and get a true per-item landed cost in LKR — from factory price in RMB to your warehouse.</div>
+    <div class="route-line">
+      <span>GUANGZHOU / SHENZHEN</span><span class="route-dot"></span><span class="seg">SEA FREIGHT</span><span class="route-dot"></span>
+      <span>COLOMBO PORT</span><span class="route-dot"></span><span class="seg">INLAND</span><span class="route-dot"></span>
+      <span>MATARA</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="toolbar" style="margin-top:22px;">
+    <span class="save-status" id="saveStatus">Loading saved shipment…</span>
+    <button class="secondary tiny" id="exportPdfBtn">Export as PDF</button>
+    <button class="secondary tiny" id="newShipmentBtn">New shipment</button>
+  </div>
+
+  <!-- SECTION 1: PACKING LIST -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Packing List</span>
+      <span class="section-note">Description · Qty · Unit Price (RMB) · CBM</span>
+    </div>
+    <div class="card">
+
+      <div class="import-tabs">
+        <div class="import-tab active" data-tab="upload">Drop the file</div>
+        <div class="import-tab" data-tab="paste">Paste rows</div>
+      </div>
+
+      <div class="import-pane active" id="tab-upload">
+        <div class="dropzone" id="dropzone">
+          <div class="dz-icon">&#9187;</div>
+          <div class="dz-title">Drop your packing list here</div>
+          <div class="dz-sub">.xls, .xlsx, .csv, .pdf — or a photo/screenshot (.jpg, .png) straight from WhatsApp. No cleanup needed. Or click to browse.</div>
+          <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp">
+        </div>
+
+        <div class="api-key-row" id="apiKeyRow">
+          <span class="hint" id="apiKeyStatus">Add your Anthropic API key to unlock reading photos and PDFs.</span>
+          <button class="secondary tiny" id="setApiKeyBtn">Set API key</button>
+        </div>
+        <div class="api-key-panel" id="apiKeyPanel" style="display:none;">
+          <label for="apiKeyInput">Anthropic API key</label>
+          <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+          <div class="api-key-actions">
+            <button class="tiny" id="saveApiKeyBtn">Save key</button>
+            <button class="secondary tiny" id="cancelApiKeyBtn">Cancel</button>
+            <a class="hint" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Get a key on console.anthropic.com →</a>
+          </div>
+          <div class="hint">Stored only in this browser (never uploaded anywhere), sent only to api.anthropic.com when you drop a photo or PDF. Each read is billed to that key, a few cents at most.</div>
+        </div>
+
+        <div class="parse-status" id="parseStatus" style="display:none;"></div>
+
+        <div class="mapping-panel" id="mappingPanel" style="display:none;">
+          <div class="mapping-title">Match your columns</div>
+          <div class="mapping-sub" id="mappingSub">We found a table starting at row <span id="headerRowLabel"></span>. Check the mapping below, then import.</div>
+          <div class="sheet-picker" id="sheetPicker" style="display:none;">
+            <label for="sheetSelect" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;">Sheet</label>
+            <select id="sheetSelect"></select>
+          </div>
+          <div class="mapping-grid">
+            <div class="mapping-field">
+              <label>Description (tick all that apply)</label>
+              <div class="desc-checks" id="descChecks"></div>
+            </div>
+            <div class="mapping-field">
+              <label>Quantity</label>
+              <select id="mapQty"></select>
+            </div>
+            <div class="mapping-field">
+              <label>Unit price (RMB)</label>
+              <select id="mapPrice"></select>
+            </div>
+            <div class="mapping-field">
+              <label>CBM (total for the line)</label>
+              <select id="mapCbm"></select>
+            </div>
+          </div>
+          <div class="mapping-preview">
+            <table id="mappingPreviewTable"></table>
+          </div>
+          <div class="mapping-actions">
+            <button id="confirmImportBtn">Import rows</button>
+            <button class="secondary" id="cancelImportBtn">Cancel</button>
+            <span class="mapping-note" id="mappingNote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="import-pane" id="tab-paste">
+        <div class="paste-row">
+          <textarea class="paste" id="pasteBox" placeholder="Paste rows copied from your Excel packing list, one item per line.&#10;Example:&#10;LED Headlight Assembly H4	50	38.5	1.2&#10;Tail Light Bulb Set	200	4.2	0.6"></textarea>
+          <div class="paste-controls">
+            <div class="checkbox-line"><input type="checkbox" id="hasHeader" checked><label for="hasHeader">First line is a header row</label></div>
+            <button id="parseBtn">Add rows from paste</button>
+            <div class="hint">Tab or comma separated.<br>Order: Description, Qty, Unit Price RMB, CBM</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;overflow-x:auto;">
+        <table id="itemsTable">
+          <thead>
+            <tr>
+              <th style="width:30px;">#</th>
+              <th>Description</th>
+              <th class="num" style="width:80px;">Qty</th>
+              <th class="num" style="width:120px;">Unit Price (RMB)</th>
+              <th class="num" style="width:100px;">CBM (line)</th>
+              <th class="num" style="width:120px;">Value (RMB)</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody"></tbody>
+        </table>
+        <div id="itemsEmpty" class="empty-note">No items yet — paste your packing list above or add a row manually.</div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="secondary tiny" id="addRowBtn">+ Add row</button>
+        <button class="secondary tiny danger" id="clearItemsBtn">Clear all items</button>
+        <span class="clear-note" id="clearItemsNote"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: RATES -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Exchange &amp; Freight Rate</span>
+    </div>
+    <div class="card">
+      <div class="settings-grid">
+        <div class="field">
+          <label for="rmbRate">RMB → LKR rate</label>
+          <div class="input-shell"><span>¥1 =</span><input type="number" id="rmbRate" step="0.01" placeholder="e.g. 42.50"></div>
+        </div>
+        <div class="field">
+          <label for="cbmRate">Ocean freight rate per CBM</label>
+          <div class="input-shell"><span>LKR</span><input type="number" id="cbmRate" step="1" placeholder="per CBM, Colombo landed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: OTHER CHARGES -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Other Charges</span>
+      <span class="section-note">Customs, clearing, inland transport — flat fees or % based</span>
+    </div>
+    <div class="card">
+      <div class="fee-head">
+        <span>Charge</span><span>Type</span><span>Amount</span><span>Spread across items by</span><span></span>
+      </div>
+      <div id="feesBody"></div>
+      <div class="fee-quickadd">
+        <button class="secondary tiny" id="addFeeBtn">+ Add charge</button>
+        <button class="secondary tiny" data-preset="duty">+ Customs duty %</button>
+        <button class="secondary tiny" data-preset="vat">+ VAT %</button>
+        <button class="secondary tiny" data-preset="transport">+ Colombo–Matara transport</button>
+        <button class="secondary tiny" data-preset="agent">+ Clearing agent fee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: RESULTS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Landed Cost — Per Item</span>
+      <button class="secondary tiny" id="copyTableBtn" style="margin-left:auto;">Copy to Excel</button>
+    </div>
+    <div class="card">
+      <div class="results-wrap">
+        <table class="results-table" id="resultsTable">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="num">Qty</th>
+              <th class="num">Value (LKR)</th>
+              <th class="num">Freight (LKR)</th>
+              <th class="num">Charges (LKR)</th>
+              <th class="num">Total Landed (LKR)</th>
+              <th class="num">Unit Cost (LKR)</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="summary-bar">
+        <div class="summary-cell">
+          <div class="label">Total CBM</div>
+          <div class="value" id="sumCbm">0.00</div>
+        </div>
+        <div class="summary-cell">
+          <div class="label">Goods Value (LKR)</div>
+          <div class="value" id="sumValue">0</div>
+        </div>
+        <div class="summary-cell">
+          <div class="label">Freight (LKR)</div>
+          <div class="value" id="sumFreight">0</div>
+        </div>
+        <div class="summary-cell">
+          <div class="label">Other Charges (LKR)</div>
+          <div class="value" id="sumFees">0</div>
+        </div>
+        <div class="summary-cell stamp">
+          <div class="label">Total Landed Cost</div>
+          <div class="value" id="sumTotal">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+  let items = [];
+  let fees = [];
+  let itemSeq = 1;
+  let feeSeq = 1;
+  let saveTimer = null;
+
+  const fmt = (n) => {
+    if (!isFinite(n)) return '0';
+    return Math.round(n).toLocaleString('en-LK');
+  };
+  const fmt2 = (n) => {
+    if (!isFinite(n)) return '0.00';
+    return n.toFixed(2);
+  };
+
+  function newItem(desc, qty, price, cbm){
+    return { id: 'it'+(itemSeq++), desc: desc||'', qty: qty||0, price: price||0, cbm: cbm||0 };
+  }
+  function newFee(name, type, amount, method, base){
+    return { id: 'fe'+(feeSeq++), name: name||'', type: type||'flat', amount: amount||0, method: method||'cbm', base: base||'cif' };
+  }
+
+  function addItem(desc, qty, price, cbm){
+    items.push(newItem(desc, qty, price, cbm));
+    renderItems();
+    scheduleSave();
+  }
+  function addFee(name, type, amount, method, base){
+    fees.push(newFee(name, type, amount, method, base));
+    renderFees();
+    scheduleSave();
+  }
+
+  function renderItems(){
+    const body = document.getElementById('itemsBody');
+    const empty = document.getElementById('itemsEmpty');
+    body.innerHTML = '';
+    empty.style.display = items.length ? 'none' : 'block';
+    items.forEach((it, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx+1}</td>
+        <td><input type="text" class="desc" data-field="desc" data-id="${it.id}" value="${escapeAttr(it.desc)}" placeholder="Item description"></td>
+        <td class="num"><input type="number" data-field="qty" data-id="${it.id}" value="${it.qty}" min="0" step="1"></td>
+        <td class="num"><input type="number" data-field="price" data-id="${it.id}" value="${it.price}" min="0" step="0.01"></td>
+        <td class="num"><input type="number" data-field="cbm" data-id="${it.id}" value="${it.cbm}" min="0" step="0.001"></td>
+        <td class="num" style="font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);">¥${fmt2(it.qty*it.price)}</td>
+        <td class="col-actions"><button class="ghost" data-remove-item="${it.id}" title="Remove">✕</button></td>
+      `;
+      body.appendChild(tr);
+    });
+    bindItemInputs();
+    calculate();
+  }
+
+  function renderFees(){
+    const body = document.getElementById('feesBody');
+    body.innerHTML = '';
+    fees.forEach((fe) => {
+      const row = document.createElement('div');
+      row.className = 'fee-row';
+      row.innerHTML = `
+        <input type="text" data-field="name" data-id="${fe.id}" value="${escapeAttr(fe.name)}" placeholder="e.g. Colombo–Matara transport">
+        <select data-field="type" data-id="${fe.id}">
+          <option value="flat" ${fe.type==='flat'?'selected':''}>Flat LKR</option>
+          <option value="percent" ${fe.type==='percent'?'selected':''}>Percent %</option>
+        </select>
+        <input type="number" data-field="amount" data-id="${fe.id}" value="${fe.amount}" step="0.01" placeholder="${fe.type==='percent'?'%':'LKR'}">
+        <div class="fee-basis" data-basis-for="${fe.id}"></div>
+        <button class="ghost" data-remove-fee="${fe.id}" title="Remove">✕</button>
+      `;
+      body.appendChild(row);
+      const basisSlot = row.querySelector(`[data-basis-for="${fe.id}"]`);
+      if (fe.type === 'flat'){
+        basisSlot.innerHTML = `
+          <select data-field="method" data-id="${fe.id}">
+            <option value="cbm" ${fe.method==='cbm'?'selected':''}>CBM share</option>
+            <option value="value" ${fe.method==='value'?'selected':''}>Value share</option>
+            <option value="equal" ${fe.method==='equal'?'selected':''}>Equally</option>
+          </select>`;
+      } else {
+        basisSlot.innerHTML = `
+          <select data-field="base" data-id="${fe.id}">
+            <option value="value" ${fe.base==='value'?'selected':''}>Goods value</option>
+            <option value="cif" ${fe.base==='cif'?'selected':''}>Value + freight (CIF)</option>
+            <option value="running" ${fe.base==='running'?'selected':''}>Running total (cascading)</option>
+          </select>`;
+      }
+    });
+    bindFeeInputs();
+    calculate();
+  }
+
+  function escapeAttr(s){
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  }
+
+  function bindItemInputs(){
+    document.querySelectorAll('#itemsBody input').forEach(inp => {
+      inp.oninput = (e) => {
+        const id = e.target.getAttribute('data-id');
+        const field = e.target.getAttribute('data-field');
+        const it = items.find(i => i.id === id);
+        if (!it) return;
+        if (field === 'desc') it.desc = e.target.value;
+        else it[field] = parseFloat(e.target.value) || 0;
+        // update the RMB value cell live without full re-render (keeps focus)
+        const row = e.target.closest('tr');
+        const valCell = row.querySelector('td:nth-child(6)');
+        if (valCell) valCell.textContent = '¥' + fmt2(it.qty*it.price);
+        calculate();
+        scheduleSave();
+      };
+    });
+    document.querySelectorAll('[data-remove-item]').forEach(btn => {
+      btn.onclick = (e) => {
+        const id = e.target.getAttribute('data-remove-item');
+        items = items.filter(i => i.id !== id);
+        renderItems();
+        scheduleSave();
+      };
+    });
+  }
+
+  function bindFeeInputs(){
+    document.querySelectorAll('#feesBody input, #feesBody select').forEach(inp => {
+      inp.onchange = inp.oninput = (e) => {
+        const id = e.target.getAttribute('data-id');
+        const field = e.target.getAttribute('data-field');
+        const fe = fees.find(f => f.id === id);
+        if (!fe) return;
+        if (field === 'name') fe.name = e.target.value;
+        else if (field === 'type') { fe.type = e.target.value; renderFees(); scheduleSave(); return; }
+        else if (field === 'amount') fe.amount = parseFloat(e.target.value) || 0;
+        else if (field === 'method') fe.method = e.target.value;
+        else if (field === 'base') fe.base = e.target.value;
+        calculate();
+        scheduleSave();
+      };
+    });
+    document.querySelectorAll('[data-remove-fee]').forEach(btn => {
+      btn.onclick = (e) => {
+        const id = e.target.getAttribute('data-remove-fee');
+        fees = fees.filter(f => f.id !== id);
+        renderFees();
+        scheduleSave();
+      };
+    });
+  }
+
+  function calculate(){
+    const rmbRate = parseFloat(document.getElementById('rmbRate').value) || 0;
+    const cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+
+    const totalCBM = items.reduce((s,i) => s + i.cbm, 0);
+    const totalValueLKR = items.reduce((s,i) => s + i.qty*i.price*rmbRate, 0);
+    const freightTotal = totalCBM * cbmRate;
+
+    const perItem = items.map(it => {
+      const valueLKR = it.qty * it.price * rmbRate;
+      const freightShare = totalCBM > 0 ? (it.cbm/totalCBM) * freightTotal : 0;
+      return { it, valueLKR, freightShare, feesShare: 0, running: valueLKR + freightShare };
+    });
+
+    fees.forEach(fe => {
+      if (fe.type === 'flat'){
+        const totalCbmAll = totalCBM;
+        const totalValAll = totalValueLKR;
+        perItem.forEach(row => {
+          let share = 0;
+          if (fe.method === 'cbm'){
+            share = totalCbmAll > 0 ? (row.it.cbm/totalCbmAll) * fe.amount : 0;
+          } else if (fe.method === 'value'){
+            share = totalValAll > 0 ? (row.valueLKR/totalValAll) * fe.amount : 0;
+          } else {
+            share = perItem.length > 0 ? fe.amount / perItem.length : 0;
+          }
+          row.feesShare += share;
+          row.running += share;
+        });
+      } else {
+        perItem.forEach(row => {
+          let base = row.valueLKR;
+          if (fe.base === 'cif') base = row.valueLKR + row.freightShare;
+          else if (fe.base === 'running') base = row.running;
+          const amt = base * (fe.amount/100);
+          row.feesShare += amt;
+          row.running += amt;
+        });
+      }
+    });
+
+    renderResults(perItem, totalCBM, totalValueLKR, freightTotal);
+  }
+
+  function renderResults(perItem, totalCBM, totalValueLKR, freightTotal){
+    const body = document.getElementById('resultsBody');
+    body.innerHTML = '';
+    let grandTotal = 0, grandFees = 0;
+    perItem.forEach(row => {
+      grandTotal += row.running;
+      grandFees += row.feesShare;
+      const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="desc-cell">${escapeHtml(row.it.desc || '(untitled item)')}</td>
+        <td class="num">${row.it.qty}</td>
+        <td class="num">${fmt(row.valueLKR)}</td>
+        <td class="num">${fmt(row.freightShare)}</td>
+        <td class="num">${fmt(row.feesShare)}</td>
+        <td class="num" style="font-weight:700;">${fmt(row.running)}</td>
+        <td class="num" style="color:var(--teal);font-weight:700;">${fmt(unitCost)}</td>
+      `;
+      body.appendChild(tr);
+    });
+
+    document.getElementById('sumCbm').textContent = fmt2(totalCBM);
+    document.getElementById('sumValue').textContent = fmt(totalValueLKR);
+    document.getElementById('sumFreight').textContent = fmt(freightTotal);
+    document.getElementById('sumFees').textContent = fmt(grandFees);
+    document.getElementById('sumTotal').textContent = fmt(grandTotal);
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ---- Import tabs ----
+  document.querySelectorAll('.import-tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.import-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.import-pane').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.getAttribute('data-tab')).classList.add('active');
+    };
+  });
+
+  // ---- File upload / drag & drop ----
+  let workbookSheets = {}; // name -> array-of-arrays
+  let currentRows = [];
+  let currentHeaderRowIdx = 0;
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const parseStatus = document.getElementById('parseStatus');
+
+  dropzone.onclick = () => fileInput.click();
+  ['dragenter','dragover'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+  });
+  dropzone.addEventListener('drop', (e) => {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+  fileInput.onchange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) handleFile(f);
+  };
+
+  function showStatus(msg, isError){
+    parseStatus.style.display = 'block';
+    parseStatus.textContent = msg;
+    parseStatus.classList.toggle('error', !!isError);
+  }
+
+  function handleFile(file){
+    const isImage = /^image\//.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    if (isImage){ handleImageFile(file); return; }
+    if (isPdf){ handlePdfFile(file); return; }
+    showStatus('Reading ' + file.name + '…', false);
+    document.getElementById('mappingPanel').style.display = 'none';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: 'array' });
+        workbookSheets = {};
+        wb.SheetNames.forEach(name => {
+          workbookSheets[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '', raw: true });
+        });
+        const sheetSelect = document.getElementById('sheetSelect');
+        const sheetPicker = document.getElementById('sheetPicker');
+        sheetSelect.innerHTML = '';
+        wb.SheetNames.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name; opt.textContent = name;
+          sheetSelect.appendChild(opt);
+        });
+        sheetPicker.style.display = wb.SheetNames.length > 1 ? 'flex' : 'none';
+        sheetSelect.onchange = () => loadSheet(sheetSelect.value);
+        showStatus('Parsed ' + file.name + ' — ' + wb.SheetNames.length + ' sheet(s) found.', false);
+        loadSheet(wb.SheetNames[0]);
+      }catch(err){
+        showStatus('Could not read that file: ' + err.message, true);
+      }
+    };
+    reader.onerror = () => showStatus('Could not read that file.', true);
+    reader.readAsArrayBuffer(file);
+  }
+
+  // ---- API key storage (only needed when running the downloaded file standalone) ----
+  const API_KEY_STORAGE = 'landed-cost-anthropic-key';
+  function getStoredKey(){
+    try{ return localStorage.getItem(API_KEY_STORAGE) || ''; }catch(e){ return ''; }
+  }
+  function setStoredKey(key){
+    try{ localStorage.setItem(API_KEY_STORAGE, key); }catch(e){ /* ignore */ }
+  }
+  function clearStoredKey(){
+    try{ localStorage.removeItem(API_KEY_STORAGE); }catch(e){ /* ignore */ }
+  }
+  function refreshApiKeyStatus(){
+    const status = document.getElementById('apiKeyStatus');
+    const setBtn = document.getElementById('setApiKeyBtn');
+    if (getStoredKey()){
+      status.textContent = 'Anthropic API key saved in this browser for reading photos and PDFs.';
+      setBtn.textContent = 'Change / clear key';
+    } else {
+      status.textContent = 'Add your Anthropic API key to unlock reading photos and PDFs.';
+      setBtn.textContent = 'Set API key';
+    }
+  }
+  document.getElementById('setApiKeyBtn').onclick = () => {
+    document.getElementById('apiKeyInput').value = getStoredKey();
+    document.getElementById('apiKeyPanel').style.display = 'block';
+  };
+  document.getElementById('cancelApiKeyBtn').onclick = () => {
+    document.getElementById('apiKeyPanel').style.display = 'none';
+  };
+  document.getElementById('saveApiKeyBtn').onclick = () => {
+    const val = document.getElementById('apiKeyInput').value.trim();
+    if (val) setStoredKey(val); else clearStoredKey();
+    document.getElementById('apiKeyPanel').style.display = 'none';
+    refreshApiKeyStatus();
+    showStatus(val ? 'Key saved. Drop your photo again.' : 'Key cleared.', false);
+  };
+  refreshApiKeyStatus();
+
+  async function callClaudeExtract(fileBlock, prompt){
+    const body = JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      messages: [{
+        role: 'user',
+        content: [
+          fileBlock,
+          { type: 'text', text: prompt }
+        ]
+      }]
+    });
+
+    // Attempt 1: works for free when this page is running inside a Claude.ai chat/artifact.
+    try{
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body
+      });
+      if (resp.ok) return await resp.json();
+      // A non-network error here (e.g. bad request) — surface it directly, no key will fix it.
+      const errBody = await resp.json().catch(() => ({}));
+      throw new Error(errBody?.error?.message || ('Request failed (' + resp.status + ')'));
+    }catch(proxyErr){
+      // Attempt 2: standalone downloaded file — needs the person's own API key.
+      const key = getStoredKey();
+      if (!key){
+        document.getElementById('apiKeyPanel').style.display = 'block';
+        throw new Error('This is a downloaded copy, so reading needs your own Anthropic API key — add it above, then drop the file again.');
+      }
+      const resp2 = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body
+      });
+      if (!resp2.ok){
+        const errBody2 = await resp2.json().catch(() => ({}));
+        if (resp2.status === 401){
+          document.getElementById('apiKeyPanel').style.display = 'block';
+          throw new Error('That API key was rejected — check it above and try again.');
+        }
+        throw new Error(errBody2?.error?.message || ('Request failed (' + resp2.status + ')'));
+      }
+      return await resp2.json();
+    }
+  }
+
+  async function callClaudeVision(base64, mediaType, prompt){
+    return callClaudeExtract({ type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } }, prompt);
+  }
+
+  async function callClaudePdf(base64, prompt){
+    return callClaudeExtract({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } }, prompt);
+  }
+
+  function handleImageFile(file){
+    showStatus('Reading the photo with Claude — this can take a few seconds…', false);
+    document.getElementById('mappingPanel').style.display = 'none';
+    document.getElementById('sheetPicker').style.display = 'none';
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try{
+        const dataUrl = e.target.result;
+        const base64 = dataUrl.split(',')[1];
+        const mediaType = file.type || 'image/jpeg';
+        const prompt = 'This image shows a packing list or commercial invoice table for a shipment of goods from China. '
+          + 'Extract every product line item (ignore header rows, packing-configuration sub-rows, and the 合计/Total summary row). '
+          + 'For each item give: description (combine the item code and item name), qty (the total quantity for that item), '
+          + 'unitPriceRMB (the unit price in RMB), and cbmTotal (the TOTAL/combined volume for that whole line item in CBM — '
+          + 'use a column labelled like 总体积, T/CBM, Total CBM rather than the per-carton unit volume column like 箱体积/U/CBM). '
+          + 'Respond with ONLY valid JSON, no markdown fences, no commentary, in exactly this shape: '
+          + '{"items":[{"description":"","qty":0,"unitPriceRMB":0,"cbmTotal":0}]}';
+
+        const data = await callClaudeVision(base64, mediaType, prompt);
+        const textBlock = (data.content || []).map(b => b.text || '').join('\n');
+        const clean = textBlock.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(clean);
+        const rows = (parsed.items || []).filter(it => it && (it.qty > 0 || it.unitPriceRMB > 0));
+        if (!rows.length){ showStatus('Could not find any line items in that photo — try a clearer or straighter shot.', true); return; }
+
+        currentRows = [
+          ['Description','Qty','Unit Price RMB','CBM'],
+          ...rows.map(it => [it.description || '', it.qty || 0, it.unitPriceRMB || 0, it.cbmTotal || 0])
+        ];
+        currentHeaderRowIdx = 0;
+        showStatus('Read ' + rows.length + ' item' + (rows.length===1?'':'s') + ' from the photo. Check the mapping below.', false);
+        buildMappingUI();
+      }catch(err){
+        showStatus(err.message || 'Could not read that photo.', true);
+      }
+    };
+    reader.onerror = () => showStatus('Could not read that photo.', true);
+    reader.readAsDataURL(file);
+  }
+
+  function handlePdfFile(file){
+    showStatus('Reading ' + file.name + ' with Claude — this can take a few seconds…', false);
+    document.getElementById('mappingPanel').style.display = 'none';
+    document.getElementById('sheetPicker').style.display = 'none';
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try{
+        const dataUrl = e.target.result;
+        const base64 = dataUrl.split(',')[1];
+        const prompt = 'This PDF is a packing list or commercial invoice for a shipment of goods from China. '
+          + 'Extract every product line item (ignore header rows, packing-configuration sub-rows, and the 合计/Total summary row). '
+          + 'For each item give: description (combine the item code and item name), qty (the total quantity for that item), '
+          + 'unitPriceRMB (the unit price in RMB), and cbmTotal (the TOTAL/combined volume for that whole line item in CBM — '
+          + 'use a column labelled like 总体积, T/CBM, Total CBM rather than the per-carton unit volume column like 箱体积/U/CBM). '
+          + 'If the PDF has multiple pages or tables, combine all item rows into one list. '
+          + 'Respond with ONLY valid JSON, no markdown fences, no commentary, in exactly this shape: '
+          + '{"items":[{"description":"","qty":0,"unitPriceRMB":0,"cbmTotal":0}]}';
+
+        const data = await callClaudePdf(base64, prompt);
+        const textBlock = (data.content || []).map(b => b.text || '').join('\n');
+        const clean = textBlock.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(clean);
+        const rows = (parsed.items || []).filter(it => it && (it.qty > 0 || it.unitPriceRMB > 0));
+        if (!rows.length){ showStatus('Could not find any line items in that PDF — try exporting it differently or use the paste-rows tab instead.', true); return; }
+
+        currentRows = [
+          ['Description','Qty','Unit Price RMB','CBM'],
+          ...rows.map(it => [it.description || '', it.qty || 0, it.unitPriceRMB || 0, it.cbmTotal || 0])
+        ];
+        currentHeaderRowIdx = 0;
+        showStatus('Read ' + rows.length + ' item' + (rows.length===1?'':'s') + ' from ' + file.name + '. Check the mapping below.', false);
+        buildMappingUI();
+      }catch(err){
+        showStatus(err.message || 'Could not read that PDF.', true);
+      }
+    };
+    reader.onerror = () => showStatus('Could not read that PDF.', true);
+    reader.readAsDataURL(file);
+  }
+
+  const KEYWORDS = {
+    qty: ['qty','quantity','数量'],
+    price: ['price(rmb)','price rmb','unit price','price','单价'],
+    cbm: ['cbm total','cbm(total)','total cbm','cbm','材积'],
+    desc: ['model no','model','item','description','product','part','car part','goods','name','货名']
+  };
+
+  function scoreHeaderRow(row){
+    let score = 0;
+    row.forEach(cell => {
+      const s = String(cell).toLowerCase().trim();
+      if (!s) return;
+      Object.values(KEYWORDS).forEach(list => {
+        if (list.some(k => s.includes(k))) score++;
+      });
+    });
+    return score;
+  }
+
+  function findHeaderRow(rows){
+    let best = 0, bestScore = -1;
+    rows.forEach((row, idx) => {
+      const sc = scoreHeaderRow(row);
+      if (sc > bestScore){ bestScore = sc; best = idx; }
+    });
+    return best;
+  }
+
+  function guessColumn(headerRow, kind){
+    let bestIdx = -1;
+    for (let i = 0; i < headerRow.length; i++){
+      const s = String(headerRow[i]).toLowerCase().trim();
+      if (!s) continue;
+      if (KEYWORDS[kind].some(k => s.includes(k))){ bestIdx = i; break; }
+    }
+    return bestIdx;
+  }
+
+  function loadSheet(name){
+    const rows = workbookSheets[name] || [];
+    currentRows = rows;
+    currentHeaderRowIdx = findHeaderRow(rows);
+    buildMappingUI();
+  }
+
+  function colLabel(headerRow, idx){
+    const h = String(headerRow[idx] ?? '').trim();
+    return (h ? h : 'Column ' + (idx+1)) + '  (col ' + (idx+1) + ')';
+  }
+
+  function buildMappingUI(){
+    const headerRow = currentRows[currentHeaderRowIdx] || [];
+    document.getElementById('headerRowLabel').textContent = (currentHeaderRowIdx + 1);
+
+    const qtySel = document.getElementById('mapQty');
+    const priceSel = document.getElementById('mapPrice');
+    const cbmSel = document.getElementById('mapCbm');
+    const descChecks = document.getElementById('descChecks');
+    [qtySel, priceSel, cbmSel].forEach(sel => sel.innerHTML = '');
+    descChecks.innerHTML = '';
+
+    const guessQty = guessColumn(headerRow, 'qty');
+    const guessPrice = guessColumn(headerRow, 'price');
+    const guessCbmAll = [];
+    headerRow.forEach((c,i) => { if (KEYWORDS.cbm.some(k => String(c).toLowerCase().includes(k))) guessCbmAll.push(i); });
+    // prefer a column literally containing "total" alongside cbm
+    let guessCbm = guessCbmAll.find(i => String(headerRow[i]).toLowerCase().includes('total'));
+    if (guessCbm === undefined) guessCbm = guessCbmAll.length ? guessCbmAll[guessCbmAll.length-1] : -1;
+    const guessDesc = [];
+    headerRow.forEach((c,i) => {
+      const s = String(c).toLowerCase();
+      if (KEYWORDS.desc.some(k => s.includes(k))) guessDesc.push(i);
+    });
+
+    headerRow.forEach((c, i) => {
+      const label = colLabel(headerRow, i);
+      [ [qtySel,'qty'], [priceSel,'price'], [cbmSel,'cbm'] ].forEach(([sel]) => {
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = label;
+        sel.appendChild(opt);
+      });
+      const chkLabel = document.createElement('label');
+      chkLabel.innerHTML = `<input type="checkbox" value="${i}" ${guessDesc.includes(i) ? 'checked' : ''}> ${label}`;
+      descChecks.appendChild(chkLabel);
+    });
+    const noneQty = document.createElement('option'); noneQty.value = -1; noneQty.textContent = '— none —';
+    qtySel.appendChild(noneQty.cloneNode(true));
+    priceSel.appendChild(noneQty.cloneNode(true));
+    cbmSel.appendChild(noneQty.cloneNode(true));
+
+    qtySel.value = guessQty >= 0 ? guessQty : -1;
+    priceSel.value = guessPrice >= 0 ? guessPrice : -1;
+    cbmSel.value = guessCbm >= 0 ? guessCbm : -1;
+
+    renderMappingPreview();
+    [qtySel, priceSel, cbmSel].forEach(sel => sel.onchange = renderMappingPreview);
+    descChecks.querySelectorAll('input').forEach(cb => cb.onchange = renderMappingPreview);
+
+    // Auto-import if we successfully mapped some core columns
+    if (guessQty >= 0 || guessPrice >= 0) {
+      setTimeout(() => document.getElementById('confirmImportBtn').click(), 250);
+    } else {
+      document.getElementById('mappingPanel').style.display = 'block';
+    }
+  }
+
+  function getSelectedDescCols(){
+    return Array.from(document.querySelectorAll('#descChecks input:checked')).map(cb => parseInt(cb.value));
+  }
+
+  function isStopRow(row){
+    if (!row || !row.length) return true;
+    const joined = row.map(c => String(c).toLowerCase()).join(' ');
+    return /\btotal\b|\bsubtotal\b|唛头/.test(joined);
+  }
+
+  function extractDataRows(){
+    const qtyIdx = parseInt(document.getElementById('mapQty').value);
+    const priceIdx = parseInt(document.getElementById('mapPrice').value);
+    const cbmIdx = parseInt(document.getElementById('mapCbm').value);
+    const descIdx = getSelectedDescCols();
+    const out = [];
+    for (let r = currentHeaderRowIdx + 1; r < currentRows.length; r++){
+      const row = currentRows[r];
+      if (!row) continue;
+      if (isStopRow(row)) break;
+      const qty = qtyIdx >= 0 ? parseFloat(String(row[qtyIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const price = priceIdx >= 0 ? parseFloat(String(row[priceIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const cbm = cbmIdx >= 0 ? parseFloat(String(row[cbmIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const desc = descIdx.map(i => String(row[i] ?? '').trim()).filter(Boolean).join(' — ');
+      // skip rows with nothing usable
+      if (!desc && !(qty > 0) && !(price > 0)) continue;
+      if (!(qty > 0) && !(price > 0)) continue;
+      out.push({ desc, qty: isFinite(qty) ? qty : 0, price: isFinite(price) ? price : 0, cbm: isFinite(cbm) ? cbm : 0 });
+    }
+    return out;
+  }
+
+  function renderMappingPreview(){
+    const rows = extractDataRows();
+    const table = document.getElementById('mappingPreviewTable');
+    const preview = rows.slice(0, 5);
+    let html = '<thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Price RMB</th><th class="num">CBM</th></tr></thead><tbody>';
+    preview.forEach(r => {
+      html += `<tr><td>${escapeHtml(r.desc || '—')}</td><td class="num">${r.qty}</td><td class="num">${r.price}</td><td class="num">${r.cbm}</td></tr>`;
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+    document.getElementById('mappingNote').textContent = rows.length + ' item row' + (rows.length===1?'':'s') + ' detected' + (rows.length > 5 ? ' (showing first 5)' : '');
+  }
+
+  document.getElementById('confirmImportBtn').onclick = () => {
+    const rows = extractDataRows();
+    if (!rows.length){ showStatus('No item rows matched — try adjusting the column mapping.', true); return; }
+    rows.forEach(r => items.push(newItem(r.desc, r.qty, r.price, r.cbm)));
+    document.getElementById('mappingPanel').style.display = 'none';
+    showStatus('Imported ' + rows.length + ' item' + (rows.length===1?'':'s') + ' into the packing list below.', false);
+    renderItems();
+    scheduleSave();
+  };
+
+  document.getElementById('cancelImportBtn').onclick = () => {
+    document.getElementById('mappingPanel').style.display = 'none';
+  };
+
+  // ---- Paste parsing ----
+  document.getElementById('parseBtn').onclick = () => {
+    const raw = document.getElementById('pasteBox').value;
+    if (!raw.trim()) return;
+    let lines = raw.split('\n').map(l => l.trim()).filter(l => l.length);
+    if (document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
+    let added = 0;
+    lines.forEach(line => {
+      const parts = line.split(/\t|,(?![^()]*\))/).map(p => p.trim());
+      if (parts.length < 2) return;
+      const desc = parts[0] || '';
+      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const price = parseFloat((parts[2]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      if (!desc) return;
+      items.push(newItem(desc, qty, price, cbm));
+      added++;
+    });
+    if (added){
+      document.getElementById('pasteBox').value = '';
+      renderItems();
+      scheduleSave();
+    }
+  };
+
+  document.getElementById('addRowBtn').onclick = () => addItem('', 0, 0, 0);
+
+  let clearArmed = false;
+  let clearArmTimer = null;
+  const clearItemsBtn = document.getElementById('clearItemsBtn');
+  const clearItemsNote = document.getElementById('clearItemsNote');
+  clearItemsBtn.onclick = () => {
+    if (!items.length) return;
+    if (!clearArmed){
+      clearArmed = true;
+      clearItemsBtn.textContent = 'Click again to confirm';
+      clearItemsBtn.classList.add('confirming');
+      clearItemsNote.textContent = 'This clears the packing list only — rates and charges stay.';
+      clearArmTimer = setTimeout(() => {
+        clearArmed = false;
+        clearItemsBtn.textContent = 'Clear all items';
+        clearItemsBtn.classList.remove('confirming');
+        clearItemsNote.textContent = '';
+      }, 3000);
+      return;
+    }
+    clearTimeout(clearArmTimer);
+    clearArmed = false;
+    clearItemsBtn.textContent = 'Clear all items';
+    clearItemsBtn.classList.remove('confirming');
+    items = [];
+    renderItems();
+    scheduleSave();
+    clearItemsNote.textContent = 'Packing list cleared.';
+    setTimeout(() => { clearItemsNote.textContent = ''; }, 2500);
+  };
+
+  // ---- Fee presets ----
+  document.getElementById('addFeeBtn').onclick = () => addFee('', 'flat', 0, 'cbm');
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.onclick = () => {
+      const p = btn.getAttribute('data-preset');
+      if (p === 'duty') addFee('Customs duty', 'percent', 0, 'cbm', 'cif');
+      if (p === 'vat') addFee('VAT', 'percent', 0, 'cbm', 'running');
+      if (p === 'transport') addFee('Colombo–Matara transport', 'flat', 0, 'cbm');
+      if (p === 'agent') addFee('Clearing agent fee', 'flat', 0, 'value');
+    };
+  });
+
+  document.getElementById('rmbRate').oninput = () => { calculate(); scheduleSave(); };
+  document.getElementById('cbmRate').oninput = () => { calculate(); scheduleSave(); };
+
+  document.getElementById('exportPdfBtn').onclick = () => {
+    window.print();
+  };
+
+  document.getElementById('copyTableBtn').onclick = async () => {
+    const table = document.getElementById('resultsTable');
+    let tsv = '';
+    for (let r of table.rows) {
+      let rowData = [];
+      for (let c of r.cells) {
+        rowData.push(c.innerText.replace(/\n/g, ' '));
+      }
+      tsv += rowData.join('\t') + '\n';
+    }
+    try {
+      await navigator.clipboard.writeText(tsv);
+      const btn = document.getElementById('copyTableBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy to Excel', 2000);
+    } catch(e) {
+      alert('Failed to copy to clipboard.');
+    }
+  };
+
+  document.getElementById('newShipmentBtn').onclick = () => {
+    if (!confirm('Clear the current shipment and start a new one?')) return;
+    items = []; fees = [];
+    document.getElementById('rmbRate').value = '';
+    document.getElementById('cbmRate').value = '';
+    renderItems(); renderFees();
+    scheduleSave();
+  };
+
+  // ---- Persistence ----
+  function scheduleSave(){
+    const status = document.getElementById('saveStatus');
+    status.textContent = 'Saving…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveState, 500);
+  }
+
+  async function saveState(){
+    const status = document.getElementById('saveStatus');
+    const state = {
+      items, fees,
+      rmbRate: document.getElementById('rmbRate').value,
+      cbmRate: document.getElementById('cbmRate').value
+    };
+    try{
+      localStorage.setItem('current-shipment', JSON.stringify(state));
+      status.textContent = 'Saved · auto-saves as you type';
+    }catch(err){
+      status.textContent = 'Save unavailable in this view';
+    }
+  }
+
+  async function loadState(){
+    const status = document.getElementById('saveStatus');
+    try{
+      const result = localStorage.getItem('current-shipment');
+      if (result){
+        const state = JSON.parse(result);
+        items = state.items || [];
+        fees = state.fees || [];
+        itemSeq = items.reduce((m,i) => Math.max(m, parseInt(String(i.id).replace('it',''))||0), 0) + 1;
+        feeSeq = fees.reduce((m,f) => Math.max(m, parseInt(String(f.id).replace('fe',''))||0), 0) + 1;
+        document.getElementById('rmbRate').value = state.rmbRate || '';
+        document.getElementById('cbmRate').value = state.cbmRate || '';
+        status.textContent = 'Loaded your last shipment · auto-saves as you type';
+      } else {
+        status.textContent = 'New shipment · auto-saves as you type';
+      }
+    }catch(err){
+      status.textContent = 'New shipment · auto-saves as you type';
+    }
+
+    if (fees.length === 0) {
+      fees.push(newFee('Customs Duty', 'percent', 15, 'cbm', 'cif'));
+      fees.push(newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif'));
+      fees.push(newFee('Clearing Agent', 'flat', 15000, 'value', 'cif'));
+      feeSeq += 3;
+    }
+
+    renderItems();
+    renderFees();
+  }
+
+  loadState();
+})();
+</script>
+
+</body>
+</html>
