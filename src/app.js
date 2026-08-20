@@ -132,8 +132,31 @@
     const id = generateId();
     state.currentId = id;
     state.history[id] = DEFAULT_SHIPMENT();
+    current = state.history[id];
     populateUI();
+    saveState();
     showToast("New shipment created");
+  }
+
+  function deleteShipment(id, e) {
+    if (e) e.stopPropagation();
+    
+    delete state.history[id];
+    const remainingIds = Object.keys(state.history);
+    
+    if (remainingIds.length === 0) {
+      const newId = generateId();
+      state.history[newId] = DEFAULT_SHIPMENT();
+      state.currentId = newId;
+    } else if (state.currentId === id) {
+      remainingIds.sort((a,b) => (state.history[b].lastSaved || 0) - (state.history[a].lastSaved || 0));
+      state.currentId = remainingIds[0];
+    }
+    
+    current = state.history[state.currentId];
+    saveState();
+    populateUI();
+    showToast("Shipment removed");
   }
 
   function renderHistory() {
@@ -145,13 +168,27 @@
       const ship = state.history[id];
       const div = document.createElement('div');
       div.className = `history-item ${id === state.currentId ? 'active' : ''}`;
-      const totalItems = ship.items.length;
-      const dateStr = new Date(ship.lastSaved).toLocaleDateString();
+      const totalItems = (ship.items || []).length;
+      const dateStr = new Date(ship.lastSaved || Date.now()).toLocaleDateString();
       div.innerHTML = `
-        <div class="history-name">${escapeHtml(ship.name)}</div>
-        <div class="history-meta">${totalItems} items · ${dateStr}</div>
+        <div class="history-item-info">
+          <div class="history-name">${escapeHtml(ship.name || 'Untitled Shipment')}</div>
+          <div class="history-meta">${totalItems} items · ${dateStr}</div>
+        </div>
+        <button class="btn-ghost history-delete-btn" data-delete-id="${id}" title="Delete shipment">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
       `;
-      div.onclick = () => { if(id !== state.currentId) switchShipment(id); };
+      div.onclick = (e) => {
+        if (e.target.closest('[data-delete-id]')) return;
+        if (id !== state.currentId) switchShipment(id);
+      };
+      
+      const delBtn = div.querySelector('[data-delete-id]');
+      if (delBtn) {
+        delBtn.onclick = (e) => deleteShipment(id, e);
+      }
+      
       list.appendChild(div);
     });
   }
