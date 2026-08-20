@@ -1157,8 +1157,8 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
   };
 
-  const DEFAULT_SHIPMENT = () => ({
-    name: 'New Shipment ' + new Date().toLocaleDateString(),
+  const DEFAULT_SHIPMENT = (num = 1) => ({
+    name: 'Shipment #' + String(num).padStart(2, '0') + ' (' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ')',
     route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
     baseCurrency: 'RMB', // RMB or USD
     exRate: '',
@@ -1239,7 +1239,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     if (!state.currentId || !state.history[state.currentId]) {
       const id = generateId();
       state.currentId = id;
-      state.history[id] = DEFAULT_SHIPMENT();
+      state.history[id] = DEFAULT_SHIPMENT(1);
     }
     current = state.history[state.currentId];
     renderHistory();
@@ -1280,26 +1280,25 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
 
   function newShipment() {
     saveState();
+    const count = Object.keys(state.history).length + 1;
     const id = generateId();
     state.currentId = id;
-    state.history[id] = DEFAULT_SHIPMENT();
+    state.history[id] = DEFAULT_SHIPMENT(count);
     current = state.history[id];
     populateUI();
     saveState();
-    showToast("New shipment created");
+    showToast(`Shipment #${String(count).padStart(2, '0')} created`);
   }
 
   function deleteShipment(id, e) {
     if (e) e.stopPropagation();
     
-    delete state.history[id];
-    const remainingIds = Object.keys(state.history);
+    const remainingIds = Object.keys(state.history).filter(k => k !== id);
+    if (remainingIds.length === 0) return; // Prevent deleting the last shipment
     
-    if (remainingIds.length === 0) {
-      const newId = generateId();
-      state.history[newId] = DEFAULT_SHIPMENT();
-      state.currentId = newId;
-    } else if (state.currentId === id) {
+    delete state.history[id];
+    
+    if (state.currentId === id) {
       remainingIds.sort((a,b) => (state.history[b].lastSaved || 0) - (state.history[a].lastSaved || 0));
       state.currentId = remainingIds[0];
     }
@@ -1313,22 +1312,25 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   function renderHistory() {
     const list = document.getElementById('historyList');
     list.innerHTML = '';
-    const sortedIds = Object.keys(state.history).sort((a,b) => state.history[b].lastSaved - state.history[a].lastSaved);
+    const sortedIds = Object.keys(state.history).sort((a,b) => (state.history[b].lastSaved || 0) - (state.history[a].lastSaved || 0));
+    const canDelete = sortedIds.length > 1;
     
     sortedIds.forEach(id => {
       const ship = state.history[id];
       const div = document.createElement('div');
       div.className = `history-item ${id === state.currentId ? 'active' : ''}`;
       const totalItems = (ship.items || []).length;
-      const dateStr = new Date(ship.lastSaved || Date.now()).toLocaleDateString();
+      const dateStr = new Date(ship.lastSaved || Date.now()).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      
       div.innerHTML = `
         <div class="history-item-info">
           <div class="history-name">${escapeHtml(ship.name || 'Untitled Shipment')}</div>
           <div class="history-meta">${totalItems} items · ${dateStr}</div>
         </div>
+        ${canDelete ? `
         <button class="btn-ghost history-delete-btn" data-delete-id="${id}" title="Delete shipment">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        </button>
+        </button>` : ''}
       `;
       div.onclick = (e) => {
         if (e.target.closest('[data-delete-id]')) return;
@@ -1657,6 +1659,25 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     const body = document.getElementById('resultsBody');
     body.innerHTML = '';
     
+    if (perItem.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td colspan="7" style="text-align:center; padding: 44px 16px;">
+          <div style="display:inline-flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="width:38px; height:38px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:18px;">📦</div>
+            <div style="font-weight:600; font-size:13.5px; color:var(--ink);">Awaiting Line Items</div>
+            <div style="font-size:12px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+          </div>
+        </td>
+      `;
+      body.appendChild(tr);
+      document.getElementById('footQty').textContent = '0';
+      document.getElementById('footValue').textContent = '0';
+      document.getElementById('footFreight').textContent = '0';
+      document.getElementById('footCharges').textContent = '0';
+      return;
+    }
+
     perItem.forEach(row => {
       const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;
       const targetSell = unitCost * (1 + markupPct/100);
