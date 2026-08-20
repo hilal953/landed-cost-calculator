@@ -30,22 +30,34 @@ html_body = r"""
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-manifest">
+        <div class="topbar-eyebrow">
+          <span class="eyebrow-tag">WORKSHEET</span>
+          <span class="eyebrow-text">Import Costing & Landed Price Calculator</span>
+        </div>
         <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
-        <div class="manifest-route-bar">
-          <span class="route-point">
-            <span class="route-flag">CN</span>
-            <input type="text" id="routeOrigin" value="GUANGZHOU" class="route-input">
-          </span>
-          <span class="route-arrow">➔</span>
-          <span class="route-point">
-            <span class="route-flag">LK</span>
-            <input type="text" id="routePort" value="COLOMBO" class="route-input">
-          </span>
-          <span class="route-arrow">➔</span>
-          <span class="route-point">
-            <span class="route-flag">DEST</span>
-            <input type="text" id="routeDest" value="MATARA" class="route-input">
-          </span>
+        <div class="manifest-route-ribbon">
+          <div class="route-station">
+            <span class="station-flag">CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚢 SEA</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag">LK</span>
+            <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚛 INLAND</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag dest">📍</span>
+            <input type="text" id="routeDest" value="MATARA" class="station-input" title="Final Destination">
+          </div>
         </div>
       </div>
       <div class="topbar-actions">

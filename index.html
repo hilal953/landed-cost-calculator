@@ -101,7 +101,30 @@ body {
 .topbar-manifest {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+}
+
+.topbar-eyebrow {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+}
+.eyebrow-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border-strong);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.eyebrow-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
 }
 
 .topbar-title {
@@ -122,49 +145,72 @@ body {
   border-bottom: 1px dashed var(--border-strong);
 }
 
-.manifest-route-bar {
+.manifest-route-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 3px 6px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+  width: fit-content;
+}
+
+.route-station {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
-}
-
-.route-point {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--bg-color);
+  padding: 3px 8px;
   border-radius: var(--radius-sm);
-  padding: 2px 8px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
 }
 
-.route-flag {
+.station-flag {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 9.5px;
   font-weight: 700;
-  background: var(--bg-color);
-  color: var(--ink-soft);
+  color: var(--primary);
+  background: rgba(15, 23, 42, 0.06);
   padding: 1px 4px;
-  border-radius: 2px;
+  border-radius: 3px;
+}
+.station-flag.dest {
+  background: transparent;
+  padding: 0;
+  font-size: 11px;
 }
 
-.route-input {
+.station-input {
   border: none;
   background: transparent;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--ink);
   outline: none;
-  width: 82px;
+  width: 80px;
 }
 
-.route-arrow {
-  color: var(--ink-lighter);
-  font-size: 11px;
-  margin: 0 2px;
+.route-transit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+.transit-line {
+  width: 6px;
+  height: 1px;
+  background: var(--border-strong);
+}
+.transit-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 /* WIZARD & CARDS */
@@ -965,22 +1011,34 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-manifest">
+        <div class="topbar-eyebrow">
+          <span class="eyebrow-tag">WORKSHEET</span>
+          <span class="eyebrow-text">Import Costing & Landed Price Calculator</span>
+        </div>
         <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
-        <div class="manifest-route-bar">
-          <span class="route-point">
-            <span class="route-flag">CN</span>
-            <input type="text" id="routeOrigin" value="GUANGZHOU" class="route-input">
-          </span>
-          <span class="route-arrow">➔</span>
-          <span class="route-point">
-            <span class="route-flag">LK</span>
-            <input type="text" id="routePort" value="COLOMBO" class="route-input">
-          </span>
-          <span class="route-arrow">➔</span>
-          <span class="route-point">
-            <span class="route-flag">DEST</span>
-            <input type="text" id="routeDest" value="MATARA" class="route-input">
-          </span>
+        <div class="manifest-route-ribbon">
+          <div class="route-station">
+            <span class="station-flag">CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚢 SEA</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag">LK</span>
+            <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚛 INLAND</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag dest">📍</span>
+            <input type="text" id="routeDest" value="MATARA" class="station-input" title="Final Destination">
+          </div>
         </div>
       </div>
       <div class="topbar-actions">
