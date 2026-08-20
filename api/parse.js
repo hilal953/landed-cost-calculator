@@ -42,32 +42,44 @@ Respond with ONLY valid JSON:
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
     if (geminiKey) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
-      const payload = {
-        contents: [{
-          parts: [
-            { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } },
-            { text: prompt }
-          ]
-        }]
-      };
+      const geminiModels = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash-exp'];
+      let lastErr = null;
 
-      const aiRes = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      for (const model of geminiModels) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+          const payload = {
+            contents: [{
+              parts: [
+                { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } },
+                { text: prompt }
+              ]
+            }]
+          };
 
-      if (!aiRes.ok) {
-        const err = await aiRes.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Gemini API error (${aiRes.status})`);
+          const aiRes = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!aiRes.ok) {
+            const err = await aiRes.json().catch(() => ({}));
+            lastErr = new Error(err?.error?.message || `Gemini error on ${model} (${aiRes.status})`);
+            continue;
+          }
+
+          const data = await aiRes.json();
+          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          const clean = rawText.replace(/```json|```/g, '').trim();
+          const parsed = JSON.parse(clean);
+          return res.status(200).json({ items: parsed.items || [] });
+        } catch (e) {
+          lastErr = e;
+        }
       }
 
-      const data = await aiRes.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const clean = rawText.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(clean);
-      return res.status(200).json({ items: parsed.items || [] });
+      if (lastErr) throw lastErr;
     }
 
     // 2. OpenAI GPT-4o-mini
