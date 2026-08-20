@@ -672,26 +672,27 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
             <div class="dz-title">Drop your packing list here</div>
-            <div class="dz-sub">.xls, .xlsx, .csv, .pdf — or a photo/screenshot (.jpg, .png) straight from WhatsApp.</div>
+            <div class="dz-sub">Upload Excel (.xlsx, .xls, .csv), PDF, or a photo from WhatsApp. Or click to browse.</div>
             <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
           </div>
 
-          <div class="api-key-row" id="apiKeyRow" style="margin-top:16px; display:flex; align-items:center; gap:12px;">
-            <span class="text-sm text-muted mono" id="apiKeyStatus">Add your Anthropic API key to read photos & PDFs.</span>
-            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:12px;">Set API key</button>
+          <div class="api-key-row" id="apiKeyRow" style="margin-top:12px; display:flex; align-items:center; justify-content:flex-end; gap:8px;">
+            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:12px; color:var(--ink-soft);">
+              ⚙ Photo Scanner Key
+            </button>
           </div>
           <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
             <div class="input-group" style="margin-bottom:8px;">
-              <label>Anthropic API Key</label>
+              <label>Anthropic API Key (for reading photos and PDFs)</label>
               <div class="input-field">
                 <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
               </div>
             </div>
             <div class="flex gap-2">
-              <button class="btn-primary" id="saveApiKeyBtn">Save</button>
-              <button class="btn-secondary" id="cancelApiKeyBtn">Cancel</button>
+              <button class="btn-primary" id="saveApiKeyBtn">Save Key</button>
+              <button class="btn-secondary" id="cancelApiKeyBtn">Close</button>
             </div>
-            <div class="text-sm text-muted mt-2">Stored only in this browser.</div>
+            <div class="text-sm text-muted mt-2">Saved safely in your browser only.</div>
           </div>
 
           <div id="parseStatus" class="hidden text-sm mono mt-4 text-center" style="color:var(--primary); display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -1447,8 +1448,8 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     let tsv = '';
     for (let r of table.rows) {
       let rowData = [];
-      for (let c of r.cells) rowData.push(c.innerText.replace(/\\n/g, ' '));
-      tsv += rowData.join('\\t') + '\\n';
+      for (let c of r.cells) rowData.push(c.innerText.replace(/\n/g, ' '));
+      tsv += rowData.join('\t') + '\n';
     }
     try {
       await navigator.clipboard.writeText(tsv);
@@ -1499,14 +1500,9 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   };
 
   function refreshApiKeyStatus() {
-    const status = document.getElementById('apiKeyStatus');
     const setBtn = document.getElementById('setApiKeyBtn');
-    if (state.apiKey) {
-      status.textContent = 'API key saved for reading photos & PDFs.';
-      setBtn.textContent = 'Change key';
-    } else {
-      status.textContent = 'Add your Anthropic API key to read photos & PDFs.';
-      setBtn.textContent = 'Set API key';
+    if (setBtn) {
+      setBtn.innerHTML = state.apiKey ? '⚙ Key Configured' : '⚙ Photo Scanner Key';
     }
   }
   refreshApiKeyStatus();
@@ -1537,8 +1533,8 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
   }
 
   function handleFile(file) {
-    const isImg = /^image\\//.test(file.type) || /\\.(jpe?g|png|webp)$/i.test(file.name);
-    const isPdf = file.type === 'application/pdf' || /\\.pdf$/i.test(file.name);
+    const isImg = /^image\//.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
     if(isImg) { handleClaudeFile(file, 'image'); return; }
     if(isPdf) { handleClaudeFile(file, 'pdf'); return; }
     
@@ -1577,13 +1573,12 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
     reader.readAsArrayBuffer(file);
   }
 
-  // Claude API Integration
   async function callClaude(base64, mediaType, isPdf) {
-    if (!state.apiKey) throw new Error("Anthropic API key required. Please set it above.");
+    if (!state.apiKey) throw new Error("To read photos or PDFs, please enter your Anthropic API key below.");
     
     const prompt = `This ${isPdf?'PDF':'image'} shows a packing list or commercial invoice for a shipment of goods from China. 
-Extract every product line item (ignore header rows, packing-configuration sub-rows, and the 合计/Total summary row). 
-For each item give: description (combine the item code and item name), qty (total quantity), unitPrice (unit price in numbers), and cbmTotal (TOTAL/combined volume for that whole line item in CBM — use a column labelled like 总体积, T/CBM, Total CBM). 
+Extract every product line item (ignore header rows, packing-configuration sub-rows, and the Total summary row). 
+For each item give: description (combine the item code and item name), qty (total quantity), unitPrice (unit price in numbers), and cbmTotal (TOTAL or combined volume for that whole line item in CBM - use a column labelled like T/CBM or Total CBM). 
 Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,"cbmTotal":0}]}`;
 
     const source = isPdf 
@@ -1625,7 +1620,7 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
         const base64 = e.target.result.split(',')[1];
         const data = await callClaude(base64, file.type || 'image/jpeg', type === 'pdf');
         
-        const textBlock = (data.content || []).map(b => b.text || '').join('\\n');
+        const textBlock = (data.content || []).map(b => b.text || '').join('\n');
         const clean = textBlock.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(clean);
         const rows = (parsed.items || []).filter(it => it && (it.qty > 0 || it.unitPrice > 0));
@@ -1755,11 +1750,11 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
       const row = currentRows[r];
       if(!row) continue;
       const joined = row.join(' ').toLowerCase();
-      if(/\\btotal\\b|\\bsubtotal\\b|合计|唛头/.test(joined)) break; // stop row
+      if(/\btotal\b|\bsubtotal\b|合计|唛头/.test(joined)) break; // stop row
       
-      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
-      const price = pIdx >= 0 ? parseFloat(String(row[pIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
-      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
+      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const price = pIdx >= 0 ? parseFloat(String(row[pIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
       const desc = dIdx.map(i => String(row[i] || '').trim()).filter(Boolean).join(' - ');
       
       if (!desc && !(qty > 0) && !(price > 0)) continue;
@@ -1801,17 +1796,17 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
   document.getElementById('parseBtn').onclick = () => {
     const raw = document.getElementById('pasteBox').value;
     if(!raw.trim()) return;
-    let lines = raw.split('\\n').map(l=>l.trim()).filter(Boolean);
+    let lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
     if(document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
     
     let added = 0;
     lines.forEach(line => {
-      const parts = line.split(/\\t|,(?![^()]*\\))/).map(p=>p.trim());
+      const parts = line.split(/\t|,(?![^()]*\))/).map(p=>p.trim());
       if(parts.length < 2) return;
       const desc = parts[0] || '';
-      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\\-]/g,'')) || 0;
-      const price = parseFloat((parts[2]||'').replace(/[^0-9.\\-]/g,'')) || 0;
-      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\\-]/g,'')) || 0;
+      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const price = parseFloat((parts[2]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\-]/g,'')) || 0;
       if(!desc) return;
       current.items.push({ id: 'it'+(current.itemSeq++), desc, qty, price, cbm });
       added++;

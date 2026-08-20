@@ -678,26 +678,27 @@ tr:hover td { background: rgba(15, 23, 42, 0.02); }
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
             <div class="dz-title">Drop your packing list here</div>
-            <div class="dz-sub">.xls, .xlsx, .csv, .pdf — or a photo/screenshot (.jpg, .png) straight from WhatsApp.</div>
+            <div class="dz-sub">Upload Excel (.xlsx, .xls, .csv), PDF, or a photo from WhatsApp. Or click to browse.</div>
             <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
           </div>
 
-          <div class="api-key-row" id="apiKeyRow" style="margin-top:16px; display:flex; align-items:center; gap:12px;">
-            <span class="text-sm text-muted mono" id="apiKeyStatus">Add your Anthropic API key to read photos & PDFs.</span>
-            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:12px;">Set API key</button>
+          <div class="api-key-row" id="apiKeyRow" style="margin-top:12px; display:flex; align-items:center; justify-content:flex-end; gap:8px;">
+            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:12px; color:var(--ink-soft);">
+              ⚙ Photo Scanner Key
+            </button>
           </div>
           <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
             <div class="input-group" style="margin-bottom:8px;">
-              <label>Anthropic API Key</label>
+              <label>Anthropic API Key (for reading photos and PDFs)</label>
               <div class="input-field">
                 <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
               </div>
             </div>
             <div class="flex gap-2">
-              <button class="btn-primary" id="saveApiKeyBtn">Save</button>
-              <button class="btn-secondary" id="cancelApiKeyBtn">Cancel</button>
+              <button class="btn-primary" id="saveApiKeyBtn">Save Key</button>
+              <button class="btn-secondary" id="cancelApiKeyBtn">Close</button>
             </div>
-            <div class="text-sm text-muted mt-2">Stored only in this browser.</div>
+            <div class="text-sm text-muted mt-2">Saved safely in your browser only.</div>
           </div>
 
           <div id="parseStatus" class="hidden text-sm mono mt-4 text-center" style="color:var(--primary); display:flex; align-items:center; justify-content:center; gap:8px;">

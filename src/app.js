@@ -516,8 +516,8 @@
     let tsv = '';
     for (let r of table.rows) {
       let rowData = [];
-      for (let c of r.cells) rowData.push(c.innerText.replace(/\\n/g, ' '));
-      tsv += rowData.join('\\t') + '\\n';
+      for (let c of r.cells) rowData.push(c.innerText.replace(/\n/g, ' '));
+      tsv += rowData.join('\t') + '\n';
     }
     try {
       await navigator.clipboard.writeText(tsv);
@@ -568,14 +568,9 @@
   };
 
   function refreshApiKeyStatus() {
-    const status = document.getElementById('apiKeyStatus');
     const setBtn = document.getElementById('setApiKeyBtn');
-    if (state.apiKey) {
-      status.textContent = 'API key saved for reading photos & PDFs.';
-      setBtn.textContent = 'Change key';
-    } else {
-      status.textContent = 'Add your Anthropic API key to read photos & PDFs.';
-      setBtn.textContent = 'Set API key';
+    if (setBtn) {
+      setBtn.innerHTML = state.apiKey ? '⚙ Key Configured' : '⚙ Photo Scanner Key';
     }
   }
   refreshApiKeyStatus();
@@ -606,8 +601,8 @@
   }
 
   function handleFile(file) {
-    const isImg = /^image\\//.test(file.type) || /\\.(jpe?g|png|webp)$/i.test(file.name);
-    const isPdf = file.type === 'application/pdf' || /\\.pdf$/i.test(file.name);
+    const isImg = /^image\//.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
     if(isImg) { handleClaudeFile(file, 'image'); return; }
     if(isPdf) { handleClaudeFile(file, 'pdf'); return; }
     
@@ -646,13 +641,12 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Claude API Integration
   async function callClaude(base64, mediaType, isPdf) {
-    if (!state.apiKey) throw new Error("Anthropic API key required. Please set it above.");
+    if (!state.apiKey) throw new Error("To read photos or PDFs, please enter your Anthropic API key below.");
     
     const prompt = `This ${isPdf?'PDF':'image'} shows a packing list or commercial invoice for a shipment of goods from China. 
-Extract every product line item (ignore header rows, packing-configuration sub-rows, and the 合计/Total summary row). 
-For each item give: description (combine the item code and item name), qty (total quantity), unitPrice (unit price in numbers), and cbmTotal (TOTAL/combined volume for that whole line item in CBM — use a column labelled like 总体积, T/CBM, Total CBM). 
+Extract every product line item (ignore header rows, packing-configuration sub-rows, and the Total summary row). 
+For each item give: description (combine the item code and item name), qty (total quantity), unitPrice (unit price in numbers), and cbmTotal (TOTAL or combined volume for that whole line item in CBM - use a column labelled like T/CBM or Total CBM). 
 Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,"cbmTotal":0}]}`;
 
     const source = isPdf 
@@ -694,7 +688,7 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
         const base64 = e.target.result.split(',')[1];
         const data = await callClaude(base64, file.type || 'image/jpeg', type === 'pdf');
         
-        const textBlock = (data.content || []).map(b => b.text || '').join('\\n');
+        const textBlock = (data.content || []).map(b => b.text || '').join('\n');
         const clean = textBlock.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(clean);
         const rows = (parsed.items || []).filter(it => it && (it.qty > 0 || it.unitPrice > 0));
@@ -824,11 +818,11 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
       const row = currentRows[r];
       if(!row) continue;
       const joined = row.join(' ').toLowerCase();
-      if(/\\btotal\\b|\\bsubtotal\\b|合计|唛头/.test(joined)) break; // stop row
+      if(/\btotal\b|\bsubtotal\b|合计|唛头/.test(joined)) break; // stop row
       
-      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
-      const price = pIdx >= 0 ? parseFloat(String(row[pIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
-      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx]).replace(/[^0-9.\\-]/g,'')) : NaN;
+      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const price = pIdx >= 0 ? parseFloat(String(row[pIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
+      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx]).replace(/[^0-9.\-]/g,'')) : NaN;
       const desc = dIdx.map(i => String(row[i] || '').trim()).filter(Boolean).join(' - ');
       
       if (!desc && !(qty > 0) && !(price > 0)) continue;
@@ -870,17 +864,17 @@ Respond with ONLY valid JSON: {"items":[{"description":"","qty":0,"unitPrice":0,
   document.getElementById('parseBtn').onclick = () => {
     const raw = document.getElementById('pasteBox').value;
     if(!raw.trim()) return;
-    let lines = raw.split('\\n').map(l=>l.trim()).filter(Boolean);
+    let lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
     if(document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
     
     let added = 0;
     lines.forEach(line => {
-      const parts = line.split(/\\t|,(?![^()]*\\))/).map(p=>p.trim());
+      const parts = line.split(/\t|,(?![^()]*\))/).map(p=>p.trim());
       if(parts.length < 2) return;
       const desc = parts[0] || '';
-      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\\-]/g,'')) || 0;
-      const price = parseFloat((parts[2]||'').replace(/[^0-9.\\-]/g,'')) || 0;
-      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\\-]/g,'')) || 0;
+      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const price = parseFloat((parts[2]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\-]/g,'')) || 0;
       if(!desc) return;
       current.items.push({ id: 'it'+(current.itemSeq++), desc, qty, price, cbm });
       added++;
