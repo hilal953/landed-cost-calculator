@@ -31,8 +31,8 @@ html_body = r"""
     <div class="topbar">
       <div class="topbar-manifest">
         <div class="topbar-eyebrow">
-          <span class="eyebrow-tag">WORKSHEET</span>
-          <span class="eyebrow-text">Import Costing & Landed Price Calculator</span>
+          <span class="eyebrow-dot"></span>
+          <span class="eyebrow-text">Landed Cost Manifest</span>
         </div>
         <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
         <div class="manifest-route-ribbon">
@@ -300,9 +300,8 @@ html_body = r"""
           <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumFees">0</span></div>
         </div>
         <div class="summary-card highlight">
-          <div class="summary-stamp">LANDED</div>
           <div class="summary-label"><span>💎 Total Landed Cost</span></div>
-          <div class="summary-value"><span class="summary-currency" style="color:rgba(255,255,255,0.75);">LKR</span> <span id="sumTotal">0</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumTotal">0</span></div>
         </div>
       </div>
 
