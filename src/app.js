@@ -241,11 +241,18 @@
   // ==== ITEMS MANAGEMENT ====
   function renderItems() {
     const body = document.getElementById('itemsBody');
+    const tableWrap = document.getElementById('itemsTableWrap');
     const empty = document.getElementById('itemsEmpty');
     body.innerHTML = '';
     
     document.getElementById('itemCount').textContent = current.items.length;
-    empty.style.display = current.items.length ? 'none' : 'block';
+    if (current.items.length === 0) {
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (empty) empty.style.display = 'block';
+    } else {
+      if (tableWrap) tableWrap.style.display = 'block';
+      if (empty) empty.style.display = 'none';
+    }
     
     current.items.forEach((it, idx) => {
       const tr = document.createElement('tr');
@@ -301,11 +308,15 @@
     });
   }
 
-  document.getElementById('addRowBtn').onclick = () => {
+  const handleAddRow = () => {
     current.items.push({ id: 'it'+(current.itemSeq++), desc: '', qty: 0, price: 0, cbm: 0 });
     renderItems();
     debouncedSave();
   };
+
+  document.getElementById('addRowBtn').onclick = handleAddRow;
+  const emptyAddBtn = document.getElementById('addRowBtnEmpty');
+  if (emptyAddBtn) emptyAddBtn.onclick = handleAddRow;
 
   document.getElementById('clearItemsBtn').onclick = () => {
     if (!current.items.length) return;
@@ -361,18 +372,18 @@
         basisSlot.innerHTML = `
           <div class="input-field" style="margin:0;">
             <select data-field="method" data-id="${fe.id}">
-              <option value="cbm" ${fe.method==='cbm'?'selected':''}>CBM Share</option>
-              <option value="value" ${fe.method==='value'?'selected':''}>Value Share</option>
-              <option value="equal" ${fe.method==='equal'?'selected':''}>Equally</option>
+              <option value="cbm" ${fe.method==='cbm'?'selected':''}>By Volume (CBM)</option>
+              <option value="value" ${fe.method==='value'?'selected':''}>By Item Value</option>
+              <option value="equal" ${fe.method==='equal'?'selected':''}>Equally per Item</option>
             </select>
           </div>`;
       } else {
         basisSlot.innerHTML = `
           <div class="input-field" style="margin:0;">
             <select data-field="base" data-id="${fe.id}">
-              <option value="value" ${fe.base==='value'?'selected':''}>Goods Value</option>
               <option value="cif" ${fe.base==='cif'?'selected':''}>Value + Freight (CIF)</option>
-              <option value="running" ${fe.base==='running'?'selected':''}>Running Total</option>
+              <option value="value" ${fe.base==='value'?'selected':''}>Goods Value Only</option>
+              <option value="running" ${fe.base==='running'?'selected':''}>Running Total (Compounding)</option>
             </select>
           </div>`;
       }
@@ -511,9 +522,14 @@
     }
 
     const body = document.getElementById('resultsBody');
+    const foot = document.getElementById('resultsFoot');
+    const costBar = document.getElementById('costBarSection');
     body.innerHTML = '';
     
     if (perItem.length === 0) {
+      if (foot) foot.style.display = 'none';
+      if (costBar) costBar.style.display = 'none';
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td colspan="7" style="text-align:center; padding: 44px 16px;">
@@ -525,12 +541,11 @@
         </td>
       `;
       body.appendChild(tr);
-      document.getElementById('footQty').textContent = '0';
-      document.getElementById('footValue').textContent = '0';
-      document.getElementById('footFreight').textContent = '0';
-      document.getElementById('footCharges').textContent = '0';
       return;
     }
+
+    if (foot) foot.style.display = '';
+    if (costBar) costBar.style.display = '';
 
     perItem.forEach(row => {
       const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;

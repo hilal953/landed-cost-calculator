@@ -1160,7 +1160,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
               <button class="btn-danger" id="clearItemsBtn" style="padding:4px 8px; font-size:12px;">Clear All</button>
             </div>
           </div>
-          <div class="table-container">
+          <div class="table-container" id="itemsTableWrap">
             <table id="itemsTable">
               <thead>
                 <tr>
@@ -1176,8 +1176,11 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
               <tbody id="itemsBody"></tbody>
             </table>
           </div>
-          <div id="itemsEmpty" class="text-center text-muted" style="padding:32px 16px; font-style:italic; font-size:13px;">
-            No items yet. Drop a file, paste rows, or add manually.
+          <div id="itemsEmpty" class="text-center text-muted" style="padding:32px 16px; background:var(--bg-color); border:1px dashed var(--border-strong); border-radius:var(--radius); margin-top:8px;">
+            <div style="font-size:22px; margin-bottom:6px;">📦</div>
+            <div style="font-weight:600; font-size:13.5px; color:var(--ink); margin-bottom:2px;">No items added yet</div>
+            <div style="font-size:12px; color:var(--ink-soft); max-width:320px; margin:0 auto 12px;">Drop your packing list Excel above, paste rows, or add manually.</div>
+            <button class="btn-secondary" id="addRowBtnEmpty" style="font-size:12px; padding:6px 14px;">+ Add Item Manually</button>
           </div>
           <button class="btn-ghost mt-2" id="addRowBtn">+ Add Item Manually</button>
         </div>
@@ -1291,15 +1294,15 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
               <tr>
                 <th style="color:rgba(255,255,255,0.8); background:var(--primary);">Description</th>
                 <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Qty</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Value</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Freight</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Charges</th>
-                <th class="num" style="color:#fff; background:var(--primary);">Unit Landed</th>
-                <th class="num" style="color:var(--success-light); background:var(--primary);">Target Sell Price</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Value (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Freight (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Charges (LKR)</th>
+                <th class="num" style="color:#fff; background:var(--primary);">Unit Cost (LKR)</th>
+                <th class="num" style="color:var(--success-light); background:var(--primary);">Selling Price (LKR)</th>
               </tr>
             </thead>
             <tbody id="resultsBody"></tbody>
-            <tfoot style="background:var(--bg-color); font-family:'IBM Plex Mono',monospace; font-weight:700;">
+            <tfoot id="resultsFoot" style="background:var(--bg-color); font-family:'IBM Plex Mono',monospace; font-weight:700;">
               <tr>
                 <td style="font-family:'Inter',sans-serif; text-transform:uppercase; font-size:11px; color:var(--ink-soft);">Totals</td>
                 <td class="num" id="footQty">0</td>
@@ -1311,7 +1314,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
             </tfoot>
           </table>
         </div>
-        <div style="padding:20px; background:var(--bg-color); border-top:1px solid var(--border);">
+        <div id="costBarSection" style="padding:20px; background:var(--bg-color); border-top:1px solid var(--border);">
           <div class="cost-legend">
             <div class="legend-item"><div class="legend-dot seg-goods"></div>Goods Value</div>
             <div class="legend-item"><div class="legend-dot seg-freight"></div>Freight</div>
@@ -1581,11 +1584,18 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   // ==== ITEMS MANAGEMENT ====
   function renderItems() {
     const body = document.getElementById('itemsBody');
+    const tableWrap = document.getElementById('itemsTableWrap');
     const empty = document.getElementById('itemsEmpty');
     body.innerHTML = '';
     
     document.getElementById('itemCount').textContent = current.items.length;
-    empty.style.display = current.items.length ? 'none' : 'block';
+    if (current.items.length === 0) {
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (empty) empty.style.display = 'block';
+    } else {
+      if (tableWrap) tableWrap.style.display = 'block';
+      if (empty) empty.style.display = 'none';
+    }
     
     current.items.forEach((it, idx) => {
       const tr = document.createElement('tr');
@@ -1641,11 +1651,15 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     });
   }
 
-  document.getElementById('addRowBtn').onclick = () => {
+  const handleAddRow = () => {
     current.items.push({ id: 'it'+(current.itemSeq++), desc: '', qty: 0, price: 0, cbm: 0 });
     renderItems();
     debouncedSave();
   };
+
+  document.getElementById('addRowBtn').onclick = handleAddRow;
+  const emptyAddBtn = document.getElementById('addRowBtnEmpty');
+  if (emptyAddBtn) emptyAddBtn.onclick = handleAddRow;
 
   document.getElementById('clearItemsBtn').onclick = () => {
     if (!current.items.length) return;
@@ -1701,18 +1715,18 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
         basisSlot.innerHTML = `
           <div class="input-field" style="margin:0;">
             <select data-field="method" data-id="${fe.id}">
-              <option value="cbm" ${fe.method==='cbm'?'selected':''}>CBM Share</option>
-              <option value="value" ${fe.method==='value'?'selected':''}>Value Share</option>
-              <option value="equal" ${fe.method==='equal'?'selected':''}>Equally</option>
+              <option value="cbm" ${fe.method==='cbm'?'selected':''}>By Volume (CBM)</option>
+              <option value="value" ${fe.method==='value'?'selected':''}>By Item Value</option>
+              <option value="equal" ${fe.method==='equal'?'selected':''}>Equally per Item</option>
             </select>
           </div>`;
       } else {
         basisSlot.innerHTML = `
           <div class="input-field" style="margin:0;">
             <select data-field="base" data-id="${fe.id}">
-              <option value="value" ${fe.base==='value'?'selected':''}>Goods Value</option>
               <option value="cif" ${fe.base==='cif'?'selected':''}>Value + Freight (CIF)</option>
-              <option value="running" ${fe.base==='running'?'selected':''}>Running Total</option>
+              <option value="value" ${fe.base==='value'?'selected':''}>Goods Value Only</option>
+              <option value="running" ${fe.base==='running'?'selected':''}>Running Total (Compounding)</option>
             </select>
           </div>`;
       }
@@ -1851,9 +1865,14 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     }
 
     const body = document.getElementById('resultsBody');
+    const foot = document.getElementById('resultsFoot');
+    const costBar = document.getElementById('costBarSection');
     body.innerHTML = '';
     
     if (perItem.length === 0) {
+      if (foot) foot.style.display = 'none';
+      if (costBar) costBar.style.display = 'none';
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td colspan="7" style="text-align:center; padding: 44px 16px;">
@@ -1865,12 +1884,11 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
         </td>
       `;
       body.appendChild(tr);
-      document.getElementById('footQty').textContent = '0';
-      document.getElementById('footValue').textContent = '0';
-      document.getElementById('footFreight').textContent = '0';
-      document.getElementById('footCharges').textContent = '0';
       return;
     }
+
+    if (foot) foot.style.display = '';
+    if (costBar) costBar.style.display = '';
 
     perItem.forEach(row => {
       const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;

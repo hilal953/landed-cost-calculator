@@ -179,7 +179,7 @@ html_body = r"""
               <button class="btn-danger" id="clearItemsBtn" style="padding:4px 8px; font-size:12px;">Clear All</button>
             </div>
           </div>
-          <div class="table-container">
+          <div class="table-container" id="itemsTableWrap">
             <table id="itemsTable">
               <thead>
                 <tr>
@@ -195,8 +195,11 @@ html_body = r"""
               <tbody id="itemsBody"></tbody>
             </table>
           </div>
-          <div id="itemsEmpty" class="text-center text-muted" style="padding:32px 16px; font-style:italic; font-size:13px;">
-            No items yet. Drop a file, paste rows, or add manually.
+          <div id="itemsEmpty" class="text-center text-muted" style="padding:32px 16px; background:var(--bg-color); border:1px dashed var(--border-strong); border-radius:var(--radius); margin-top:8px;">
+            <div style="font-size:22px; margin-bottom:6px;">📦</div>
+            <div style="font-weight:600; font-size:13.5px; color:var(--ink); margin-bottom:2px;">No items added yet</div>
+            <div style="font-size:12px; color:var(--ink-soft); max-width:320px; margin:0 auto 12px;">Drop your packing list Excel above, paste rows, or add manually.</div>
+            <button class="btn-secondary" id="addRowBtnEmpty" style="font-size:12px; padding:6px 14px;">+ Add Item Manually</button>
           </div>
           <button class="btn-ghost mt-2" id="addRowBtn">+ Add Item Manually</button>
         </div>
@@ -310,15 +313,15 @@ html_body = r"""
               <tr>
                 <th style="color:rgba(255,255,255,0.8); background:var(--primary);">Description</th>
                 <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Qty</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Value</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Freight</th>
-                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Charges</th>
-                <th class="num" style="color:#fff; background:var(--primary);">Unit Landed</th>
-                <th class="num" style="color:var(--success-light); background:var(--primary);">Target Sell Price</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Value (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Freight (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Charges (LKR)</th>
+                <th class="num" style="color:#fff; background:var(--primary);">Unit Cost (LKR)</th>
+                <th class="num" style="color:var(--success-light); background:var(--primary);">Selling Price (LKR)</th>
               </tr>
             </thead>
             <tbody id="resultsBody"></tbody>
-            <tfoot style="background:var(--bg-color); font-family:'IBM Plex Mono',monospace; font-weight:700;">
+            <tfoot id="resultsFoot" style="background:var(--bg-color); font-family:'IBM Plex Mono',monospace; font-weight:700;">
               <tr>
                 <td style="font-family:'Inter',sans-serif; text-transform:uppercase; font-size:11px; color:var(--ink-soft);">Totals</td>
                 <td class="num" id="footQty">0</td>
@@ -330,7 +333,7 @@ html_body = r"""
             </tfoot>
           </table>
         </div>
-        <div style="padding:20px; background:var(--bg-color); border-top:1px solid var(--border);">
+        <div id="costBarSection" style="padding:20px; background:var(--bg-color); border-top:1px solid var(--border);">
           <div class="cost-legend">
             <div class="legend-item"><div class="legend-dot seg-goods"></div>Goods Value</div>
             <div class="legend-item"><div class="legend-dot seg-freight"></div>Freight</div>
