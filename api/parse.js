@@ -42,8 +42,8 @@ Respond with ONLY valid JSON:
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
     if (geminiKey) {
-      const geminiModels = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash-exp'];
-      let lastErr = null;
+      const geminiModels = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-1.5-flash-8b'];
+      const errors = [];
 
       for (const model of geminiModels) {
         try {
@@ -51,8 +51,8 @@ Respond with ONLY valid JSON:
           const payload = {
             contents: [{
               parts: [
-                { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } },
-                { text: prompt }
+                { text: prompt },
+                { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } }
               ]
             }]
           };
@@ -63,23 +63,22 @@ Respond with ONLY valid JSON:
             body: JSON.stringify(payload)
           });
 
+          const data = await aiRes.json();
           if (!aiRes.ok) {
-            const err = await aiRes.json().catch(() => ({}));
-            lastErr = new Error(err?.error?.message || `Gemini error on ${model} (${aiRes.status})`);
+            errors.push(`${model}: ${data?.error?.message || aiRes.status}`);
             continue;
           }
 
-          const data = await aiRes.json();
           const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
           const clean = rawText.replace(/```json|```/g, '').trim();
           const parsed = JSON.parse(clean);
           return res.status(200).json({ items: parsed.items || [] });
         } catch (e) {
-          lastErr = e;
+          errors.push(`${model} exception: ${e.message}`);
         }
       }
 
-      if (lastErr) throw lastErr;
+      throw new Error(`Gemini failed on all models: ${errors.join(' | ')}`);
     }
 
     // 2. OpenAI GPT-4o-mini
