@@ -80,7 +80,12 @@ html_body = r"""
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
             <div class="dz-title">Drop your packing list here</div>
-            <div class="dz-sub">Upload Excel (.xlsx, .xls, .csv), PDF, or a photo from WhatsApp. Or click to browse.</div>
+            <div class="dz-sub">Drag & drop files or click anywhere to browse</div>
+            <div class="dz-badges">
+              <span class="dz-badge">📊 Excel (.xlsx, .xls, .csv)</span>
+              <span class="dz-badge">📄 PDF Invoice</span>
+              <span class="dz-badge">📷 WhatsApp Photo</span>
+            </div>
             <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
           </div>
 
@@ -191,30 +196,30 @@ html_body = r"""
         <h2 class="step-title">Exchange & Freight Rate</h2>
       </div>
       <div class="card">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:24px;">
+        <div class="rate-grid">
           
-          <div class="input-group mb-0">
-            <label>Base Currency</label>
-            <div class="input-field">
+          <div class="rate-card">
+            <div class="rate-card-title">💱 Base Currency</div>
+            <div class="input-field" style="margin:0;">
               <select id="baseCurrency">
-                <option value="RMB">RMB (¥)</option>
-                <option value="USD">USD ($)</option>
+                <option value="RMB">RMB (¥) Chinese Yuan</option>
+                <option value="USD">USD ($) US Dollar</option>
               </select>
             </div>
           </div>
 
-          <div class="input-group mb-0">
-            <label>Exchange Rate to LKR</label>
-            <div class="input-field">
+          <div class="rate-card">
+            <div class="rate-card-title">📈 Exchange Rate to LKR</div>
+            <div class="input-field" style="margin:0;">
               <span class="input-prefix" id="ratePrefix">¥1 = </span>
               <input type="number" id="exRate" step="0.01" placeholder="e.g. 42.50" class="mono">
               <span class="input-suffix">LKR</span>
             </div>
           </div>
 
-          <div class="input-group mb-0">
-            <label>Ocean Freight Rate</label>
-            <div class="input-field">
+          <div class="rate-card">
+            <div class="rate-card-title">🚢 Ocean Freight Rate</div>
+            <div class="input-field" style="margin:0;">
               <span class="input-prefix">LKR</span>
               <input type="number" id="cbmRate" step="1" placeholder="e.g. 35000" class="mono">
               <span class="input-suffix">per CBM</span>
@@ -240,12 +245,12 @@ html_body = r"""
           <div></div>
         </div>
         <div id="feesBody"></div>
-        <div class="flex gap-2 mt-4" style="flex-wrap:wrap;">
-          <button class="btn-secondary" id="addFeeBtn">+ Add charge</button>
-          <button class="btn-ghost" data-preset="duty">+ Customs duty %</button>
-          <button class="btn-ghost" data-preset="vat">+ VAT %</button>
-          <button class="btn-ghost" data-preset="transport">+ Local transport</button>
-          <button class="btn-ghost" data-preset="agent">+ Clearing agent</button>
+        <div class="preset-chips">
+          <button class="preset-chip" id="addFeeBtn">+ Add custom charge</button>
+          <button class="preset-chip" data-preset="duty">+ Customs duty (15%)</button>
+          <button class="preset-chip" data-preset="vat">+ VAT (18%)</button>
+          <button class="preset-chip" data-preset="transport">+ Local transport (35k)</button>
+          <button class="preset-chip" data-preset="agent">+ Clearing agent (15k)</button>
         </div>
       </div>
     </section>
