@@ -42,7 +42,7 @@ Respond with ONLY valid JSON:
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
     if (geminiKey) {
-      const geminiModels = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-1.5-flash-8b'];
+      const geminiModels = ['gemini-3.6-flash', 'gemini-3.6-pro', 'gemini-2.0-flash-001', 'gemini-2.5-flash'];
       const errors = [];
 
       for (const model of geminiModels) {
