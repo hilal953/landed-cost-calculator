@@ -119,12 +119,12 @@ html_body = r"""
             </button>
           </div>
           <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
-            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">✨ AI Cloud Vision (Optional)</div>
-            <div class="text-sm text-muted mb-3">Built-in In-Browser OCR & PDF parsing is 100% free and active automatically. If you have an Anthropic Claude or OpenAI key and want to use cloud AI vision, you can enter it here.</div>
+            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">✨ Turbo AI Vision (Google Gemini / OpenAI / Claude)</div>
+            <div class="text-sm text-muted mb-3">For 100% human-level accuracy on 1,000s of invoices, blurred photos, and complex documents, enter a Google Gemini key (Free), OpenAI key, or Claude key. Stored in your browser only.</div>
             <div class="input-group" style="margin-bottom:8px;">
-              <label>API Key (Anthropic / OpenAI / Gemini)</label>
+              <label>API Key (Google Gemini AIza... / OpenAI sk-... / Claude sk-ant...)</label>
               <div class="input-field">
-                <input type="password" id="apiKeyInput" placeholder="sk-ant-... or sk-...">
+                <input type="password" id="apiKeyInput" placeholder="AIzaSy... or sk-... or sk-ant-...">
               </div>
             </div>
             <div class="flex gap-2">

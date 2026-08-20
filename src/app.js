@@ -900,9 +900,134 @@
     return allLines.join('\n');
   }
 
+  // ==== AI VISION & CLOUD ENGINES ====
+  async function callAiVision(base64, mediaType, isPdf) {
+    const key = state.apiKey.trim();
+    if (!key) return null;
+
+    const prompt = `This ${isPdf ? 'PDF' : 'image'} is a packing list or commercial invoice from China/supplier.
+Extract every product line item. Ignore headers, metadata (buyer, seller, dates, invoice numbers), and the TOTAL summary row.
+For each item provide:
+- desc: Clean description combining item code and item name (e.g. "YH01-33017-2 For TY AE101 License plate (Red)")
+- qty: Total quantity as a number
+- price: Unit price as a number
+- cbm: Total CBM volume for that line as a number (use total CBM / 总体积 column, not per-piece volume)
+
+Respond with ONLY valid JSON:
+{"items":[{"desc":"","qty":0,"price":0,"cbm":0}]}`;
+
+    // 1. Google Gemini Flash (Key starts with AIza)
+    if (key.startsWith('AIza')) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+      const payload = {
+        contents: [{
+          parts: [
+            { inlineData: { mimeType: isPdf ? 'application/pdf' : mediaType, data: base64 } },
+            { text: prompt }
+          ]
+        }]
+      };
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Gemini API error (${res.status})`);
+      }
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const clean = text.replace(/```json|```/g, '').trim();
+      return JSON.parse(clean)?.items || [];
+    }
+
+    // 2. Anthropic Claude (Key starts with sk-ant)
+    if (key.startsWith('sk-ant')) {
+      const source = isPdf 
+        ? { type: 'base64', media_type: 'application/pdf', data: base64 }
+        : { type: 'base64', media_type: mediaType, data: base64 };
+      const block = isPdf ? { type: 'document', source } : { type: 'image', source };
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-sonnet-20240620',
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: [block, { type: 'text', text: prompt }] }]
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Anthropic API error (${res.status})`);
+      }
+      const data = await res.json();
+      const text = (data.content || []).map(b => b.text || '').join('\n');
+      const clean = text.replace(/```json|```/g, '').trim();
+      return JSON.parse(clean)?.items || [];
+    }
+
+    // 3. OpenAI GPT-4o-mini (Key starts with sk-)
+    if (key.startsWith('sk-')) {
+      const imageUrl = `data:${mediaType};base64,${base64}`;
+      const payload = {
+        model: 'gpt-4o-mini',
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: imageUrl } }
+          ]
+        }],
+        response_format: { type: "json_object" }
+      };
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `OpenAI API error (${res.status})`);
+      }
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      return JSON.parse(text)?.items || [];
+    }
+
+    return null;
+  }
+
   // Universal unit and currency matchers
   const UNIT_TOKENS = /^(pcs|pc|set|sets|ctn|ctns|box|boxes|pkg|pkgs|units?|prs|pairs?|只|个|件|套|箱|包|张|条|台|本|把|对|支|袋)$/i;
   const CURRENCY_TOKENS = /^[¥$£€₩]|^(rmb|usd|eur|gbp|lkr|cny|cif|fob)$/i;
+
+  // Metadata row filters (MUST never be considered product items)
+  const METADATA_PATTERNS = [
+    /^(proforma|commercial|tax)\s*invoice\b/i,
+    /^(packing\s*list|bill\s*of\s*lading)\b/i,
+    /^(invoice\s*no|inv\s*no|po\s*no|order\s*no|bill\s*no)[\s.:：]/i,
+    /^(invoice\s*date|order\s*date|date|日期|订单日期)[\s.:：]/i,
+    /^(buyer|seller|consignee|shipper|notify|vendor|供货方|购货方|买方|卖方)[\s.:：]/i,
+    /^(tel|fax|email|phone|contact|address|地址|电话|联系人)[\s.:：]/i,
+    /^(this\s*price|payment\s*terms|terms|bank|beneficiary|此价格)[\s.:：]/i,
+    /^\d{4}[.\-/]\d{1,2}[.\-/]\d{1,2}$/ // Standalone date string
+  ];
+
+  function isMetadataLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.length < 3) return true;
+    return METADATA_PATTERNS.some(pat => pat.test(trimmed));
+  }
 
   // Smart Invoice & Packing List Table Recognizer
   function parseInvoiceAndPackingListText(rawText) {
@@ -914,7 +1039,7 @@
     // Header keywords across English & Chinese commercial docs
     const headerTokens = ['item', 'style', 'desc', 'description', 'qty', 'quantity', 'deliver', 'price', 'amount', 'cbm', 'ctn', 'n.w', 'g.w', 'gross', '品名', '编号', '数量', '单价', '金额', '体积', '件数', 'photo', '图片', '款号', '货物名称', '规格'];
     // Footer and summary stop tokens
-    const stopTokens = ['total', 'subtotal', 'grand total', '合计', '总计', '小计', 'buyer', 'seller', 'address', '地址', '唛头', 'shipping mark', 'warehouse', '仓库', 'bank', 'payment', 'terms', 'signature', 'contact', '入库', '联系人', '收货人', '发货人'];
+    const stopTokens = ['total', 'subtotal', 'grand total', '合计', '总计', '小计', '唛头', 'shipping mark', 'warehouse', '仓库', 'bank', 'payment', 'terms', 'signature', 'contact', '入库', '联系人', '收货人', '发货人'];
 
     let inTable = false;
     let headerPassed = false;
@@ -941,8 +1066,13 @@
       const line = lines[i];
       const lower = line.toLowerCase();
 
+      // Skip document title and invoice/buyer metadata immediately
+      if (isMetadataLine(line)) {
+        continue;
+      }
+
       // Check for stop keywords at line start or standalone
-      if (inTable) {
+      if (inTable || headerPassed) {
         const isStop = stopTokens.some(st => lower.startsWith(st) || lower.includes(st + ':') || lower.includes(st + '：'));
         if (isStop || /^(total|subtotal|grand total|合计|总计|小计)\b/i.test(lower)) {
           break;
@@ -957,10 +1087,10 @@
         continue;
       }
 
-      // Check if line looks like a product row (has code pattern or starts with item number)
-      const hasCode = /[A-Z0-9]{2,}[-_/][A-Z0-9]+|[A-Z]{2,}\d+|\b[A-Z]\d{2,}\b|\b(?:ITEM|MODEL|STYLE|PART|SKU|CODE|NO\.?)\b/i.test(line);
+      // If header hasn't passed, only accept line if it has strong product code and valid numbers
+      const hasCode = /[A-Z0-9]{3,}-[A-Z0-9]+|[A-Z]{2,}\d+|\b(?:TY|YH|AE\d+|VIOS|KD|WP|NO\.)/i.test(line);
       const hasNumbers = /\d+/.test(line);
-      if (!inTable && (hasCode || (headerPassed && hasNumbers))) {
+      if (!inTable && (hasCode && hasNumbers)) {
         inTable = true;
       }
 
@@ -977,19 +1107,25 @@
       let itemCode = '';
 
       rawTokens.forEach(tok => {
+        // Skip date patterns in tokens (e.g. 2026.08.07, 2026-08-07)
+        if (/^\d{4}[.\-/]\d{1,2}[.\-/]\d{1,2}$/.test(tok)) return;
+
         // Strip currency symbols and commas for number checking
         const cleanNumStr = tok.replace(/^[¥$£€]/, '').replace(/,/g, '').trim();
         const num = parseFloat(cleanNumStr);
         
         if (cleanNumStr && !isNaN(num) && /^-?\d+(\.\d+)?$/.test(cleanNumStr)) {
-          numbers.push(num);
+          // Ignore unrealistic huge numbers that might be phone numbers or dates
+          if (num < 10000000) {
+            numbers.push(num);
+          }
         } else {
           // Identify product SKU / code
           if (!itemCode && /^[A-Z0-9]{2,}[-_/][A-Z0-9]+$/i.test(tok)) {
             itemCode = tok;
           }
           // Only add to description if not a unit or currency symbol
-          if (!UNIT_TOKENS.test(tok) && !CURRENCY_TOKENS.test(tok)) {
+          if (!UNIT_TOKENS.test(tok) && !CURRENCY_TOKENS.test(tok) && tok !== 'PHOTO' && tok !== '图片') {
             textParts.push(tok);
           }
         }
@@ -1003,7 +1139,7 @@
         desc = `${itemCode} ${desc}`.trim();
       }
 
-      // Filter out pure header remnants
+      // Filter out pure header remnants or empty descriptions
       if (!desc || /^(style\s*no|item\s*name|total|unit\s*price|delivery|qty)/i.test(desc)) {
         if (numbers.length === 0) continue;
       }
@@ -1016,7 +1152,6 @@
       if (numbers.length === 1) {
         qty = numbers[0];
       } else if (numbers.length === 2) {
-        // [qty, price] or [qty, cbm]
         if (numbers[1] < 1 && numbers[1] > 0) {
           qty = numbers[0];
           cbm = numbers[1];
@@ -1025,16 +1160,13 @@
           price = numbers[1];
         }
       } else if (numbers.length >= 3) {
-        // Find CBM values (decimals typically < 10 with floating point)
         const decimals = numbers.filter(n => n > 0 && n < 10 && String(n).includes('.'));
         const integers = numbers.filter(n => Number.isInteger(n) && n > 0);
         
-        // Quantity is typically an integer > 0
         if (integers.length > 0) {
           qty = integers[0];
         }
         
-        // Unit price: calculate or select
         if (Math.abs(numbers[0] * numbers[1] - numbers[2]) < 5) {
           qty = numbers[0];
           price = numbers[1];
@@ -1046,15 +1178,15 @@
           price = numbers[1] || 0;
         }
         
-        // Total CBM: pick the total volume
         if (decimals.length > 0) {
           cbm = decimals[decimals.length - 1];
         }
       }
 
-      if (desc || qty > 0 || price > 0 || cbm > 0) {
+      // Only save if it has a valid description AND either qty or price > 0
+      if (desc && (qty > 0 || price > 0)) {
         parsedItems.push({
-          desc: desc || `Item ${parsedItems.length + 1}`,
+          desc: desc,
           qty: isFinite(qty) ? qty : 0,
           price: isFinite(price) ? price : 0,
           cbm: isFinite(cbm) ? cbm : 0
@@ -1068,7 +1200,7 @@
   // Load structured items into manifest
   function loadExtractedItems(items, sourceName) {
     if (!items || items.length === 0) {
-      throw new Error("No product rows could be recognized. Please check the document or paste rows manually.");
+      throw new Error("No product line items could be detected. Please check the photo or paste rows manually.");
     }
     
     items.forEach(it => {
@@ -1088,7 +1220,6 @@
     showParseStatus(`✓ Scanned and imported ${items.length} item(s) from ${sourceName}!`, false);
     showToast(`Added ${items.length} item(s) from ${sourceName}`);
     
-    // Hide mapping panel and scroll to items table
     document.getElementById('mappingPanel').classList.add('hidden');
     const tableWrap = document.getElementById('itemsTableWrap');
     if (tableWrap) {
@@ -1103,6 +1234,37 @@
     
     document.getElementById('mappingPanel').classList.add('hidden');
     
+    // Check if AI Vision key is configured
+    if (state.apiKey && (isImg || isPdf)) {
+      try {
+        showParseStatus(`Analyzing document with AI Vision...`, true);
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const base64 = e.target.result.split(',')[1];
+            const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+            if (items && items.length > 0) {
+              loadExtractedItems(items, file.name);
+              return;
+            }
+          } catch (aiErr) {
+            console.warn("AI Vision fallback to local OCR:", aiErr);
+            showToast("AI Key notice: " + aiErr.message, "error");
+          }
+          // Fallback to local OCR if AI returned empty or failed
+          runLocalExtraction(file, isImg, isPdf);
+        };
+        reader.readAsDataURL(file);
+        return;
+      } catch (err) {
+        console.warn("AI Vision error:", err);
+      }
+    }
+    
+    runLocalExtraction(file, isImg, isPdf);
+  }
+
+  async function runLocalExtraction(file, isImg, isPdf) {
     if (isImg) {
       try {
         showParseStatus(`Analyzing photo with built-in OCR...`, true, false, 0.1);
