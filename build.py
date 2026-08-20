@@ -10,11 +10,16 @@ html_body = r"""
 <div class="app-container">
   <aside class="sidebar">
     <div class="history-header">
-      <div style="font-weight:700; font-size: 16px; display:flex; align-items:center; gap:8px;">
-        🚢 Landed Cost
+      <div class="brand-badge">
+        <span class="brand-icon">🚢</span>
+        <div class="brand-info">
+          <span class="brand-title">Landed Cost</span>
+          <span class="brand-sub">Shipments</span>
+        </div>
       </div>
-      <button class="btn-ghost btn-icon" id="newShipmentBtn" title="New Shipment">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+      <button class="btn-new-shipment" id="newShipmentBtn" title="New Shipment">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
+        <span>New</span>
       </button>
     </div>
     <div class="history-list" id="historyList">
@@ -25,38 +30,35 @@ html_body = r"""
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-manifest">
-        <div class="manifest-eyebrow">
-          <span class="manifest-dot"></span>
-          Import Costing Worksheet
-        </div>
-        <input type="text" id="shipmentName" class="topbar-title" value="Shipment Name" placeholder="Name this shipment...">
+        <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
         <div class="manifest-route-bar">
-          <div class="route-node">
-            <span class="node-flag">CN</span>
+          <span class="route-point">
+            <span class="route-flag">CN</span>
             <input type="text" id="routeOrigin" value="GUANGZHOU" class="route-input">
-          </div>
-          <span class="route-line-seg">── 🚢 SEA ──</span>
-          <div class="route-node">
-            <span class="node-flag">LK</span>
+          </span>
+          <span class="route-arrow">➔</span>
+          <span class="route-point">
+            <span class="route-flag">LK</span>
             <input type="text" id="routePort" value="COLOMBO" class="route-input">
-          </div>
-          <span class="route-line-seg">── 🚛 INLAND ──</span>
-          <div class="route-node">
+          </span>
+          <span class="route-arrow">➔</span>
+          <span class="route-point">
+            <span class="route-flag">DEST</span>
             <input type="text" id="routeDest" value="MATARA" class="route-input">
-          </div>
+          </span>
         </div>
       </div>
       <div class="topbar-actions">
-        <button class="btn-secondary" id="shareWaBtn" style="color:#25D366; border-color:#25D366;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <button class="btn-secondary" id="shareWaBtn" style="color:#16a34a; border-color:#86efac;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
           Share
         </button>
         <button class="btn-secondary" id="exportPdfBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/></svg>
           Print PDF
         </button>
         <button class="btn-secondary" id="exportExcelBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           Export .xlsx
         </button>
       </div>

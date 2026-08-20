@@ -90,37 +90,11 @@ body {
 .topbar-manifest {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.manifest-eyebrow {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.manifest-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px rgba(224, 77, 45, 0.7);
-  animation: pulseDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
 .topbar-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.02em;
   border: none;
@@ -128,32 +102,34 @@ body {
   outline: none;
   font-family: inherit;
   color: var(--ink);
-  padding: 2px 0;
+  padding: 0;
   width: 100%;
   max-width: 480px;
   transition: var(--transition);
+}
+.topbar-title:hover, .topbar-title:focus {
+  border-bottom: 1px dashed var(--border-strong);
 }
 
 .manifest-route-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
-.route-node {
+.route-point {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: var(--surface);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 3px 8px;
+  padding: 2px 8px;
   box-shadow: var(--shadow-sm);
 }
 
-.node-flag {
+.route-flag {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 9.5px;
   font-weight: 700;
@@ -167,19 +143,17 @@ body {
   border: none;
   background: transparent;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--ink);
   outline: none;
   width: 82px;
 }
 
-.route-line-seg {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.route-arrow {
   color: var(--ink-lighter);
+  font-size: 11px;
+  margin: 0 2px;
 }
 
 /* WIZARD & CARDS */
@@ -673,11 +647,55 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 /* SIDEBAR HISTORY */
 .history-header {
-  padding: 24px;
+  padding: 18px 16px;
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  font-size: 20px;
+}
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+.brand-title {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.brand-sub {
+  font-size: 10.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.btn-new-shipment {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-new-shipment:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
 }
 .history-list {
   flex: 1;
@@ -687,7 +705,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 .history-item {
   padding: 10px 12px;
   border-radius: var(--radius);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   cursor: pointer;
   transition: var(--transition);
   border: 1px solid transparent;
@@ -700,14 +718,14 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 .history-item.active {
   background: var(--surface);
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 .history-item-info {
   flex: 1;
   min-width: 0;
 }
-.history-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.history-meta { font-size: 12px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+.history-name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
+.history-meta { font-size: 11.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
 .history-delete-btn {
   opacity: 0.4;
   transition: var(--transition);
