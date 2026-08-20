@@ -29,16 +29,34 @@ export default async function handler(req, res) {
       });
     }
 
-    const prompt = `This ${isPdf ? 'PDF' : 'image'} is a packing list or commercial invoice from China/supplier.
-Extract every product line item (ignore headers, metadata like invoice numbers, dates, buyer/seller info, and the TOTAL summary row).
-For each line item give:
-- desc: Full product description combining item code/style no and product name (e.g. "YH01-33017-2 For TY AE101 License plate (Red)")
-- qty: Total quantity as a number
-- price: Unit price as a number
-- cbm: Total CBM volume for that whole line item as a number (use total CBM / 总体积 / t/cbm column if available, else 0)
+    const prompt = `Analyze this ${isPdf ? 'PDF' : 'image'}.
 
-Respond with ONLY valid JSON:
-{"items":[{"desc":"","qty":0,"price":0,"cbm":0}]}`;
+1. If this is a commercial invoice, proforma invoice, packing list, purchase order, freight manifest, or price list:
+   Extract all product line items.
+   For each item provide:
+   - desc: Full description combining item code/style/model number and product name (e.g. "YH01-33017-2 For TY AE101 License plate (Red)")
+   - qty: Total quantity as a number
+   - price: Unit price as a number
+   - cbm: Total CBM volume for that line as a number (use total CBM / 总体积 / t/cbm column if available, else 0)
+   Return JSON with:
+   "isDocument": true,
+   "documentType": "e.g. Proforma Invoice / Packing List",
+   "items": [{ "desc": "...", "qty": 20, "price": 75, "cbm": 0 }]
+
+2. If this image is NOT a commercial invoice, packing list, or business document (for example: a photo of a person, selfie, food, animal, car, landscape, receipt without items, meme, or random object):
+   Return JSON with:
+   "isDocument": false,
+   "documentType": "Invalid Image",
+   "message": "This image appears to be a [detailed description of what is in the photo, e.g. photo of a car/scenery/person], not a commercial invoice or packing list. Please upload a supplier invoice or packing list.",
+   "items": []
+
+Respond with ONLY valid JSON without markdown formatting:
+{
+  "isDocument": true,
+  "documentType": "string",
+  "message": "string",
+  "items": []
+}`;
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
     if (geminiKey) {
@@ -72,7 +90,7 @@ Respond with ONLY valid JSON:
           const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
           const clean = rawText.replace(/```json|```/g, '').trim();
           const parsed = JSON.parse(clean);
-          return res.status(200).json({ items: parsed.items || [] });
+          return res.status(200).json(parsed);
         } catch (e) {
           errors.push(`${model} exception: ${e.message}`);
         }
@@ -113,7 +131,7 @@ Respond with ONLY valid JSON:
       const data = await aiRes.json();
       const rawText = data?.choices?.[0]?.message?.content || '';
       const parsed = JSON.parse(rawText);
-      return res.status(200).json({ items: parsed.items || [] });
+      return res.status(200).json(parsed);
     }
 
     // 3. Anthropic Claude
@@ -146,7 +164,7 @@ Respond with ONLY valid JSON:
       const text = (data.content || []).map(b => b.text || '').join('\n');
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
-      return res.status(200).json({ items: parsed.items || [] });
+      return res.status(200).json(parsed);
     }
 
     return res.status(400).json({ error: 'Unrecognized API Key format' });

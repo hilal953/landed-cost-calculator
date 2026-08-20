@@ -2197,131 +2197,22 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
   // ==== AI VISION & CLOUD ENGINES ====
   async function callAiVision(base64, mediaType, isPdf) {
-    // 1. Try serverless backend endpoint (/api/parse)
-    try {
-      const res = await fetch('/api/parse', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          base64,
-          mimeType: mediaType,
-          isPdf,
-          apiKey: state.apiKey || ''
-        })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.items && data.items.length > 0) {
-          return data.items;
-        }
-      }
-    } catch (e) {
-      console.warn("Backend /api/parse skipped:", e);
+    const res = await fetch('/api/parse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        base64,
+        mimeType: mediaType,
+        isPdf
+      })
+    });
+    
+    if (res.ok) {
+      return await res.json();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || `Server error (${res.status})`);
     }
-
-    const key = (state.apiKey || '').trim();
-    if (!key) return null;
-
-    const prompt = `This ${isPdf ? 'PDF' : 'image'} is a packing list or commercial invoice from China/supplier.
-Extract every product line item. Ignore headers, metadata (buyer, seller, dates, invoice numbers), and the TOTAL summary row.
-For each item provide:
-- desc: Clean description combining item code and item name (e.g. "YH01-33017-2 For TY AE101 License plate (Red)")
-- qty: Total quantity as a number
-- price: Unit price as a number
-- cbm: Total CBM volume for that line as a number (use total CBM / 总体积 column, not per-piece volume)
-
-Respond with ONLY valid JSON:
-{"items":[{"desc":"","qty":0,"price":0,"cbm":0}]}`;
-
-    // 1. Google Gemini Flash (Key starts with AIza)
-    if (key.startsWith('AIza')) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-      const payload = {
-        contents: [{
-          parts: [
-            { inlineData: { mimeType: isPdf ? 'application/pdf' : mediaType, data: base64 } },
-            { text: prompt }
-          ]
-        }]
-      };
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Gemini API error (${res.status})`);
-      }
-      const data = await res.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const clean = text.replace(/```json|```/g, '').trim();
-      return JSON.parse(clean)?.items || [];
-    }
-
-    // 2. Anthropic Claude (Key starts with sk-ant)
-    if (key.startsWith('sk-ant')) {
-      const source = isPdf 
-        ? { type: 'base64', media_type: 'application/pdf', data: base64 }
-        : { type: 'base64', media_type: mediaType, data: base64 };
-      const block = isPdf ? { type: 'document', source } : { type: 'image', source };
-
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20240620',
-          max_tokens: 2000,
-          messages: [{ role: 'user', content: [block, { type: 'text', text: prompt }] }]
-        })
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Anthropic API error (${res.status})`);
-      }
-      const data = await res.json();
-      const text = (data.content || []).map(b => b.text || '').join('\n');
-      const clean = text.replace(/```json|```/g, '').trim();
-      return JSON.parse(clean)?.items || [];
-    }
-
-    // 3. OpenAI GPT-4o-mini (Key starts with sk-)
-    if (key.startsWith('sk-')) {
-      const imageUrl = `data:${mediaType};base64,${base64}`;
-      const payload = {
-        model: 'gpt-4o-mini',
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            { type: 'image_url', image_url: { url: imageUrl } }
-          ]
-        }],
-        response_format: { type: "json_object" }
-      };
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${key}`
-        },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `OpenAI API error (${res.status})`);
-      }
-      const data = await res.json();
-      const text = data?.choices?.[0]?.message?.content || '';
-      return JSON.parse(text)?.items || [];
-    }
-
-    return null;
   }
 
   // Universal unit and currency matchers
@@ -2552,14 +2443,28 @@ Respond with ONLY valid JSON:
     document.getElementById('mappingPanel').classList.add('hidden');
     
     if (isImg || isPdf) {
-      showParseStatus(`Reading document with AI Vision...`, true);
+      showParseStatus(`Analyzing document with AI Vision...`, true);
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
           const base64 = e.target.result.split(',')[1];
-          const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+          const result = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+          
+          // If AI detects invalid / non-document image
+          if (result && result.isDocument === false) {
+            const reason = result.message || "This image does not appear to be an invoice or packing list. Please upload a commercial invoice or receipt.";
+            showParseStatus(`⚠️ Notice: ${reason}`, false, true);
+            showToast(reason, "error");
+            return;
+          }
+          
+          const items = Array.isArray(result) ? result : (result?.items || []);
           if (items && items.length > 0) {
             loadExtractedItems(items, file.name);
+            return;
+          } else {
+            showParseStatus("No product line items could be detected in this document. Please check the photo or paste rows manually.", false, true);
+            showToast("No product rows found", "error");
             return;
           }
         } catch (aiErr) {
