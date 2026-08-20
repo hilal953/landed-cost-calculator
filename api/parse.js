@@ -19,28 +19,29 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing base64 document data' });
     }
 
-    const apiKey = (clientApiKey || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || '').trim();
+    const geminiKey = (process.env.GEMINI_API_KEY || (clientApiKey && clientApiKey.startsWith('AIza') ? clientApiKey : '')).trim();
+    const openAiKey = (process.env.OPENAI_API_KEY || (clientApiKey && clientApiKey.startsWith('sk-') && !clientApiKey.startsWith('sk-ant') ? clientApiKey : '')).trim();
+    const claudeKey = (process.env.ANTHROPIC_API_KEY || (clientApiKey && clientApiKey.startsWith('sk-ant') ? clientApiKey : '')).trim();
 
-    if (!apiKey) {
+    if (!geminiKey && !openAiKey && !claudeKey) {
       return res.status(400).json({ 
-        error: 'No AI API Key configured on server. Please enter a Google Gemini key (Free) or OpenAI/Claude key in the app settings.' 
+        error: 'No AI API Key configured on server. Please ensure GEMINI_API_KEY is set in Vercel Environment Variables.' 
       });
     }
 
     const prompt = `This ${isPdf ? 'PDF' : 'image'} is a packing list or commercial invoice from China/supplier.
-Extract every product line item. Ignore headers, metadata (buyer, seller, dates, invoice numbers), and the TOTAL summary row.
+Extract every product line item (ignore headers, metadata like invoice numbers, dates, buyer/seller info, and the TOTAL summary row).
 For each line item give:
 - desc: Full product description combining item code/style no and product name (e.g. "YH01-33017-2 For TY AE101 License plate (Red)")
 - qty: Total quantity as a number
 - price: Unit price as a number
-- cbm: Total CBM volume for that line as a number (use total CBM / 总体积 / t/cbm column if available, else 0)
+- cbm: Total CBM volume for that whole line item as a number (use total CBM / 总体积 / t/cbm column if available, else 0)
 
 Respond with ONLY valid JSON:
 {"items":[{"desc":"","qty":0,"price":0,"cbm":0}]}`;
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
-    if (apiKey.startsWith('AIza') || process.env.GEMINI_API_KEY) {
-      const geminiKey = apiKey.startsWith('AIza') ? apiKey : process.env.GEMINI_API_KEY;
+    if (geminiKey) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
       const payload = {
         contents: [{
@@ -70,8 +71,7 @@ Respond with ONLY valid JSON:
     }
 
     // 2. OpenAI GPT-4o-mini
-    if (apiKey.startsWith('sk-') && !apiKey.startsWith('sk-ant')) {
-      const openAiKey = apiKey.startsWith('sk-') ? apiKey : process.env.OPENAI_API_KEY;
+    if (openAiKey) {
       const imageUrl = `data:${mimeType || 'image/jpeg'};base64,${base64}`;
       const payload = {
         model: 'gpt-4o-mini',
@@ -106,8 +106,7 @@ Respond with ONLY valid JSON:
     }
 
     // 3. Anthropic Claude
-    if (apiKey.startsWith('sk-ant') || process.env.ANTHROPIC_API_KEY) {
-      const claudeKey = apiKey.startsWith('sk-ant') ? apiKey : process.env.ANTHROPIC_API_KEY;
+    if (claudeKey) {
       const source = isPdf 
         ? { type: 'base64', media_type: 'application/pdf', data: base64 }
         : { type: 'base64', media_type: mimeType || 'image/jpeg', data: base64 };

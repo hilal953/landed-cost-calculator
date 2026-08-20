@@ -1076,25 +1076,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
             </div>
           </div>
 
-          <div class="api-key-row" id="apiKeyRow" style="margin-top:12px; display:flex; align-items:center; justify-content:flex-end; gap:8px;">
-            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:11.5px; color:var(--ink-soft); display:flex; align-items:center; gap:5px;">
-              ⚙ Optional Cloud AI Key
-            </button>
-          </div>
-          <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
-            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">✨ Turbo AI Vision (Google Gemini / OpenAI / Claude)</div>
-            <div class="text-sm text-muted mb-3">For 100% human-level accuracy on 1,000s of invoices, blurred photos, and complex documents, enter a Google Gemini key (Free), OpenAI key, or Claude key. Stored in your browser only.</div>
-            <div class="input-group" style="margin-bottom:8px;">
-              <label>API Key (Google Gemini AIza... / OpenAI sk-... / Claude sk-ant...)</label>
-              <div class="input-field">
-                <input type="password" id="apiKeyInput" placeholder="AIzaSy... or sk-... or sk-ant-...">
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn-primary" id="saveApiKeyBtn">Save Key</button>
-              <button class="btn-secondary" id="cancelApiKeyBtn">Close</button>
-            </div>
-          </div>
 
           <!-- MAPPING PANEL -->
           <div id="mappingPanel" class="hidden mt-4" style="border:1px solid var(--border-strong); border-radius:var(--radius); padding:20px; background:var(--surface);">
@@ -1975,31 +1956,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   const parseStatusDiv = document.getElementById('parseStatus');
   const parseSpinner = document.getElementById('parseSpinner');
 
-  const setApiKeyBtn = document.getElementById('setApiKeyBtn');
-  const apiKeyPanel = document.getElementById('apiKeyPanel');
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-  const cancelApiKeyBtn = document.getElementById('cancelApiKeyBtn');
-
-  if (setApiKeyBtn && apiKeyPanel) {
-    setApiKeyBtn.onclick = () => {
-      if (apiKeyInput) apiKeyInput.value = state.apiKey || '';
-      apiKeyPanel.classList.remove('hidden');
-    };
-  }
-  if (cancelApiKeyBtn && apiKeyPanel) {
-    cancelApiKeyBtn.onclick = () => apiKeyPanel.classList.add('hidden');
-  }
-  if (saveApiKeyBtn && apiKeyPanel) {
-    saveApiKeyBtn.onclick = () => {
-      state.apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
-      if (state.apiKey) localStorage.setItem('landed-cost-anthropic-key', state.apiKey);
-      else localStorage.removeItem('landed-cost-anthropic-key');
-      apiKeyPanel.classList.add('hidden');
-      showToast("API Key saved");
-    };
-  }
-
   let workbookSheets = {};
   let currentRows = [];
   let currentHeaderRowIdx = 0;
@@ -2595,31 +2551,25 @@ Respond with ONLY valid JSON:
     
     document.getElementById('mappingPanel').classList.add('hidden');
     
-    // Check if AI Vision key is configured
-    if (state.apiKey && (isImg || isPdf)) {
-      try {
-        showParseStatus(`Analyzing document with AI Vision...`, true);
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const base64 = e.target.result.split(',')[1];
-            const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
-            if (items && items.length > 0) {
-              loadExtractedItems(items, file.name);
-              return;
-            }
-          } catch (aiErr) {
-            console.warn("AI Vision fallback to local OCR:", aiErr);
-            showToast("AI Key notice: " + aiErr.message, "error");
+    if (isImg || isPdf) {
+      showParseStatus(`Reading document with AI Vision...`, true);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+          if (items && items.length > 0) {
+            loadExtractedItems(items, file.name);
+            return;
           }
-          // Fallback to local OCR if AI returned empty or failed
-          runLocalExtraction(file, isImg, isPdf);
-        };
-        reader.readAsDataURL(file);
-        return;
-      } catch (err) {
-        console.warn("AI Vision error:", err);
-      }
+        } catch (aiErr) {
+          console.warn("AI Vision notice, falling back to local OCR:", aiErr);
+        }
+        // Fallback to local OCR if AI is unreachable
+        runLocalExtraction(file, isImg, isPdf);
+      };
+      reader.readAsDataURL(file);
+      return;
     }
     
     runLocalExtraction(file, isImg, isPdf);

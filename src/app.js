@@ -636,31 +636,6 @@
   const parseStatusDiv = document.getElementById('parseStatus');
   const parseSpinner = document.getElementById('parseSpinner');
 
-  const setApiKeyBtn = document.getElementById('setApiKeyBtn');
-  const apiKeyPanel = document.getElementById('apiKeyPanel');
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-  const cancelApiKeyBtn = document.getElementById('cancelApiKeyBtn');
-
-  if (setApiKeyBtn && apiKeyPanel) {
-    setApiKeyBtn.onclick = () => {
-      if (apiKeyInput) apiKeyInput.value = state.apiKey || '';
-      apiKeyPanel.classList.remove('hidden');
-    };
-  }
-  if (cancelApiKeyBtn && apiKeyPanel) {
-    cancelApiKeyBtn.onclick = () => apiKeyPanel.classList.add('hidden');
-  }
-  if (saveApiKeyBtn && apiKeyPanel) {
-    saveApiKeyBtn.onclick = () => {
-      state.apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
-      if (state.apiKey) localStorage.setItem('landed-cost-anthropic-key', state.apiKey);
-      else localStorage.removeItem('landed-cost-anthropic-key');
-      apiKeyPanel.classList.add('hidden');
-      showToast("API Key saved");
-    };
-  }
-
   let workbookSheets = {};
   let currentRows = [];
   let currentHeaderRowIdx = 0;
@@ -1256,31 +1231,25 @@ Respond with ONLY valid JSON:
     
     document.getElementById('mappingPanel').classList.add('hidden');
     
-    // Check if AI Vision key is configured
-    if (state.apiKey && (isImg || isPdf)) {
-      try {
-        showParseStatus(`Analyzing document with AI Vision...`, true);
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const base64 = e.target.result.split(',')[1];
-            const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
-            if (items && items.length > 0) {
-              loadExtractedItems(items, file.name);
-              return;
-            }
-          } catch (aiErr) {
-            console.warn("AI Vision fallback to local OCR:", aiErr);
-            showToast("AI Key notice: " + aiErr.message, "error");
+    if (isImg || isPdf) {
+      showParseStatus(`Reading document with AI Vision...`, true);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          const items = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+          if (items && items.length > 0) {
+            loadExtractedItems(items, file.name);
+            return;
           }
-          // Fallback to local OCR if AI returned empty or failed
-          runLocalExtraction(file, isImg, isPdf);
-        };
-        reader.readAsDataURL(file);
-        return;
-      } catch (err) {
-        console.warn("AI Vision error:", err);
-      }
+        } catch (aiErr) {
+          console.warn("AI Vision notice, falling back to local OCR:", aiErr);
+        }
+        // Fallback to local OCR if AI is unreachable
+        runLocalExtraction(file, isImg, isPdf);
+      };
+      reader.readAsDataURL(file);
+      return;
     }
     
     runLocalExtraction(file, isImg, isPdf);

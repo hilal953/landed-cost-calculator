@@ -113,25 +113,6 @@ html_body = r"""
             </div>
           </div>
 
-          <div class="api-key-row" id="apiKeyRow" style="margin-top:12px; display:flex; align-items:center; justify-content:flex-end; gap:8px;">
-            <button class="btn-ghost" id="setApiKeyBtn" style="padding:4px 8px; font-size:11.5px; color:var(--ink-soft); display:flex; align-items:center; gap:5px;">
-              ⚙ Optional Cloud AI Key
-            </button>
-          </div>
-          <div id="apiKeyPanel" class="hidden" style="margin-top:12px; padding:16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-color);">
-            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">✨ Turbo AI Vision (Google Gemini / OpenAI / Claude)</div>
-            <div class="text-sm text-muted mb-3">For 100% human-level accuracy on 1,000s of invoices, blurred photos, and complex documents, enter a Google Gemini key (Free), OpenAI key, or Claude key. Stored in your browser only.</div>
-            <div class="input-group" style="margin-bottom:8px;">
-              <label>API Key (Google Gemini AIza... / OpenAI sk-... / Claude sk-ant...)</label>
-              <div class="input-field">
-                <input type="password" id="apiKeyInput" placeholder="AIzaSy... or sk-... or sk-ant-...">
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn-primary" id="saveApiKeyBtn">Save Key</button>
-              <button class="btn-secondary" id="cancelApiKeyBtn">Close</button>
-            </div>
-          </div>
 
           <!-- MAPPING PANEL -->
           <div id="mappingPanel" class="hidden mt-4" style="border:1px solid var(--border-strong); border-radius:var(--radius); padding:20px; background:var(--surface);">
