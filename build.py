@@ -24,17 +24,26 @@ html_body = r"""
 
   <main class="main-content">
     <div class="topbar">
-      <div>
-        <input type="text" id="shipmentName" class="topbar-title" value="Shipment Name" style="border:none; background:transparent; outline:none; font-family:inherit; color:inherit; width: 100%; max-width: 400px;" placeholder="Name this shipment...">
-        <div style="display:flex; align-items:center; gap:8px; margin-top:8px; color:var(--ink-soft); font-size:13px;" class="mono">
-          <input type="text" id="routeOrigin" value="GUANGZHOU" style="border:none; background:transparent; font-family:inherit; color:inherit; width:80px; text-align:right;">
-          <span style="color:var(--accent);">→</span>
-          <input type="text" id="routePort" value="COLOMBO" style="border:none; background:transparent; font-family:inherit; color:inherit; width:70px; text-align:center;">
-          <span style="color:var(--accent);">→</span>
-          <input type="text" id="routeDest" value="MATARA" style="border:none; background:transparent; font-family:inherit; color:inherit; width:80px;">
+      <div class="topbar-manifest">
+        <div class="manifest-eyebrow">
+          <span class="manifest-dot"></span>
+          Import Costing Worksheet
         </div>
-        <div style="margin-top:6px; font-size:12px; color:var(--ink-soft); font-weight:500;">
-          Calculate exact per-item landed cost and selling prices in LKR.
+        <input type="text" id="shipmentName" class="topbar-title" value="Shipment Name" placeholder="Name this shipment...">
+        <div class="manifest-route-bar">
+          <div class="route-node">
+            <span class="node-flag">CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="route-input">
+          </div>
+          <span class="route-line-seg">── 🚢 SEA ──</span>
+          <div class="route-node">
+            <span class="node-flag">LK</span>
+            <input type="text" id="routePort" value="COLOMBO" class="route-input">
+          </div>
+          <span class="route-line-seg">── 🚛 INLAND ──</span>
+          <div class="route-node">
+            <input type="text" id="routeDest" value="MATARA" class="route-input">
+          </div>
         </div>
       </div>
       <div style="display:flex; gap:12px;">
