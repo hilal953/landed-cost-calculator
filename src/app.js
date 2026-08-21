@@ -395,14 +395,13 @@
 
   // ==== STEP 3: OTHER CHARGES ====
   const COMMON_PRESETS = [
-    { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT', 'percent', 18, 'cbm', 'running') },
-    { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy)', 'percent', 10, 'cbm', 'cif') },
-    { key: 'duty15', name: 'Customs Duty (15%)', check: '15%', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
-    { key: 'duty30', name: 'Customs Duty (30% Auto Parts)', check: '30%', make: () => newFee('Customs Duty (30%)', 'percent', 30, 'cbm', 'cif') },
+    { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT (18%)', 'percent', 18, 'cbm', 'running') },
+    { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy 10%)', 'percent', 10, 'cbm', 'cif') },
+    { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
     { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
-    { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent', 'flat', 15000, 'value', 'cif') },
-    { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance', 'percent', 1, 'cbm', 'cif') },
-    { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage', 'flat', 10000, 'cbm', 'cif') }
+    { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent Fee', 'flat', 15000, 'value', 'cif') },
+    { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance (1%)', 'percent', 1, 'cbm', 'cif') },
+    { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage & Storage', 'flat', 10000, 'cbm', 'cif') }
   ];
 
   function renderPresetChips() {
@@ -411,7 +410,16 @@
     if (!container || !wrap) return;
 
     const existingNames = (current?.fees || []).map(f => (f.name || '').toLowerCase());
-    const available = COMMON_PRESETS.filter(p => !existingNames.some(n => n.includes(p.check)));
+    const isFeePresent = (p) => {
+      return existingNames.some(n => {
+        if (p.check === 'duty') return n.includes('duty') || n.includes('customs');
+        if (p.check === 'agent') return n.includes('agent') || n.includes('clearing') || n.includes('wharf');
+        if (p.check === 'transport') return n.includes('transport') || n.includes('delivery') || n.includes('freight local');
+        return n.includes(p.check);
+      });
+    };
+
+    const available = COMMON_PRESETS.filter(p => !isFeePresent(p));
 
     if (available.length === 0) {
       wrap.classList.add('hidden');
