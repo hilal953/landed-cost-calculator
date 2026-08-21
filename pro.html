@@ -1,0 +1,3136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Landed Cost Manifest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-color: #F4F5F7;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --ink: #111827;
+  --ink-soft: #6B7280;
+  --ink-lighter: #9CA3AF;
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  
+  --primary: #0F172A;
+  --primary-hover: #1E293B;
+  
+  --accent: #E04D2D; /* Rust/Orange */
+  --accent-light: #FCEBE7;
+  
+  --success: #059669;
+  --success-light: #D1FAE5;
+  
+  --warning: #D97706;
+  --warning-light: #FEF3C7;
+
+  --danger: #DC2626;
+  --danger-light: #FEE2E2;
+  
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+  
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(15, 23, 42, 0.04) 0px, transparent 50%),
+    radial-gradient(at 85% 60%, rgba(14, 165, 233, 0.03) 0px, transparent 40%);
+  background-attachment: fixed;
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 80px;
+}
+
+.mono { font-family: 'IBM Plex Mono', monospace; }
+
+/* LAYOUT */
+.app-container {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 20;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 0 32px 40px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-manifest {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.topbar-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0.6;
+}
+.eyebrow-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.topbar-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  color: var(--ink);
+  padding: 0;
+  width: 100%;
+  max-width: 480px;
+  transition: var(--transition);
+}
+.topbar-title:hover, .topbar-title:focus {
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+.manifest-route-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 3px 6px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+  width: fit-content;
+}
+
+.route-station {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-color);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.station-flag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(15, 23, 42, 0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.station-flag.dest {
+  background: transparent;
+  padding: 0;
+  font-size: 11px;
+}
+
+.station-input {
+  border: none;
+  background: transparent;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  width: 80px;
+}
+
+.route-transit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+.transit-line {
+  width: 6px;
+  height: 1px;
+  background: var(--border-strong);
+}
+.transit-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* WIZARD & CARDS */
+.step-section {
+  margin-bottom: 32px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: var(--transition);
+}
+
+.step-section.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+}
+
+/* BUTTONS */
+button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+button:active { transform: translateY(1px); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--ink); }
+.btn-secondary:hover { background: var(--bg-color); }
+
+.btn-danger { background: var(--danger-light); color: var(--danger); border-color: transparent; }
+.btn-danger:hover { background: var(--danger); color: #fff; }
+
+.btn-ghost { background: transparent; color: var(--ink-soft); }
+.btn-ghost:hover { background: var(--bg-color); color: var(--ink); }
+
+.btn-icon { padding: 6px; border-radius: var(--radius-sm); }
+
+/* INPUTS */
+.input-group {
+  margin-bottom: 16px;
+}
+.input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.input-field {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.input-field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+.input-prefix, .input-suffix {
+  padding: 8px 12px;
+  color: var(--ink-soft);
+  background: var(--bg-color);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  border-right: 1px solid var(--border);
+}
+.input-suffix {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+.input-field input, .input-field select {
+  flex: 1;
+  width: 100%;
+  border: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  background: transparent;
+  outline: none;
+}
+.input-field input.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+textarea {
+  width: 100%;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 80px;
+  color: var(--ink);
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--surface);
+}
+
+/* DROPZONE */
+.dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: rgba(224, 77, 45, 0.02);
+  box-shadow: 0 4px 20px rgba(224, 77, 45, 0.06);
+}
+.dz-icon {
+  width: 46px;
+  height: 46px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.dz-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+.dz-sub { font-size: 13px; color: var(--ink-soft); }
+
+/* DROPZONE ACTION GRID */
+.dz-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 540px;
+  margin-top: 14px;
+}
+.dz-action-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+}
+.dz-action-btn:hover {
+  border-color: var(--accent);
+  background: rgba(13, 148, 136, 0.04);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.dz-action-btn:active {
+  transform: scale(0.97);
+}
+.dz-action-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.dz-action-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.dz-action-ext {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-soft);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 2px;
+}
+
+@media (max-width: 540px) {
+  .dz-action-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .dz-action-btn {
+    flex-direction: row;
+    padding: 10px 14px;
+    text-align: left;
+    gap: 12px;
+  }
+  .dz-action-ext {
+    margin-top: 0;
+  }
+}
+
+/* TABS */
+.tabs {
+  display: inline-flex;
+  background: var(--bg-color);
+  padding: 4px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.tab {
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: calc(var(--radius) - 2px);
+  border: none;
+  transition: var(--transition);
+}
+.tab:hover { color: var(--ink); }
+.tab.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.25s ease; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* RATE CARDS */
+.rate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.rate-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: var(--transition);
+}
+.rate-card:focus-within {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.rate-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  background: var(--bg-color);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  white-space: nowrap;
+}
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(15, 23, 42, 0.015); }
+.num { text-align: right; }
+
+.inline-input {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: inherit;
+  transition: var(--transition);
+}
+.inline-input:hover { border-color: var(--border-strong); }
+.inline-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+
+/* FEES LIST */
+.fee-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.fee-item:last-child { border-bottom: none; }
+.fee-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr auto;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-strong);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* PRESET CHIPS */
+.preset-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.preset-chip {
+  background: var(--bg-color);
+  border: 1px solid var(--border-strong);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.preset-chip:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* RESULTS SUMMARY */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.summary-card {
+  background: var(--surface);
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.summary-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border-strong);
+}
+.summary-card.highlight {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(16, 185, 129, 0.09) 100%);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.06);
+}
+.summary-card.highlight:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.12);
+}
+.summary-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.summary-card.highlight .summary-label { color: var(--accent); }
+.summary-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+}
+.summary-card.highlight .summary-value {
+  font-weight: 800;
+  color: var(--ink);
+}
+.summary-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-left: 4px;
+}
+.summary-currency {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: 4px;
+}
+
+/* TOASTS */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+.toast.toast-error { background: var(--danger); }
+.toast.toast-success { background: var(--success); }
+.toast.hiding { animation: fadeOutRight 0.3s forwards; }
+
+@keyframes slideInUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOutRight { to { opacity: 0; transform: translateX(50px); } }
+
+/* SIDEBAR HISTORY */
+.history-header {
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  font-size: 20px;
+}
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+.brand-title {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.brand-sub {
+  font-size: 10.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.btn-new-shipment {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-new-shipment:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.history-item {
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.history-item:hover { background: var(--bg-color); }
+.history-item.active {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+.history-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.history-name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
+.history-meta { font-size: 11.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+.history-delete-btn {
+  opacity: 0.4;
+  transition: var(--transition);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+.history-item:hover .history-delete-btn,
+.history-item.active .history-delete-btn {
+  opacity: 1;
+}
+.history-delete-btn:hover {
+  color: var(--danger);
+  background: var(--danger-light);
+}
+
+/* UTILS */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.w-full { width: 100%; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-sm { font-size: 12px; }
+.text-muted { color: var(--ink-soft); }
+
+/* SPINNER */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+.spinner.dark { border-color: rgba(0,0,0,0.1); border-top-color: var(--primary); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* VISUAL BAR */
+.cost-bar-wrap {
+  height: 8px;
+  width: 100%;
+  background: var(--bg-color);
+  border-radius: 4px;
+  display: flex;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.cost-bar-segment { height: 100%; transition: width 0.5s ease; }
+.seg-goods { background: var(--ink-lighter); }
+.seg-freight { background: var(--warning); }
+.seg-fees { background: var(--accent); }
+
+.cost-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ANIMATED NUMBERS */
+.anim-num {
+  display: inline-block;
+  transition: color 0.3s;
+}
+.anim-num.changed {
+  color: var(--accent);
+}
+
+/* RESPONSIVE & MOBILE POLISH */
+@media (max-width: 900px) {
+  .app-container { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    position: static;
+  }
+  .history-list { 
+    display: flex; 
+    overflow-x: auto; 
+    padding: 12px 16px; 
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .history-item { min-width: 210px; margin-bottom: 0; flex-shrink: 0; }
+  .main-content { padding: 0 16px 40px; }
+  
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  
+  .topbar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+  .topbar-actions button {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .manifest-route-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .route-node {
+    padding: 4px 8px;
+  }
+  .route-input {
+    width: 80px;
+    font-size: 12px;
+  }
+
+  .fee-header, .fee-item { grid-template-columns: 1fr; gap: 8px; }
+  .fee-header { display: none; }
+  .fee-item { border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); margin-bottom: 12px; background: var(--bg-color); }
+}
+
+@media (max-width: 600px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .summary-card {
+    padding: 14px;
+  }
+  .summary-value {
+    font-size: 18px;
+  }
+  
+  .card {
+    padding: 16px;
+    border-radius: var(--radius);
+  }
+  
+  .step-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .dropzone {
+    padding: 24px 16px;
+  }
+  .dz-title {
+    font-size: 14px;
+  }
+  .dz-sub {
+    font-size: 12px;
+  }
+
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm);
+  }
+  
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .toast {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Touch optimizations & iOS Zoom Prevention */
+@media (max-width: 768px) {
+  input[type="text"], input[type="number"], select, textarea {
+    font-size: 16px !important;
+  }
+  .inline-input {
+    font-size: 14px !important;
+  }
+  button, .preset-chip, .tab {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active, .preset-chip:active {
+    transform: scale(0.97);
+  }
+}
+
+/* PRINT */
+@media print {
+  .sidebar, .topbar button, .step-num, .import-tabs, .tab-content, 
+  .btn-primary, .btn-secondary, .btn-danger, .btn-ghost, 
+  .toast-container, .dropzone, #addFeeBtn, #addRowBtn, .col-actions, .api-key-row { display: none !important; }
+  
+  body { background: #fff; color: #000; padding: 0; }
+  .app-container { max-width: 100%; display: block; }
+  .main-content { padding: 0; }
+  .card { border: none; box-shadow: none; padding: 0; margin-bottom: 24px; }
+  .table-container { border: none; }
+  table { width: 100%; font-size: 10pt; }
+  th { background: #fff !important; color: #000; border-bottom: 2px solid #000; padding: 4px; }
+  td { padding: 4px; border-bottom: 1px solid #ccc; }
+  input, select { border: none !important; background: transparent !important; color: #000 !important; -webkit-appearance: none; padding: 0 !important; }
+  .summary-card { border: 1px solid #000; background: #fff !important; color: #000 !important; page-break-inside: avoid; padding: 12px; }
+  .summary-card.highlight { border: 2px solid #000; }
+  .summary-card.highlight .summary-label { color: #000; }
+  .summary-stamp { border-color: #000; color: #000; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="history-header">
+      <div class="brand-badge">
+        <span class="brand-icon">🚢</span>
+        <div class="brand-info">
+          <span class="brand-title">Landed Cost</span>
+          <span class="brand-sub">Shipments</span>
+        </div>
+      </div>
+      <button class="btn-new-shipment" id="newShipmentBtn" title="New Shipment">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
+        <span>New</span>
+      </button>
+    </div>
+    <div class="history-list" id="historyList">
+      <!-- Populated by JS -->
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-manifest">
+        <div class="topbar-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span class="eyebrow-text">Landed Cost Manifest</span>
+        </div>
+        <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
+        <div class="manifest-route-ribbon">
+          <div class="route-station">
+            <span class="station-flag">CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚢 SEA</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag">LK</span>
+            <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port">
+          </div>
+          <div class="route-transit">
+            <span class="transit-line"></span>
+            <span class="transit-badge">🚛 INLAND</span>
+            <span class="transit-line"></span>
+          </div>
+          <div class="route-station">
+            <span class="station-flag dest">📍</span>
+            <input type="text" id="routeDest" value="MATARA" class="station-input" title="Final Destination">
+          </div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-secondary" id="shareWaBtn" style="color:#16a34a; border-color:#86efac;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          Share
+        </button>
+        <button class="btn-secondary" id="exportPdfBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/></svg>
+          Print PDF
+        </button>
+        <button class="btn-secondary" id="exportExcelBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Export .xlsx
+        </button>
+      </div>
+    </div>
+
+    <!-- WIZARD STEP 1 -->
+    <section class="step-section" id="step1">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <h2 class="step-title">Packing List</h2>
+      </div>
+      <div class="card">
+        <div class="tabs">
+          <div class="tab active" data-tab="upload">Drop file or photo</div>
+          <div class="tab" data-tab="paste">Paste rows</div>
+        </div>
+
+        <div class="tab-content active" id="tab-upload">
+          <div class="dropzone" id="dropzone">
+            <div class="dz-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            </div>
+            <div class="dz-title">Upload Packing List, Invoice, or Excel</div>
+            <div class="dz-sub">Drag & drop files or tap a format below</div>
+
+            <div class="dz-action-grid">
+              <button type="button" class="dz-action-btn" id="btnUploadPhoto">
+                <span class="dz-action-icon">📷</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">Photo / Scan</span>
+                  <span class="dz-action-ext">JPG, PNG, WhatsApp</span>
+                </div>
+              </button>
+              
+              <button type="button" class="dz-action-btn" id="btnUploadPdf">
+                <span class="dz-action-icon">📄</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">PDF Document</span>
+                  <span class="dz-action-ext">Commercial Invoice</span>
+                </div>
+              </button>
+              
+              <button type="button" class="dz-action-btn" id="btnUploadExcel">
+                <span class="dz-action-icon">📊</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">Excel Sheet</span>
+                  <span class="dz-action-ext">XLSX, XLS, CSV</span>
+                </div>
+              </button>
+            </div>
+            <input type="file" id="fileInputPhoto" accept="image/*,.jpg,.jpeg,.png,.webp" style="display:none;">
+            <input type="file" id="fileInputPdf" accept="application/pdf,.pdf" style="display:none;">
+            <input type="file" id="fileInputExcel" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/comma-separated-values,application/csv" style="display:none;">
+            <input type="file" id="fileInput" style="display:none;">
+          </div>
+
+          <div id="parseStatus" class="hidden mt-4" style="text-align:center;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+              <div class="spinner dark hidden" id="parseSpinner"></div>
+              <span id="parseStatusText" class="text-sm mono" style="font-weight:600; color:var(--primary);"></span>
+            </div>
+            <div id="ocrProgressBarWrap" class="hidden" style="width:100%; max-width:420px; margin:0 auto; height:6px; background:var(--border); border-radius:99px; overflow:hidden;">
+              <div id="ocrProgressBar" style="width:0%; height:100%; background:var(--accent); transition:width 0.2s ease;"></div>
+            </div>
+          </div>
+
+
+          <!-- MAPPING PANEL -->
+          <div id="mappingPanel" class="hidden mt-4" style="border:1px solid var(--border-strong); border-radius:var(--radius); padding:20px; background:var(--surface);">
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:4px;">Match your columns</h3>
+            <p class="text-sm text-muted mb-4">We found a table starting at row <span id="headerRowLabel" class="mono"></span>. Check the mapping below.</p>
+            
+            <div class="input-group hidden mb-4" id="sheetPicker">
+              <label>Sheet</label>
+              <div class="input-field"><select id="sheetSelect"></select></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:16px;">
+              <div class="input-group mb-0">
+                <label>Description</label>
+                <div id="descChecks" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px; background:var(--bg-color);"></div>
+              </div>
+              <div class="input-group mb-0"><label>Quantity</label><div class="input-field"><select id="mapQty"></select></div></div>
+              <div class="input-group mb-0"><label>Unit Price</label><div class="input-field"><select id="mapPrice"></select></div></div>
+              <div class="input-group mb-0"><label>Total CBM (for line)</label><div class="input-field"><select id="mapCbm"></select></div></div>
+            </div>
+
+            <div class="table-container mb-4">
+              <table id="mappingPreviewTable"></table>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button class="btn-primary" id="confirmImportBtn">Import Rows</button>
+              <button class="btn-secondary" id="cancelImportBtn">Cancel</button>
+              <span id="mappingNote" class="text-sm text-muted mono ml-auto" style="margin-left:auto;"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-paste">
+          <textarea id="pasteBox" placeholder="Paste rows from Excel here...&#10;Headlight  50  38.5  1.2"></textarea>
+          <div class="flex items-center justify-between mt-2">
+            <label class="flex items-center gap-2 text-sm text-muted">
+              <input type="checkbox" id="hasHeader" checked> First line is a header
+            </label>
+            <button class="btn-primary" id="parseBtn">Add rows from paste</button>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <div style="font-weight:600; font-size:14px;">Items (<span id="itemCount">0</span>)</div>
+            <div class="flex gap-2">
+              <button class="btn-secondary btn-icon" id="undoClearBtn" title="Undo Clear" style="display:none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+              </button>
+              <button class="btn-danger" id="clearItemsBtn" style="padding:4px 8px; font-size:12px;">Clear All</button>
+            </div>
+          </div>
+          <div class="table-container" id="itemsTableWrap">
+            <table id="itemsTable">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Description</th>
+                  <th class="num" style="width:100px">Qty</th>
+                  <th class="num" style="width:140px">Unit Price</th>
+                  <th class="num" style="width:120px" id="thMeasure">Total CBM</th>
+                  <th class="num" style="width:140px">Value Total</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="itemsBody"></tbody>
+            </table>
+          </div>
+          <div id="itemsEmpty" class="text-center text-muted" style="padding:32px 16px; background:var(--bg-color); border:1px dashed var(--border-strong); border-radius:var(--radius); margin-top:8px;">
+            <div style="font-size:22px; margin-bottom:6px;">📦</div>
+            <div style="font-weight:600; font-size:13.5px; color:var(--ink); margin-bottom:2px;">No items added yet</div>
+            <div style="font-size:12px; color:var(--ink-soft); max-width:320px; margin:0 auto 12px;">Drop your packing list Excel above, paste rows, or add manually.</div>
+            <button class="btn-secondary" id="addRowBtnEmpty" style="font-size:12px; padding:6px 14px;">+ Add Item Manually</button>
+          </div>
+          <button class="btn-ghost mt-2" id="addRowBtn">+ Add Item Manually</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WIZARD STEP 2 -->
+    <section class="step-section" id="step2">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <h2 class="step-title">Exchange & Freight Rate</h2>
+      </div>
+      <div class="card">
+        <div class="rate-grid">
+          
+          <div class="rate-card">
+            <div class="rate-card-title">💱 Base Currency</div>
+            <div class="input-field" style="margin:0;">
+              <select id="baseCurrency">
+                <option value="RMB">RMB (¥) Chinese Yuan</option>
+                <option value="USD">USD ($) US Dollar</option>
+                <option value="EUR">EUR (€) Euro</option>
+                <option value="GBP">GBP (£) British Pound</option>
+                <option value="INR">INR (₹) Indian Rupee</option>
+                <option value="AED">AED (د.إ) UAE Dirham</option>
+                <option value="JPY">JPY (¥) Japanese Yen</option>
+                <option value="AUD">AUD ($) Australian Dollar</option>
+                <option value="CAD">CAD ($) Canadian Dollar</option>
+                <option value="SGD">SGD ($) Singapore Dollar</option>
+                <option value="CHF">CHF (Fr) Swiss Franc</option>
+                <option value="HKD">HKD ($) Hong Kong Dollar</option>
+                <option value="MYR">MYR (RM) Malaysian Ringgit</option>
+                <option value="THB">THB (฿) Thai Baht</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="rate-card">
+            <div class="rate-card-title">📈 Exchange Rate to LKR</div>
+            <div class="input-field" style="margin:0;">
+              <span class="input-prefix" id="ratePrefix">¥1 = </span>
+              <input type="number" id="exRate" step="0.01" placeholder="e.g. 42.50" class="mono">
+              <span class="input-suffix">LKR</span>
+            </div>
+          </div>
+
+          <div class="rate-card">
+            <div class="rate-card-title">🚢 Transport Mode</div>
+            <div class="input-field" style="margin:0;">
+              <select id="cargoMode">
+                <option value="sea">Sea Cargo (by CBM)</option>
+                <option value="air">Air Cargo (by Kg)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="rate-card">
+            <div class="rate-card-title">🚢 Ocean Freight Rate</div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <div class="input-field" style="margin:0; flex:1;">
+                <span class="input-prefix" id="cbmPrefix">LKR</span>
+                <input type="number" id="cbmRate" step="any" placeholder="35000" class="mono">
+                <span class="input-suffix" id="cbmSuffix">/ CBM</span>
+              </div>
+              <div class="input-field" style="margin:0; width:95px;">
+                <select id="freightCurrency" style="padding:8px 4px; font-weight:700; font-size:12px;">
+                  <option value="LKR">LKR</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
+            </div>
+            <div id="freightUsdNote" class="text-muted hidden" style="font-size:11px; margin-top:4px;">
+              Converted at $1 = 305 LKR
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WIZARD STEP 3 -->
+    <section class="step-section" id="step3">
+      <div class="step-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="step-num">3</div>
+          <h2 class="step-title" style="margin:0;">Other Charges</h2>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary btn-sm" id="applySlTaxBundleBtn" style="font-size:11.5px; padding:6px 12px; display:inline-flex; align-items:center; gap:5px; cursor:pointer;">
+            🇱🇰 Apply SL Tax Bundle
+          </button>
+          <button class="btn-primary btn-sm" id="addFeeBtn" style="font-size:11.5px; padding:6px 12px; display:inline-flex; align-items:center; gap:5px; cursor:pointer;">
+            + Add Charge
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="fee-header">
+          <div>Charge Name</div>
+          <div>Type</div>
+          <div>Amount</div>
+          <div>Spread By</div>
+          <div style="text-align:right;">Action</div>
+        </div>
+        <div id="feesBody"></div>
+        <div id="feeSuggestionsWrap" style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);">
+          <div style="font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">
+            💡 Quick Add Import Charges
+          </div>
+          <div class="preset-chips" id="presetChipsContainer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WIZARD STEP 4 -->
+    <section class="step-section" id="step4">
+      <div id="step2AlertBanner" class="hidden" style="margin-bottom:16px; padding:12px 16px; background:#fffbeb; border:1px solid #fde68a; border-radius:var(--radius); color:#92400e; font-size:13px; font-weight:600; display:flex; align-items:center; gap:8px;">
+        <span>⚠️ Step 2 incomplete: Please enter an Exchange Rate (e.g. 45.00) to calculate Landed Costs.</span>
+      </div>
+      <div class="step-header">
+        <div class="step-num" style="background:var(--success);">4</div>
+        <h2 class="step-title">Landed Cost Results</h2>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+          <label style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Markup Target</label>
+          <div class="input-field" style="width:100px;">
+            <input type="number" id="markupPercent" value="30" class="mono text-right" style="padding:6px;">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label"><span>📦 Total Volume</span></div>
+          <div class="summary-value"><span id="sumCbm">0.00</span> <span class="summary-unit" id="sumMeasureUnit">CBM</span></div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label"><span>🏷️ Goods Value</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumValue">0</span></div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label"><span>⚓ Freight & Fees</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumFees">0</span></div>
+        </div>
+        <div class="summary-card highlight">
+          <div class="summary-label"><span>💎 Total Landed Cost</span></div>
+          <div class="summary-value"><span class="summary-currency">LKR</span> <span id="sumTotal">0</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-container" style="border:none; border-radius:0;">
+          <table id="resultsTable">
+            <thead style="background:var(--primary); color:#fff;">
+              <tr>
+                <th style="color:rgba(255,255,255,0.8); background:var(--primary);">Description</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Qty</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Value (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Freight (LKR)</th>
+                <th class="num" style="color:rgba(255,255,255,0.8); background:var(--primary);">Charges (LKR)</th>
+                <th class="num" style="color:#fff; background:var(--primary);">Unit Cost (LKR)</th>
+                <th class="num" style="color:var(--success-light); background:var(--primary);">Selling Price (LKR)</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+            <tfoot id="resultsFoot" style="background:var(--bg-color); font-family:'IBM Plex Mono',monospace; font-weight:700;">
+              <tr>
+                <td style="font-family:'Inter',sans-serif; text-transform:uppercase; font-size:11px; color:var(--ink-soft);">Totals</td>
+                <td class="num" id="footQty">0</td>
+                <td class="num" id="footValue">0</td>
+                <td class="num" id="footFreight">0</td>
+                <td class="num" id="footCharges">0</td>
+                <td class="num" colspan="2"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div id="costBarSection" style="padding:20px; background:var(--bg-color); border-top:1px solid var(--border);">
+          <div class="cost-legend">
+            <div class="legend-item"><div class="legend-dot seg-goods"></div>Goods Value</div>
+            <div class="legend-item"><div class="legend-dot seg-freight"></div>Freight</div>
+            <div class="legend-item"><div class="legend-dot seg-fees"></div>Other Charges</div>
+          </div>
+          <div class="cost-bar-wrap" id="costCompositionBar">
+            <div class="cost-bar-segment seg-goods" id="barGoods" style="width:0%"></div>
+            <div class="cost-bar-segment seg-freight" id="barFreight" style="width:0%"></div>
+            <div class="cost-bar-segment seg-fees" id="barFees" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between mt-4">
+        <span class="text-sm text-muted mono" id="saveStatus">Auto-saved</span>
+        <button class="btn-secondary" id="copyTableBtn">Copy to Clipboard (TSV)</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SheetJS for XLSX support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- PDF.js for in-browser PDF parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
+<!-- Tesseract.js for in-browser OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+(function(){
+  // ==== STATE MANAGEMENT ====
+  let state = {
+    history: {}, // id -> shipment data
+    currentId: null,
+    apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
+  };
+
+  const DEFAULT_SHIPMENT = (name = 'Guangzhou Cargo') => ({
+    name: name,
+    route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
+    baseCurrency: 'RMB', // RMB or USD
+    exRate: 45.00, // Sensible pre-populated default so calculations run immediately
+    freightCurrency: 'LKR', // LKR or USD
+    cbmRate: 35000, // Sensible default freight rate
+    usdToLkr: 305.00, // Standard conversion rate for USD freight
+    items: [],
+    fees: [
+      { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
+      { id: 'fe2', name: 'PAL (Port & Airport Levy)', type: 'percent', amount: 10, method: 'cbm', base: 'cif' },
+      { id: 'fe3', name: 'VAT', type: 'percent', amount: 18, method: 'cbm', base: 'running' },
+      { id: 'fe4', name: 'Colombo-Matara Transport', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
+      { id: 'fe5', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
+    ],
+    itemSeq: 1,
+    feeSeq: 6,
+    lastSaved: Date.now()
+  });
+
+  let current = null;
+  let undoStack = []; // For items clear undo
+
+  // ==== UTILITIES ====
+  const fmt = n => isFinite(n) ? Math.round(n).toLocaleString('en-LK') : '0';
+  const fmt2 = n => isFinite(n) ? n.toFixed(2) : '0.00';
+  const escapeAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  
+  function generateId() { return Math.random().toString(36).substr(2, 9); }
+
+  // ==== TOASTS & ANIMATIONS ====
+  function showToast(msg, type='success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = type === 'success' ? '✓ ' + escapeHtml(msg) : '⚠ ' + escapeHtml(msg);
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('hiding');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  function animateNumber(element, start, end, duration = 400, isFloat = false) {
+    if (start === end) {
+      element.textContent = isFloat ? fmt2(end) : fmt(end);
+      return;
+    }
+    const startTime = performance.now();
+    element.classList.add('changed');
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // easeOutQuart
+      const ease = 1 - Math.pow(1 - progress, 4);
+      const currentVal = start + (end - start) * ease;
+      
+      element.textContent = isFloat ? fmt2(currentVal) : fmt(currentVal);
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        setTimeout(() => element.classList.remove('changed'), 200);
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ==== STORAGE & HISTORY ====
+  function loadState() {
+    try {
+      const saved = localStorage.getItem('landed-cost-v2');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        state.history = parsed.history || {};
+        state.currentId = parsed.currentId;
+      }
+    } catch (e) { console.error("Could not load state", e); }
+
+    if (!state.currentId || !state.history[state.currentId]) {
+      const id = generateId();
+      state.currentId = id;
+      state.history[id] = DEFAULT_SHIPMENT('Guangzhou Cargo');
+    }
+    current = state.history[state.currentId];
+    renderHistory();
+    populateUI();
+  }
+
+  function saveState() {
+    if (!current) return;
+    current.lastSaved = Date.now();
+    current.name = document.getElementById('shipmentName').value || 'Unnamed Shipment';
+    current.route.origin = document.getElementById('routeOrigin').value;
+    current.route.port = document.getElementById('routePort').value;
+    current.route.dest = document.getElementById('routeDest').value;
+    current.cargoMode = document.getElementById('cargoMode')?.value || 'sea';
+    current.baseCurrency = document.getElementById('baseCurrency').value;
+    current.exRate = parseFloat(document.getElementById('exRate').value) || 0;
+    current.freightCurrency = document.getElementById('freightCurrency')?.value || 'LKR';
+    current.cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+    
+    state.history[state.currentId] = current;
+    try {
+      localStorage.setItem('landed-cost-v2', JSON.stringify({ history: state.history, currentId: state.currentId }));
+      const status = document.getElementById('saveStatus');
+      status.textContent = `Auto-saved at ${new Date().toLocaleTimeString()}`;
+    } catch (e) {}
+    renderHistory();
+  }
+
+  const debouncedSave = (() => {
+    let timer;
+    return () => { clearTimeout(timer); timer = setTimeout(saveState, 500); };
+  })();
+
+  function switchShipment(id) {
+    saveState();
+    state.currentId = id;
+    current = state.history[id];
+    populateUI();
+  }
+
+  function newShipment() {
+    saveState();
+    const existingNames = Object.values(state.history).map(s => s.name || '');
+    let num = 2;
+    while (existingNames.some(n => n.toLowerCase() === `shipment ${num}`.toLowerCase())) {
+      num++;
+    }
+    const name = `Shipment ${num}`;
+    const id = generateId();
+    state.currentId = id;
+    state.history[id] = DEFAULT_SHIPMENT(name);
+    current = state.history[id];
+    populateUI();
+    saveState();
+    showToast(`${name} created`);
+  }
+
+  function deleteShipment(id, e) {
+    if (e) e.stopPropagation();
+    
+    const remainingIds = Object.keys(state.history).filter(k => k !== id);
+    if (remainingIds.length === 0) return; // Prevent deleting the last shipment
+    
+    delete state.history[id];
+    
+    if (state.currentId === id) {
+      remainingIds.sort((a,b) => (state.history[b].lastSaved || 0) - (state.history[a].lastSaved || 0));
+      state.currentId = remainingIds[0];
+    }
+    
+    current = state.history[state.currentId];
+    saveState();
+    populateUI();
+    showToast("Shipment removed");
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
+    const sortedIds = Object.keys(state.history).sort((a,b) => (state.history[b].lastSaved || 0) - (state.history[a].lastSaved || 0));
+    const canDelete = sortedIds.length > 1;
+    
+    sortedIds.forEach(id => {
+      const ship = state.history[id];
+      const div = document.createElement('div');
+      div.className = `history-item ${id === state.currentId ? 'active' : ''}`;
+      const totalItems = (ship.items || []).length;
+      const dateStr = new Date(ship.lastSaved || Date.now()).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      
+      div.innerHTML = `
+        <div class="history-item-info">
+          <div class="history-name">${escapeHtml(ship.name || 'Untitled Shipment')}</div>
+          <div class="history-meta">${totalItems} items · ${dateStr}</div>
+        </div>
+        ${canDelete ? `
+        <button class="btn-ghost history-delete-btn" data-delete-id="${id}" title="Delete shipment">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>` : ''}
+      `;
+      div.onclick = (e) => {
+        if (e.target.closest('[data-delete-id]')) return;
+        if (id !== state.currentId) switchShipment(id);
+      };
+      
+      const delBtn = div.querySelector('[data-delete-id]');
+      if (delBtn) {
+        delBtn.onclick = (e) => deleteShipment(id, e);
+      }
+      
+      list.appendChild(div);
+    });
+  }
+
+  // ==== UI POPULATION ====
+  function populateUI() {
+    document.getElementById('shipmentName').value = current.name || '';
+    document.getElementById('routeOrigin').value = current.route.origin || '';
+    document.getElementById('routePort').value = current.route.port || '';
+    document.getElementById('routeDest').value = current.route.dest || '';
+    document.getElementById('cargoMode').value = current.cargoMode || 'sea';
+    document.getElementById('baseCurrency').value = current.baseCurrency || 'RMB';
+    document.getElementById('exRate').value = current.exRate !== undefined ? current.exRate : 45.00;
+    document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 35000;
+    if (document.getElementById('freightCurrency')) {
+      document.getElementById('freightCurrency').value = current.freightCurrency || 'LKR';
+    }
+    
+    updateCurrencyLabels();
+    renderItems();
+    renderFees();
+  }
+
+  function getCurrencySymbol(code) {
+    const symbols = {
+      USD: '$', RMB: '¥', EUR: '€', GBP: '£', INR: '₹', 
+      AED: 'د.إ', JPY: '¥', AUD: '$', CAD: '$', SGD: '$', 
+      CHF: 'Fr', HKD: '$', MYR: 'RM', THB: '฿'
+    };
+    return symbols[code] || code;
+  }
+
+  function updateCurrencyLabels() {
+    const curr = document.getElementById('baseCurrency').value;
+    const sym = getCurrencySymbol(curr);
+    document.getElementById('ratePrefix').textContent = `${sym}1 = `;
+
+    const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
+    const measureName = cargoMode === 'air' ? 'Kg' : 'CBM';
+
+    const thMeasure = document.getElementById('thMeasure');
+    if (thMeasure) thMeasure.textContent = `Total ${measureName}`;
+    const sumMeasureUnit = document.getElementById('sumMeasureUnit');
+    if (sumMeasureUnit) sumMeasureUnit.textContent = measureName;
+
+    // Freight Currency prefix and note
+    const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
+    const cbmPrefix = document.getElementById('cbmPrefix');
+    const freightUsdNote = document.getElementById('freightUsdNote');
+    if (cbmPrefix) {
+       cbmPrefix.textContent = fCurr === 'USD' ? '$' : 'LKR';
+    }
+    const cbmSuffix = document.getElementById('cbmSuffix');
+    if (cbmSuffix) {
+       cbmSuffix.textContent = `/ ${measureName}`;
+    }
+    if (freightUsdNote) {
+      if (fCurr === 'USD') {
+        const rate = curr === 'USD' ? (parseFloat(document.getElementById('exRate').value) || 305) : (current.usdToLkr || 305);
+        freightUsdNote.textContent = `Converted at $1 = ${rate} LKR`;
+        freightUsdNote.classList.remove('hidden');
+      } else {
+        freightUsdNote.classList.add('hidden');
+      }
+    }
+
+    // Update table headers
+    const ths = document.querySelectorAll('#itemsTable th');
+    if(ths.length > 5) ths[3].textContent = `Unit Price (${curr})`;
+    if(ths.length > 5) ths[5].textContent = `Value (${curr})`;
+  }
+
+  document.getElementById('baseCurrency').onchange = (e) => {
+    current.baseCurrency = e.target.value;
+    if (current.baseCurrency === 'USD' && (!current.exRate || current.exRate === 45)) {
+      current.exRate = 305.00;
+      document.getElementById('exRate').value = 305.00;
+    } else if (current.baseCurrency === 'RMB' && current.exRate === 305) {
+      current.exRate = 45.00;
+      document.getElementById('exRate').value = 45.00;
+    }
+    updateCurrencyLabels();
+    calculate();
+    debouncedSave();
+  };
+
+  const freightCurrEl = document.getElementById('freightCurrency');
+  if (freightCurrEl) {
+    freightCurrEl.onchange = (e) => {
+      current.freightCurrency = e.target.value;
+      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 35000)) {
+        current.cbmRate = 115;
+        document.getElementById('cbmRate').value = 115;
+      } else if (current.freightCurrency === 'LKR' && current.cbmRate === 115) {
+        current.cbmRate = 35000;
+        document.getElementById('cbmRate').value = 35000;
+      }
+      updateCurrencyLabels();
+      calculate();
+      debouncedSave();
+    };
+  }
+
+  
+
+  const cargoModeEl = document.getElementById('cargoMode');
+  if (cargoModeEl) {
+    cargoModeEl.onchange = (e) => {
+      const oldMode = current.cargoMode || 'sea';
+      current.cargoMode = e.target.value;
+      const cbmRateInput = document.getElementById('cbmRate');
+      const rate = parseFloat(cbmRateInput.value);
+      if (oldMode === 'sea' && current.cargoMode === 'air' && (isNaN(rate) || rate === 35000)) {
+         current.cbmRate = 3400;
+         cbmRateInput.value = 3400;
+      } else if (oldMode === 'air' && current.cargoMode === 'sea' && (isNaN(rate) || rate === 3400)) {
+         current.cbmRate = 35000;
+         cbmRateInput.value = 35000;
+      }
+      updateCurrencyLabels();
+      calculate();
+      debouncedSave();
+    };
+  }
+
+  ['shipmentName', 'routeOrigin', 'routePort', 'routeDest', 'exRate', 'cbmRate'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => { 
+      updateCurrencyLabels();
+      calculate(); 
+      debouncedSave(); 
+    });
+  });
+
+  document.getElementById('newShipmentBtn').onclick = newShipment;
+
+  // ==== ITEMS MANAGEMENT ====
+  function renderItems() {
+    const body = document.getElementById('itemsBody');
+    const tableWrap = document.getElementById('itemsTableWrap');
+    const empty = document.getElementById('itemsEmpty');
+    body.innerHTML = '';
+    
+    document.getElementById('itemCount').textContent = current.items.length;
+    if (current.items.length === 0) {
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (empty) empty.style.display = 'block';
+    } else {
+      if (tableWrap) tableWrap.style.display = 'block';
+      if (empty) empty.style.display = 'none';
+    }
+    
+    current.items.forEach((it, idx) => {
+      const tr = document.createElement('tr');
+      const val = it.qty * it.price;
+      const sym = getCurrencySymbol(current.baseCurrency);
+      
+      tr.innerHTML = `
+        <td class="text-muted text-sm">${idx+1}</td>
+        <td><input type="text" class="inline-input" data-field="desc" data-id="${it.id}" value="${escapeAttr(it.desc)}" placeholder="Item description"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-field="qty" data-id="${it.id}" value="${it.qty}" min="0" step="1"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-field="price" data-id="${it.id}" value="${it.price}" min="0" step="0.01"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-field="cbm" data-id="${it.id}" value="${it.cbm}" min="0" step="0.001"></td>
+        <td class="num text-muted mono line-val">${sym}${fmt2(val)}</td>
+        <td class="text-right">
+          <button class="btn-ghost btn-icon" data-remove-item="${it.id}" title="Remove">✕</button>
+        </td>
+      `;
+      body.appendChild(tr);
+    });
+    
+    bindItemInputs();
+    calculate();
+  }
+
+  function bindItemInputs() {
+    document.querySelectorAll('#itemsBody input').forEach(inp => {
+      inp.oninput = (e) => {
+        const id = e.target.getAttribute('data-id');
+        const field = e.target.getAttribute('data-field');
+        const it = current.items.find(i => i.id === id);
+        if (!it) return;
+        
+        if (field === 'desc') it.desc = e.target.value;
+        else it[field] = parseFloat(e.target.value) || 0;
+        
+        const row = e.target.closest('tr');
+        const valCell = row.querySelector('.line-val');
+        const sym = getCurrencySymbol(current.baseCurrency);
+        if (valCell) valCell.textContent = sym + fmt2(it.qty * it.price);
+        
+        calculate();
+        debouncedSave();
+      };
+    });
+
+    document.querySelectorAll('[data-remove-item]').forEach(btn => {
+      btn.onclick = (e) => {
+        const id = e.target.getAttribute('data-remove-item');
+        current.items = current.items.filter(i => i.id !== id);
+        renderItems();
+        debouncedSave();
+      };
+    });
+  }
+
+  const handleAddRow = () => {
+    current.items.push({ id: 'it'+(current.itemSeq++), desc: '', qty: 0, price: 0, cbm: 0 });
+    renderItems();
+    debouncedSave();
+  };
+
+  document.getElementById('addRowBtn').onclick = handleAddRow;
+  const emptyAddBtn = document.getElementById('addRowBtnEmpty');
+  if (emptyAddBtn) emptyAddBtn.onclick = handleAddRow;
+
+  document.getElementById('clearItemsBtn').onclick = () => {
+    if (!current.items.length) return;
+    undoStack = [...current.items]; // save for undo
+    current.items = [];
+    renderItems();
+    debouncedSave();
+    showToast("Items cleared");
+    const undoBtn = document.getElementById('undoClearBtn');
+    undoBtn.style.display = 'inline-flex';
+    setTimeout(() => { undoBtn.style.display = 'none'; }, 10000); // hide after 10s
+  };
+
+  document.getElementById('undoClearBtn').onclick = () => {
+    if (undoStack.length) {
+      current.items = [...undoStack];
+      undoStack = [];
+      document.getElementById('undoClearBtn').style.display = 'none';
+      renderItems();
+      debouncedSave();
+      showToast("Items restored");
+    }
+  };
+
+  // ==== STEP 3: OTHER CHARGES ====
+  const COMMON_PRESETS = [
+    { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT (18%)', 'percent', 18, 'cbm', 'running') },
+    { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy 10%)', 'percent', 10, 'cbm', 'cif') },
+    { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
+    { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
+    { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent Fee', 'flat', 15000, 'value', 'cif') },
+    { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance (1%)', 'percent', 1, 'cbm', 'cif') },
+    { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage & Storage', 'flat', 10000, 'cbm', 'cif') }
+  ];
+
+  function renderPresetChips() {
+    const container = document.getElementById('presetChipsContainer');
+    const wrap = document.getElementById('feeSuggestionsWrap');
+    if (!container || !wrap) return;
+
+    const existingNames = (current?.fees || []).map(f => (f.name || '').toLowerCase());
+    const isFeePresent = (p) => {
+      return existingNames.some(n => {
+        if (p.check === 'duty') return n.includes('duty') || n.includes('customs');
+        if (p.check === 'agent') return n.includes('agent') || n.includes('clearing') || n.includes('wharf');
+        if (p.check === 'transport') return n.includes('transport') || n.includes('delivery') || n.includes('freight local');
+        return n.includes(p.check);
+      });
+    };
+
+    const available = COMMON_PRESETS.filter(p => !isFeePresent(p));
+
+    if (available.length === 0) {
+      wrap.classList.add('hidden');
+      return;
+    }
+
+    wrap.classList.remove('hidden');
+    container.innerHTML = '';
+    available.forEach(p => {
+      const chip = document.createElement('button');
+      chip.className = 'preset-chip';
+      chip.textContent = `+ ${p.name}`;
+      chip.onclick = () => {
+        current.fees.push(p.make());
+        renderFees();
+        debouncedSave();
+        showToast(`Added ${p.name}`);
+      };
+      container.appendChild(chip);
+    });
+  }
+
+  function renderFees() {
+    const body = document.getElementById('feesBody');
+    body.innerHTML = '';
+    
+    if (!current || !current.fees || current.fees.length === 0) {
+      body.innerHTML = `
+        <div style="text-align:center; padding:24px 12px; color:var(--ink-soft); font-size:13px;">
+          No additional charges added. Freight and base goods cost will be calculated directly.
+        </div>
+      `;
+      renderPresetChips();
+      calculate();
+      return;
+    }
+
+    current.fees.forEach(fe => {
+      const row = document.createElement('div');
+      row.className = 'fee-item';
+      row.innerHTML = `
+        <div class="input-field" style="margin:0;">
+          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeHtml(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
+        </div>
+        <div class="input-field" style="margin:0;">
+          <select data-field="type" data-id="${fe.id}">
+            <option value="flat" ${fe.type==='flat'?'selected':''}>Flat LKR</option>
+            <option value="percent" ${fe.type==='percent'?'selected':''}>Percent %</option>
+          </select>
+        </div>
+        <div class="input-field" style="margin:0;">
+          <input type="number" data-field="amount" data-id="${fe.id}" value="${fe.amount}" step="0.01" placeholder="${fe.type==='percent'?'%':'LKR'}" class="mono">
+        </div>
+        <div class="fee-basis" data-basis-for="${fe.id}"></div>
+        <div class="text-right">
+          <button class="btn-ghost btn-icon" data-remove-fee="${fe.id}" title="Remove charge" style="color:var(--danger); cursor:pointer;">✕</button>
+        </div>
+      `;
+      body.appendChild(row);
+      
+      const basisSlot = row.querySelector(`[data-basis-for="${fe.id}"]`);
+      if (fe.type === 'flat'){
+        basisSlot.innerHTML = `
+          <div class="input-field" style="margin:0;">
+            <select data-field="method" data-id="${fe.id}">
+              <option value="cbm" ${fe.method==='cbm'?'selected':''}>By Volume (CBM)</option>
+              <option value="value" ${fe.method==='value'?'selected':''}>By Item Value</option>
+              <option value="equal" ${fe.method==='equal'?'selected':''}>Equally per Item</option>
+            </select>
+          </div>`;
+      } else {
+        basisSlot.innerHTML = `
+          <div class="input-field" style="margin:0;">
+            <select data-field="base" data-id="${fe.id}">
+              <option value="cif" ${fe.base==='cif'?'selected':''}>Value + Freight (CIF)</option>
+              <option value="value" ${fe.base==='value'?'selected':''}>Goods Value Only</option>
+              <option value="running" ${fe.base==='running'?'selected':''}>Running Total (Compounding)</option>
+            </select>
+          </div>`;
+      }
+    });
+    
+    bindFeeInputs();
+    renderPresetChips();
+    calculate();
+  }
+
+  function bindFeeInputs() {
+    document.querySelectorAll('#feesBody input, #feesBody select').forEach(inp => {
+      inp.onchange = inp.oninput = (e) => {
+        const id = e.target.getAttribute('data-id');
+        const field = e.target.getAttribute('data-field');
+        const fe = current.fees.find(f => f.id === id);
+        if (!fe) return;
+        
+        if (field === 'name') { fe.name = e.target.value; renderPresetChips(); }
+        else if (field === 'type') { fe.type = e.target.value; renderFees(); debouncedSave(); return; }
+        else if (field === 'amount') fe.amount = parseFloat(e.target.value) || 0;
+        else if (field === 'method') fe.method = e.target.value;
+        else if (field === 'base') fe.base = e.target.value;
+        
+        calculate();
+        debouncedSave();
+      };
+    });
+    
+    document.querySelectorAll('[data-remove-fee]').forEach(btn => {
+      btn.onclick = (e) => {
+        const id = e.target.getAttribute('data-remove-fee');
+        current.fees = current.fees.filter(f => f.id !== id);
+        renderFees();
+        debouncedSave();
+        showToast("Charge removed");
+      };
+    });
+  }
+
+  function newFee(name, type, amount, method, base) {
+    return { id: 'fe'+(current.feeSeq++), name: name||'', type: type||'flat', amount: amount||0, method: method||'cbm', base: base||'cif' };
+  }
+
+  const addFeeBtn = document.getElementById('addFeeBtn');
+  if (addFeeBtn) {
+    addFeeBtn.onclick = () => {
+      current.fees.push(newFee('', 'flat', 0, 'cbm', 'cif'));
+      renderFees();
+      debouncedSave();
+    };
+  }
+
+  const applySlBtn = document.getElementById('applySlTaxBundleBtn');
+  if (applySlBtn) {
+    applySlBtn.onclick = () => {
+      const names = (current?.fees || []).map(f => (f.name || '').toLowerCase());
+      let added = 0;
+      if (!names.some(n => n.includes('duty'))) {
+        current.fees.push(newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif'));
+        added++;
+      }
+      if (!names.some(n => n.includes('pal'))) {
+        current.fees.push(newFee('PAL (Port & Airport Levy)', 'percent', 10, 'cbm', 'cif'));
+        added++;
+      }
+      if (!names.some(n => n.includes('vat'))) {
+        current.fees.push(newFee('VAT', 'percent', 18, 'cbm', 'running'));
+        added++;
+      }
+      renderFees();
+      debouncedSave();
+      showToast(added > 0 ? `Applied Sri Lanka Tax Bundle (+${added} taxes)` : "Sri Lanka Tax Bundle already active");
+    };
+  }
+
+  // ==== CALCULATIONS ====
+  // State for animations
+  let lastTotals = { cbm: 0, value: 0, freight: 0, fees: 0, total: 0 };
+
+  function calculate() {
+    if (!current) return;
+    
+    const exRate = parseFloat(document.getElementById('exRate').value) || 0;
+    const cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+    const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
+    const markupPct = parseFloat(document.getElementById('markupPercent').value) || 0;
+    
+    // Incomplete Step 2 warning alert
+    const alertBanner = document.getElementById('step2AlertBanner');
+    if (alertBanner) {
+      if (exRate <= 0) {
+        alertBanner.classList.remove('hidden');
+      } else {
+        alertBanner.classList.add('hidden');
+      }
+    }
+
+    const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
+    
+    // Calculate total measure (CBM or Kg) with rounding for air
+    let totalMeasure = 0;
+    const itemMeasures = current.items.map(i => {
+      let m = parseFloat(i.cbm) || 0;
+      totalMeasure += m;
+      return m;
+    });
+    
+    const billableMeasure = cargoMode === 'air' ? Math.ceil(totalMeasure) : totalMeasure;
+
+    const totalValueBase = current.items.reduce((s,i) => s + (i.qty * i.price), 0);
+    const totalValueLKR = totalValueBase * exRate;
+
+    // Convert freight if quoted in USD
+    let effFreightLkrPerUnit = cbmRate;
+    if (fCurr === 'USD') {
+      const convRate = current.baseCurrency === 'USD' ? (exRate || 305) : (current.usdToLkr || 305);
+      effFreightLkrPerUnit = cbmRate * convRate;
+    }
+    const freightTotal = billableMeasure * effFreightLkrPerUnit;
+
+    const perItem = current.items.map((it, idx) => {
+      const valueLKR = it.qty * it.price * exRate;
+      const measure = itemMeasures[idx];
+      const freightShare = totalMeasure > 0 ? (measure/totalMeasure) * freightTotal : 0;
+      return { it, valueLKR, freightShare, feesShare: 0, running: valueLKR + freightShare };
+    });
+
+    current.fees.forEach(fe => {
+      if (fe.type === 'flat'){
+        perItem.forEach((row, idx) => {
+          let share = 0;
+          if (fe.method === 'cbm') {
+            const measure = itemMeasures[idx];
+            share = totalMeasure > 0 ? (measure/totalMeasure) * fe.amount : 0;
+          }
+          else if (fe.method === 'value') share = totalValueLKR > 0 ? (row.valueLKR/totalValueLKR) * fe.amount : 0;
+          else share = perItem.length > 0 ? fe.amount / perItem.length : 0;
+          
+          row.feesShare += share;
+          row.running += share;
+        });
+      } else {
+        perItem.forEach(row => {
+          let base = row.valueLKR;
+          if (fe.base === 'cif') base = row.valueLKR + row.freightShare;
+          else if (fe.base === 'running') base = row.running;
+          
+          const amt = base * (fe.amount/100);
+          row.feesShare += amt;
+          row.running += amt;
+        });
+      }
+    });
+
+    let grandTotal = 0, grandFees = 0, sumQty = 0;
+    perItem.forEach(row => {
+      grandTotal += row.running;
+      grandFees += row.feesShare;
+      sumQty += row.it.qty;
+    });
+
+    renderResults(perItem, billableMeasure, totalValueLKR, freightTotal, grandFees, grandTotal, sumQty, markupPct);
+  }
+
+  function renderResults(perItem, tCbm, tVal, tFr, tFee, tTot, tQty, markupPct) {
+    // Animate summaries
+    animateNumber(document.getElementById('sumCbm'), lastTotals.cbm, tCbm, 500, true);
+    animateNumber(document.getElementById('sumValue'), lastTotals.value, tVal);
+    animateNumber(document.getElementById('sumFees'), lastTotals.fees, tFr + tFee);
+    animateNumber(document.getElementById('sumTotal'), lastTotals.total, tTot);
+    
+    lastTotals = { cbm: tCbm, value: tVal, freight: tFr, fees: tFee, total: tTot };
+
+    // Composition Bar
+    const barGoods = document.getElementById('barGoods');
+    const barFreight = document.getElementById('barFreight');
+    const barFees = document.getElementById('barFees');
+    if (tTot > 0) {
+      barGoods.style.width = (tVal / tTot * 100) + '%';
+      barFreight.style.width = (tFr / tTot * 100) + '%';
+      barFees.style.width = (tFee / tTot * 100) + '%';
+    } else {
+      barGoods.style.width = barFreight.style.width = barFees.style.width = '0%';
+    }
+
+    const body = document.getElementById('resultsBody');
+    const foot = document.getElementById('resultsFoot');
+    const costBar = document.getElementById('costBarSection');
+    body.innerHTML = '';
+    
+    if (perItem.length === 0) {
+      if (foot) foot.style.display = 'none';
+      if (costBar) costBar.style.display = 'none';
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td colspan="7" style="text-align:center; padding: 44px 16px;">
+          <div style="display:inline-flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="width:38px; height:38px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:18px;">📦</div>
+            <div style="font-weight:600; font-size:13.5px; color:var(--ink);">Awaiting Line Items</div>
+            <div style="font-size:12px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+          </div>
+        </td>
+      `;
+      body.appendChild(tr);
+      return;
+    }
+
+    if (foot) foot.style.display = '';
+    if (costBar) costBar.style.display = '';
+
+    perItem.forEach(row => {
+      const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;
+      const targetSell = unitCost * (1 + markupPct/100);
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight:600;">${escapeHtml(row.it.desc || '(untitled)')}</td>
+        <td class="num">${row.it.qty}</td>
+        <td class="num mono text-muted">${fmt(row.valueLKR)}</td>
+        <td class="num mono text-muted">${fmt(row.freightShare)}</td>
+        <td class="num mono text-muted">${fmt(row.feesShare)}</td>
+        <td class="num mono" style="font-weight:700; font-size:14px;">${fmt(unitCost)}</td>
+        <td class="num mono" style="font-weight:700; color:var(--success); font-size:14px;">${fmt(targetSell)}</td>
+      `;
+      body.appendChild(tr);
+    });
+
+    document.getElementById('footQty').textContent = tQty;
+    document.getElementById('footValue').textContent = fmt(tVal);
+    document.getElementById('footFreight').textContent = fmt(tFr);
+    document.getElementById('footCharges').textContent = fmt(tFee);
+  }
+
+  document.getElementById('markupPercent').addEventListener('input', calculate);
+
+  // ==== EXPORT ====
+  document.getElementById('exportPdfBtn').onclick = () => window.print();
+
+  document.getElementById('shareWaBtn').onclick = () => {
+    if(!current || !current.items.length) {
+      showToast("Nothing to share yet!", "error");
+      return;
+    }
+    const name = current.name || 'Shipment';
+    const cbm = lastTotals.cbm.toFixed(2);
+    const tot = fmt(lastTotals.total);
+    const qty = current.items.reduce((s,i) => s + i.qty, 0);
+    const text = `📦 *${name}*\nOrigin: ${current.route.origin}\nDest: ${current.route.dest}\n\n*Summary:*\nItems: ${current.items.length} (${qty} pcs)\nVolume: ${cbm} CBM\n*Total Landed Cost: LKR ${tot}*`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
+  document.getElementById('copyTableBtn').onclick = async () => {
+    const table = document.getElementById('resultsTable');
+    let tsv = '';
+    for (let r of table.rows) {
+      let rowData = [];
+      for (let c of r.cells) rowData.push(c.innerText.replace(/\n/g, ' '));
+      tsv += rowData.join('\t') + '\n';
+    }
+    try {
+      await navigator.clipboard.writeText(tsv);
+      showToast("Copied to clipboard!");
+    } catch(e) {
+      showToast("Failed to copy", "error");
+    }
+  };
+
+  document.getElementById('exportExcelBtn').onclick = () => {
+    if (typeof XLSX === 'undefined') {
+      showToast("Excel library loading, please try again in a moment.", "error");
+      return;
+    }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('resultsTable'));
+    XLSX.utils.book_append_sheet(wb, ws, "Landed Cost");
+    const filename = (current.name || "Shipment").replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".xlsx";
+    XLSX.writeFile(wb, filename);
+    showToast("Downloaded " + filename);
+  };
+
+  // ==== IMPORT & MAPPING ====
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const targetContent = document.getElementById('tab-' + tab.getAttribute('data-tab'));
+      if (targetContent) targetContent.classList.add('active');
+    };
+  });
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const fileInputPhoto = document.getElementById('fileInputPhoto');
+  const fileInputPdf = document.getElementById('fileInputPdf');
+  const fileInputExcel = document.getElementById('fileInputExcel');
+  const parseStatusText = document.getElementById('parseStatusText');
+  const parseStatusDiv = document.getElementById('parseStatus');
+  const parseSpinner = document.getElementById('parseSpinner');
+
+  let workbookSheets = {};
+  let currentRows = [];
+  let currentHeaderRowIdx = 0;
+
+  function bindInputHandler(el) {
+    if (!el) return;
+    el.onchange = (e) => {
+      const f = e.target.files?.[0];
+      if (f) {
+        handleFile(f);
+        el.value = '';
+      }
+    };
+  }
+
+  [fileInput, fileInputPhoto, fileInputPdf, fileInputExcel].forEach(bindInputHandler);
+
+  if (dropzone) {
+    const btnPhoto = document.getElementById('btnUploadPhoto');
+    const btnPdf = document.getElementById('btnUploadPdf');
+    const btnExcel = document.getElementById('btnUploadExcel');
+
+    if (btnPhoto && fileInputPhoto) {
+      btnPhoto.onclick = (e) => {
+        e.stopPropagation();
+        fileInputPhoto.click();
+      };
+    }
+    if (btnPdf && fileInputPdf) {
+      btnPdf.onclick = (e) => {
+        e.stopPropagation();
+        fileInputPdf.click();
+      };
+    }
+    if (btnExcel && fileInputExcel) {
+      btnExcel.onclick = (e) => {
+        e.stopPropagation();
+        fileInputExcel.click();
+      };
+    }
+
+    dropzone.onclick = (e) => {
+      if (fileInput) fileInput.click();
+    };
+
+    ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
+    dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
+  }
+
+  // ==== IN-BROWSER DOCUMENT & OCR ENGINE ====
+  function showParseStatus(msg, loading = false, error = false, progressPct = null) {
+    if (!parseStatusDiv || !parseStatusText) return;
+    parseStatusDiv.classList.remove('hidden');
+    parseStatusText.textContent = msg;
+    parseStatusText.style.color = error ? 'var(--danger)' : 'var(--primary)';
+    
+    if (parseSpinner) {
+      if (loading) parseSpinner.classList.remove('hidden');
+      else parseSpinner.classList.add('hidden');
+    }
+    
+    const progressWrap = document.getElementById('ocrProgressBarWrap');
+    const progressBar = document.getElementById('ocrProgressBar');
+    if (progressWrap && progressBar) {
+      if (progressPct !== null && progressPct >= 0) {
+        progressWrap.classList.remove('hidden');
+        progressBar.style.width = Math.min(100, Math.round(progressPct * 100)) + '%';
+      } else {
+        progressWrap.classList.add('hidden');
+      }
+    }
+  }
+
+  // Canvas Image Preprocessing (Contrast boost, auto-binarize, upscale for blurry WhatsApp photos)
+  async function preprocessImageForOcr(fileOrBlob) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(fileOrBlob);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          
+          // Determine upscale factor for high OCR clarity
+          let scale = 1.0;
+          if (img.width < 1200 || img.height < 1200) {
+            scale = Math.min(2.5, 1800 / Math.max(img.width, img.height));
+            if (scale < 1.2) scale = 1.5;
+          } else if (img.width > 3000 || img.height > 3000) {
+            scale = 2200 / Math.max(img.width, img.height);
+          }
+          
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          canvas.width = w;
+          canvas.height = h;
+          
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const data = imgData.data;
+          const len = data.length;
+          
+          // Contrast factor
+          const contrast = 1.4;
+          const factor = (259 * (contrast * 255 + 255)) / (255 * (259 - contrast * 255));
+          
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i], g = data[i+1], b = data[i+2];
+            // Grayscale
+            let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            // Contrast
+            gray = factor * (gray - 128) + 128;
+            
+            // Clean up colored table headers (e.g. yellow rows) and light backgrounds
+            if (gray > 190) {
+              gray = Math.min(255, gray + 40);
+            } else if (gray < 85) {
+              gray = Math.max(0, gray - 30);
+            }
+            
+            gray = Math.max(0, Math.min(255, gray));
+            data[i] = gray;
+            data[i+1] = gray;
+            data[i+2] = gray;
+          }
+          
+          ctx.putImageData(imgData, 0, 0);
+          resolve(canvas);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load image file.'));
+      };
+      img.src = url;
+    });
+  }
+
+  // In-Browser OCR using Tesseract.js
+  async function runBrowserOcr(fileOrCanvas, progressCb) {
+    if (typeof Tesseract === 'undefined') {
+      throw new Error("OCR engine is still loading. Please check your internet connection and try again.");
+    }
+    
+    let target = fileOrCanvas;
+    if (fileOrCanvas instanceof Blob || fileOrCanvas instanceof File) {
+      if (progressCb) progressCb({ status: 'Enhancing image resolution and contrast...', progress: 0.1 });
+      target = await preprocessImageForOcr(fileOrCanvas);
+    }
+    
+    if (progressCb) progressCb({ status: 'Loading OCR language models (English + Chinese)...', progress: 0.2 });
+    
+    let worker;
+    try {
+      worker = await Tesseract.createWorker(['eng', 'chi_sim'], 1, {
+        logger: m => {
+          if (m && m.status) {
+            const pct = m.progress != null ? Math.round(m.progress * 100) : null;
+            let msg = 'Scanning document...';
+            if (m.status === 'recognizing text') msg = `Reading text and numbers (${pct}%)...`;
+            else if (m.status.includes('load')) msg = `Loading language dictionaries (${pct != null ? pct + '%' : ''})...`;
+            if (progressCb) progressCb({ status: msg, progress: m.progress != null ? (0.2 + m.progress * 0.75) : 0.4 });
+          }
+        },
+        errorHandler: err => console.warn('Tesseract notice:', err)
+      });
+    } catch (e) {
+      // Fallback to English only if Chinese dictionary fails to download
+      worker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+          if (progressCb && m && m.progress != null) {
+            progressCb({ status: `Scanning text (${Math.round(m.progress * 100)}%)...`, progress: 0.2 + m.progress * 0.75 });
+          }
+        }
+      });
+    }
+    
+    try {
+      const result = await worker.recognize(target);
+      await worker.terminate();
+      return result.data;
+    } catch (err) {
+      try { await worker.terminate(); } catch(e){}
+      throw err;
+    }
+  }
+
+  // In-Browser PDF Parser using PDF.js
+  async function runPdfExtraction(file, progressCb) {
+    if (typeof pdfjsLib === 'undefined') {
+      throw new Error("PDF Reader library is loading. Please try again in a few seconds.");
+    }
+    
+    if (progressCb) progressCb({ status: 'Reading PDF document structure...', progress: 0.1 });
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdf.numPages;
+    
+    let allLines = [];
+    let totalWords = 0;
+    
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      if (progressCb) progressCb({ status: `Extracting page ${pageNum} of ${numPages}...`, progress: 0.1 + (pageNum / numPages) * 0.4 });
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      
+      if (textContent.items && textContent.items.length > 5) {
+        const items = textContent.items.map(it => ({
+          text: it.str,
+          x: it.transform[4],
+          y: it.transform[5],
+          w: it.width,
+          h: it.height
+        })).filter(it => it.text.trim().length > 0);
+        
+        totalWords += items.length;
+        
+        // Sort by Y descending (top to bottom)
+        items.sort((a, b) => b.y - a.y);
+        
+        const rows = [];
+        let currentRow = [];
+        let currentY = null;
+        
+        items.forEach(it => {
+          if (currentY === null || Math.abs(it.y - currentY) > 4) {
+            if (currentRow.length > 0) {
+              currentRow.sort((a, b) => a.x - b.x);
+              rows.push(currentRow);
+            }
+            currentRow = [it];
+            currentY = it.y;
+          } else {
+            currentRow.push(it);
+          }
+        });
+        if (currentRow.length > 0) {
+          currentRow.sort((a, b) => a.x - b.x);
+          rows.push(currentRow);
+        }
+        
+        rows.forEach(r => {
+          const lineText = r.map(it => it.text).join('\t');
+          if (lineText.trim()) allLines.push(lineText);
+        });
+      }
+    }
+    
+    // If no text layer found (scanned PDF), render pages to canvas and OCR
+    if (totalWords < 8) {
+      if (progressCb) progressCb({ status: 'Scanned PDF detected. Scanning with OCR engine...', progress: 0.5 });
+      allLines = [];
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        
+        const ocrData = await runBrowserOcr(canvas, progressCb);
+        const pageTextLines = (ocrData.text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        allLines.push(...pageTextLines);
+      }
+    }
+    
+    return allLines.join('\n');
+  }
+
+  // ==== AI VISION & CLOUD ENGINES ====
+  async function callAiVision(base64, mediaType, isPdf) {
+    const res = await fetch('/api/parse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        base64,
+        mimeType: mediaType,
+        isPdf
+      })
+    });
+    
+    if (res.ok) {
+      return await res.json();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || `Server error (${res.status})`);
+    }
+  }
+
+  // Universal unit and currency matchers
+  const UNIT_TOKENS = /^(pcs|pc|set|sets|ctn|ctns|box|boxes|pkg|pkgs|units?|prs|pairs?|只|个|件|套|箱|包|张|条|台|本|把|对|支|袋)$/i;
+  const CURRENCY_TOKENS = /^[¥$£€₩]|^(rmb|usd|eur|gbp|lkr|cny|cif|fob)$/i;
+
+  // Metadata row filters (MUST never be considered product items)
+  const METADATA_PATTERNS = [
+    /^(proforma|commercial|tax)\s*invoice\b/i,
+    /^(packing\s*list|bill\s*of\s*lading)\b/i,
+    /^(invoice\s*no|inv\s*no|po\s*no|order\s*no|bill\s*no)[\s.:：]/i,
+    /^(invoice\s*date|order\s*date|date|日期|订单日期)[\s.:：]/i,
+    /^(buyer|seller|consignee|shipper|notify|vendor|供货方|购货方|买方|卖方)[\s.:：]/i,
+    /^(tel|fax|email|phone|contact|address|地址|电话|联系人)[\s.:：]/i,
+    /^(this\s*price|payment\s*terms|terms|bank|beneficiary|此价格)[\s.:：]/i,
+    /^\d{4}[.\-/]\d{1,2}[.\-/]\d{1,2}$/ // Standalone date string
+  ];
+
+  function isMetadataLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.length < 3) return true;
+    return METADATA_PATTERNS.some(pat => pat.test(trimmed));
+  }
+
+  // Smart Invoice & Packing List Table Recognizer
+  function parseInvoiceAndPackingListText(rawText) {
+    if (!rawText || !rawText.trim()) return [];
+    
+    const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const parsedItems = [];
+    
+    // Header keywords across English & Chinese commercial docs
+    const headerTokens = ['item', 'style', 'desc', 'description', 'qty', 'quantity', 'deliver', 'price', 'amount', 'cbm', 'ctn', 'n.w', 'g.w', 'gross', '品名', '编号', '数量', '单价', '金额', '体积', '件数', 'photo', '图片', '款号', '货物名称', '规格'];
+    // Footer and summary stop tokens
+    const stopTokens = ['total', 'subtotal', 'grand total', '合计', '总计', '小计', '唛头', 'shipping mark', 'warehouse', '仓库', 'bank', 'payment', 'terms', 'signature', 'contact', '入库', '联系人', '收货人', '发货人'];
+
+    let inTable = false;
+    let headerPassed = false;
+
+    // Detect currency if mentioned in headers / doc
+    const lowerFull = rawText.toLowerCase();
+    if (lowerFull.includes('rmb') || lowerFull.includes('¥') || lowerFull.includes('cny')) {
+      const baseCurrEl = document.getElementById('baseCurrency');
+      if (baseCurrEl && baseCurrEl.value !== 'RMB') {
+        baseCurrEl.value = 'RMB';
+        if (current) current.baseCurrency = 'RMB';
+        updateCurrencyLabels();
+      }
+    } else if (lowerFull.includes('usd') || lowerFull.includes('$')) {
+      const baseCurrEl = document.getElementById('baseCurrency');
+      if (baseCurrEl && baseCurrEl.value !== 'USD') {
+        baseCurrEl.value = 'USD';
+        if (current) current.baseCurrency = 'USD';
+        updateCurrencyLabels();
+      }
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const lower = line.toLowerCase();
+
+      // Skip document title and invoice/buyer metadata immediately
+      if (isMetadataLine(line)) {
+        continue;
+      }
+
+      // Check for stop keywords at line start or standalone
+      if (inTable || headerPassed) {
+        const isStop = stopTokens.some(st => lower.startsWith(st) || lower.includes(st + ':') || lower.includes(st + '：'));
+        if (isStop || /^(total|subtotal|grand total|合计|总计|小计)\b/i.test(lower)) {
+          break;
+        }
+      }
+
+      // Check header match
+      const hCount = headerTokens.filter(k => lower.includes(k)).length;
+      if (hCount >= 2) {
+        inTable = true;
+        headerPassed = true;
+        continue;
+      }
+
+      // If header hasn't passed, only accept line if it has strong product code and valid numbers
+      const hasCode = /[A-Z0-9]{3,}-[A-Z0-9]+|[A-Z]{2,}\d+|\b(?:TY|YH|AE\d+|VIOS|KD|WP|NO\.)/i.test(line);
+      const hasNumbers = /\d+/.test(line);
+      if (!inTable && (hasCode && hasNumbers)) {
+        inTable = true;
+      }
+
+      if (!inTable) continue;
+
+      // Clean line delimiters (e.g. OCR table lines |, +, _, etc.)
+      const cleanLine = line.replace(/[|+_]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!cleanLine || cleanLine.length < 3) continue;
+
+      // Parse tokens
+      const rawTokens = cleanLine.split(' ');
+      const textParts = [];
+      const numbers = [];
+      let itemCode = '';
+
+      rawTokens.forEach(tok => {
+        // Skip date patterns in tokens (e.g. 2026.08.07, 2026-08-07)
+        if (/^\d{4}[.\-/]\d{1,2}[.\-/]\d{1,2}$/.test(tok)) return;
+
+        // Strip currency symbols and commas for number checking
+        const cleanNumStr = tok.replace(/^[¥$£€]/, '').replace(/,/g, '').trim();
+        const num = parseFloat(cleanNumStr);
+        
+        if (cleanNumStr && !isNaN(num) && /^-?\d+(\.\d+)?$/.test(cleanNumStr)) {
+          // Ignore unrealistic huge numbers that might be phone numbers or dates
+          if (num < 10000000) {
+            numbers.push(num);
+          }
+        } else {
+          // Identify product SKU / code
+          if (!itemCode && /^[A-Z0-9]{2,}[-_/][A-Z0-9]+$/i.test(tok)) {
+            itemCode = tok;
+          }
+          // Only add to description if not a unit or currency symbol
+          if (!UNIT_TOKENS.test(tok) && !CURRENCY_TOKENS.test(tok) && tok !== 'PHOTO' && tok !== '图片') {
+            textParts.push(tok);
+          }
+        }
+      });
+
+      if (numbers.length === 0 && textParts.length === 0) continue;
+
+      // Assemble description
+      let desc = textParts.join(' ').replace(/^(Description|PHOTO|Item|图片|产品描述|款号|品名|货物名称)\s*/i, '').trim();
+      if (itemCode && !desc.includes(itemCode)) {
+        desc = `${itemCode} ${desc}`.trim();
+      }
+
+      // Filter out pure header remnants or empty descriptions
+      if (!desc || /^(style\s*no|item\s*name|total|unit\s*price|delivery|qty)/i.test(desc)) {
+        if (numbers.length === 0) continue;
+      }
+
+      // Intelligent column heuristic from numbers array
+      let qty = 0;
+      let price = 0;
+      let cbm = 0;
+
+      if (numbers.length === 1) {
+        qty = numbers[0];
+      } else if (numbers.length === 2) {
+        if (numbers[1] < 1 && numbers[1] > 0) {
+          qty = numbers[0];
+          cbm = numbers[1];
+        } else {
+          qty = numbers[0];
+          price = numbers[1];
+        }
+      } else if (numbers.length >= 3) {
+        const decimals = numbers.filter(n => n > 0 && n < 10 && String(n).includes('.'));
+        const integers = numbers.filter(n => Number.isInteger(n) && n > 0);
+        
+        if (integers.length > 0) {
+          qty = integers[0];
+        }
+        
+        if (Math.abs(numbers[0] * numbers[1] - numbers[2]) < 5) {
+          qty = numbers[0];
+          price = numbers[1];
+        } else if (numbers.length >= 4 && Math.abs(numbers[1] * numbers[2] - numbers[3]) < 5) {
+          qty = numbers[1];
+          price = numbers[2];
+        } else {
+          qty = numbers[0] || 0;
+          price = numbers[1] || 0;
+        }
+        
+        if (decimals.length > 0) {
+          cbm = decimals[decimals.length - 1];
+        }
+      }
+
+      // Only save if it has a valid description AND either qty or price > 0
+      if (desc && (qty > 0 || price > 0)) {
+        parsedItems.push({
+          desc: desc,
+          qty: isFinite(qty) ? qty : 0,
+          price: isFinite(price) ? price : 0,
+          cbm: isFinite(cbm) ? cbm : 0
+        });
+      }
+    }
+
+    return parsedItems;
+  }
+
+  // Load structured items into manifest
+  function loadExtractedItems(items, sourceName) {
+    if (!items || items.length === 0) {
+      throw new Error("No product line items could be detected. Please check the photo or paste rows manually.");
+    }
+    
+    items.forEach(it => {
+      current.items.push({
+        id: 'it' + (current.itemSeq++),
+        desc: it.desc || '',
+        qty: it.qty || 0,
+        price: it.price || 0,
+        cbm: it.cbm || 0
+      });
+    });
+    
+    renderItems();
+    calculate();
+    debouncedSave();
+    
+    showParseStatus(`✓ Scanned and imported ${items.length} item(s) from ${sourceName}!`, false);
+    showToast(`Added ${items.length} item(s) from ${sourceName}`);
+    
+    document.getElementById('mappingPanel').classList.add('hidden');
+    const tableWrap = document.getElementById('itemsTableWrap');
+    if (tableWrap) {
+      tableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // Primary file router
+  async function handleFile(file) {
+    const isImg = /^image\//.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    
+    document.getElementById('mappingPanel').classList.add('hidden');
+    
+    if (isImg || isPdf) {
+      showParseStatus(`Analyzing document with AI Vision...`, true);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          const result = await callAiVision(base64, file.type || 'image/jpeg', isPdf);
+          
+          // If AI detects invalid / non-document image
+          if (result && result.isDocument === false) {
+            const reason = result.message || "This image does not appear to be an invoice or packing list. Please upload a commercial invoice or receipt.";
+            showParseStatus(`⚠️ Notice: ${reason}`, false, true);
+            showToast(reason, "error");
+            return;
+          }
+          
+          const items = Array.isArray(result) ? result : (result?.items || []);
+          if (items && items.length > 0) {
+            loadExtractedItems(items, file.name);
+            return;
+          } else {
+            showParseStatus("No product line items could be detected in this document. Please check the photo or paste rows manually.", false, true);
+            showToast("No product rows found", "error");
+            return;
+          }
+        } catch (aiErr) {
+          console.warn("AI Vision notice, falling back to local OCR:", aiErr);
+        }
+        // Fallback to local OCR if AI is unreachable
+        runLocalExtraction(file, isImg, isPdf);
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
+    
+    runLocalExtraction(file, isImg, isPdf);
+  }
+
+  async function runLocalExtraction(file, isImg, isPdf) {
+    if (isImg) {
+      try {
+        showParseStatus(`Analyzing photo with built-in OCR...`, true, false, 0.1);
+        const ocrData = await runBrowserOcr(file, p => {
+          showParseStatus(p.status, true, false, p.progress);
+        });
+        const items = parseInvoiceAndPackingListText(ocrData.text || '');
+        loadExtractedItems(items, file.name);
+      } catch (err) {
+        console.error("Image OCR error:", err);
+        showParseStatus(`Image Scan Notice: ${err.message}`, false, true);
+      }
+      return;
+    }
+    
+    if (isPdf) {
+      try {
+        showParseStatus(`Extracting tables from PDF...`, true, false, 0.1);
+        const pdfText = await runPdfExtraction(file, p => {
+          showParseStatus(p.status, true, false, p.progress);
+        });
+        const items = parseInvoiceAndPackingListText(pdfText);
+        loadExtractedItems(items, file.name);
+      } catch (err) {
+        console.error("PDF Extraction error:", err);
+        showParseStatus(`PDF Parse Error: ${err.message}`, false, true);
+      }
+      return;
+    }
+    
+    // Excel / CSV Spreadsheets
+    showParseStatus(`Reading spreadsheet ${file.name}...`, true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: 'array' });
+        workbookSheets = {};
+        wb.SheetNames.forEach(name => {
+          workbookSheets[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '', raw: true });
+        });
+        
+        const sheetSelect = document.getElementById('sheetSelect');
+        const sheetPicker = document.getElementById('sheetPicker');
+        sheetSelect.innerHTML = '';
+        wb.SheetNames.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = opt.textContent = name;
+          sheetSelect.appendChild(opt);
+        });
+        
+        if (wb.SheetNames.length > 1) sheetPicker.classList.remove('hidden');
+        else sheetPicker.classList.add('hidden');
+        
+        sheetSelect.onchange = () => loadSheet(sheetSelect.value);
+        showParseStatus(`Loaded ${file.name} (${wb.SheetNames.length} sheet(s)). Check mapping below.`, false);
+        loadSheet(wb.SheetNames[0]);
+      } catch(err) {
+        showParseStatus(`Error reading Excel file: ${err.message}`, false, true);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // ==== COLUMN MAPPING & IMPORT (For Spreadsheets) ====
+  const KEYWORDS = {
+    qty: ['qty','quantity','数量','deliver','pcs','只'],
+    price: ['price','unit price','单价','unit/price','amount','rmb'],
+    cbm: ['cbm total','cbm(total)','total cbm','cbm','材积','总体积','t/cbm','u/cbm'],
+    desc: ['model no','model','item','description','product','part','goods','name','货名','品名','款号','style']
+  };
+
+  function scoreHeader(row) {
+    return row.reduce((score, cell) => {
+      const s = String(cell).toLowerCase().trim();
+      if(s) Object.values(KEYWORDS).forEach(list => { if(list.some(k => s.includes(k))) score++; });
+      return score;
+    }, 0);
+  }
+
+  function findHeaderRow(rows) {
+    let best = 0, bestScore = -1;
+    rows.forEach((r, i) => { const sc = scoreHeader(r); if(sc > bestScore){ bestScore = sc; best = i; } });
+    return best;
+  }
+
+  function guessColumn(header, kind) {
+    for (let i = 0; i < header.length; i++) {
+      const s = String(header[i]).toLowerCase().trim();
+      if (s && KEYWORDS[kind].some(k => s.includes(k))) return i;
+    }
+    return -1;
+  }
+
+  function loadSheet(name) {
+    currentRows = workbookSheets[name] || [];
+    currentHeaderRowIdx = findHeaderRow(currentRows);
+    buildMappingUI();
+  }
+
+  function buildMappingUI() {
+    const header = currentRows[currentHeaderRowIdx] || [];
+    document.getElementById('headerRowLabel').textContent = currentHeaderRowIdx + 1;
+    
+    const selects = ['mapQty', 'mapPrice', 'mapCbm'].map(id => document.getElementById(id));
+    const descChecks = document.getElementById('descChecks');
+    selects.forEach(sel => sel.innerHTML = '');
+    descChecks.innerHTML = '';
+    
+    const guesses = {
+      qty: guessColumn(header, 'qty'),
+      price: guessColumn(header, 'price'),
+      cbm: -1
+    };
+    
+    const guessCbmAll = [];
+    header.forEach((c,i) => { if(KEYWORDS.cbm.some(k => String(c).toLowerCase().includes(k))) guessCbmAll.push(i); });
+    let cbmTotal = guessCbmAll.find(i => String(header[i]).toLowerCase().includes('total'));
+    guesses.cbm = cbmTotal !== undefined ? cbmTotal : (guessCbmAll.length ? guessCbmAll[guessCbmAll.length-1] : -1);
+    
+    const guessDesc = [];
+    header.forEach((c,i) => { if(KEYWORDS.desc.some(k => String(c).toLowerCase().includes(k))) guessDesc.push(i); });
+    
+    header.forEach((c, i) => {
+      const label = String(c).trim() || `Column ${i+1}`;
+      selects.forEach(sel => {
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${label} (col ${i+1})`;
+        sel.appendChild(opt);
+      });
+      const lbl = document.createElement('label');
+      lbl.className = 'flex items-center gap-2 text-sm mb-2';
+      lbl.style.cursor = 'pointer';
+      lbl.innerHTML = `<input type="checkbox" value="${i}" ${guessDesc.includes(i) ? 'checked' : ''}> ${label}`;
+      descChecks.appendChild(lbl);
+    });
+    
+    selects.forEach(sel => {
+      const none = document.createElement('option');
+      none.value = -1; none.textContent = '-- none --';
+      sel.appendChild(none);
+    });
+    
+    selects[0].value = guesses.qty;
+    selects[1].value = guesses.price;
+    selects[2].value = guesses.cbm;
+    
+    renderMappingPreview();
+    selects.forEach(sel => sel.onchange = renderMappingPreview);
+    descChecks.querySelectorAll('input').forEach(cb => cb.onchange = renderMappingPreview);
+    
+    document.getElementById('mappingPanel').classList.remove('hidden');
+    document.getElementById('mappingPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function getSelectedDesc() {
+    return Array.from(document.querySelectorAll('#descChecks input:checked')).map(cb => parseInt(cb.value));
+  }
+
+  function extractDataRows() {
+    const qIdx = parseInt(document.getElementById('mapQty').value);
+    const pIdx = parseInt(document.getElementById('mapPrice').value);
+    const cIdx = parseInt(document.getElementById('mapCbm').value);
+    const dIdx = getSelectedDesc();
+    
+    const out = [];
+    for(let r = currentHeaderRowIdx + 1; r < currentRows.length; r++) {
+      const row = currentRows[r];
+      if(!row || !row.length) continue;
+      
+      const firstCell = String(row[0] || '').trim().toLowerCase();
+      if(/^(total|subtotal|grand total|合计|总计|小计)\b/i.test(firstCell)) break; // stop row
+      
+      const qty = qIdx >= 0 ? parseFloat(String(row[qIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
+      const price = pIdx >= 0 ? parseFloat(String(row[pIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
+      const cbm = cIdx >= 0 ? parseFloat(String(row[cIdx] ?? '').replace(/[^0-9.\-]/g,'')) : NaN;
+      const desc = dIdx.map(i => String(row[i] || '').trim()).filter(Boolean).join(' - ');
+      
+      if (!desc && !(qty > 0) && !(price > 0)) continue;
+      if (!(qty > 0) && !(price > 0)) continue;
+      
+      out.push({ desc, qty: isFinite(qty)?qty:0, price: isFinite(price)?price:0, cbm: isFinite(cbm)?cbm:0 });
+    }
+    return out;
+  }
+
+  function renderMappingPreview() {
+    const rows = extractDataRows();
+    const table = document.getElementById('mappingPreviewTable');
+    let html = '<thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Price</th><th class="num">CBM</th></tr></thead><tbody>';
+    rows.slice(0, 3).forEach(r => {
+      html += `<tr><td>${escapeHtml(r.desc||'-')}</td><td class="num">${r.qty}</td><td class="num">${r.price}</td><td class="num">${r.cbm}</td></tr>`;
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+    document.getElementById('mappingNote').textContent = `${rows.length} valid item rows found`;
+  }
+
+  document.getElementById('confirmImportBtn').onclick = () => {
+    const rows = extractDataRows();
+    if(!rows.length) { showToast("No items mapped. Please adjust columns.", "error"); return; }
+    
+    rows.forEach(r => current.items.push({ id: 'it'+(current.itemSeq++), ...r }));
+    document.getElementById('mappingPanel').classList.add('hidden');
+    showToast(`Imported ${rows.length} items from spreadsheet`);
+    renderItems();
+    calculate();
+    debouncedSave();
+    
+    const tableWrap = document.getElementById('itemsTableWrap');
+    if (tableWrap) {
+      tableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
+  document.getElementById('cancelImportBtn').onclick = () => {
+    document.getElementById('mappingPanel').classList.add('hidden');
+  };
+
+  // Paste logic
+  document.getElementById('parseBtn').onclick = () => {
+    const raw = document.getElementById('pasteBox').value;
+    if(!raw.trim()) return;
+    let lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
+    
+    let added = 0;
+    lines.forEach(line => {
+      const parts = line.split(/\t|,(?![^()]*\))/).map(p=>p.trim());
+      if(parts.length < 2) return;
+      const desc = parts[0] || '';
+      const qty = parseFloat((parts[1]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const price = parseFloat((parts[2]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\-]/g,'')) || 0;
+      if(!desc) return;
+      current.items.push({ id: 'it'+(current.itemSeq++), desc, qty, price, cbm });
+      added++;
+    });
+    
+    if(added) {
+      document.getElementById('pasteBox').value = '';
+      showToast(`Pasted ${added} items`);
+      renderItems();
+      debouncedSave();
+    } else {
+      showToast("Could not parse rows. Check format.", "error");
+    }
+  };
+
+  // ==== INIT ====
+  loadState();
+
+})();
+</script>
+</body>
+</html>
