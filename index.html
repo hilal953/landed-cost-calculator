@@ -1046,337 +1046,197 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 
 
-/* === REFINED GOD-LEVEL LANDING PAGE STYLES === */
-html { scroll-behavior: smooth; }
-.lp-wrapper { width: 100%; overflow-x: hidden; }
-.lp-container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
 
-/* Clean Minimal Navbar */
+/* === GOD-LEVEL SIMPLE & ACCESSIBLE UI/UX STYLES === */
+html { scroll-behavior: smooth; }
+.lp-wrapper { width: 100%; overflow-x: hidden; background: #F8FAFC; color: #0F172A; font-family: 'Inter', -apple-system, sans-serif; }
+.lp-container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* Sticky Clean Nav */
 .lp-nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(248, 250, 252, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid #E2E8F0;
-  transition: all 0.2s ease;
 }
 .lp-nav-inner {
   display: flex; align-items: center; justify-content: space-between;
-  height: 64px; max-width: 1140px; margin: 0 auto; padding: 0 24px;
+  height: 60px; max-width: 1080px; margin: 0 auto; padding: 0 20px;
 }
-.lp-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: #0F172A; }
-.lp-brand-logo { font-size: 22px; line-height: 1; }
-.lp-brand-text { font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: #0F172A; }
-.lp-nav-links { display: flex; align-items: center; gap: 28px; list-style: none; margin: 0; padding: 0; }
-.lp-nav-links a {
-  text-decoration: none; color: #64748B; font-size: 13.5px; font-weight: 500;
-  transition: color 0.2s ease;
-}
+.lp-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #0F172A; }
+.lp-brand-logo { font-size: 20px; }
+.lp-brand-text { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
+.lp-nav-links { display: flex; align-items: center; gap: 24px; list-style: none; margin: 0; padding: 0; }
+.lp-nav-links a { text-decoration: none; color: #64748B; font-size: 13.5px; font-weight: 600; }
 .lp-nav-links a:hover { color: #0F172A; }
-.lp-nav-actions { display: flex; align-items: center; gap: 10px; }
 .lp-btn-nav-pro {
-  background: #FFF;
-  color: #0F172A; text-decoration: none; padding: 7px 14px; border-radius: 8px;
+  background: #E04D2D; color: #fff; text-decoration: none; padding: 7px 14px; border-radius: 6px;
   font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid #CBD5E1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
-.lp-btn-nav-pro:hover {
-  border-color: #E04D2D; color: #E04D2D; background: #FFFBFB;
-  box-shadow: 0 2px 8px rgba(224, 77, 45, 0.15); transform: translateY(-1px);
-}
-.lp-nav-price-pill {
-  background: #FEF2F2; color: #E04D2D; font-size: 11px; font-weight: 800;
-  padding: 1px 6px; border-radius: 12px; font-family: 'IBM Plex Mono', monospace;
-}
+.lp-btn-nav-pro:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
 
-/* Hero Section with Breathing Room */
-.lp-hero {
-  padding: 80px 0 70px; text-align: center; position: relative;
-}
+/* Hero Section */
+.lp-hero { padding: 64px 0 54px; text-align: center; }
 .lp-hero-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: #FFFFFF; border: 1px solid #E2E8F0;
-  padding: 5px 14px; border-radius: 30px; font-size: 12px; font-weight: 600;
-  color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.03); margin-bottom: 24px;
+  display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF;
+  border: 1px solid #E2E8F0; padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
-.lp-hero-pill .stars { color: #F59E0B; font-size: 12px; letter-spacing: 1px; }
+.lp-hero-pill .stars { color: #F59E0B; font-size: 11px; }
 .lp-hero h1 {
-  font-size: clamp(32px, 5vw, 52px); font-weight: 800; line-height: 1.18;
-  letter-spacing: -0.03em; color: #0F172A; max-width: 860px; margin: 0 auto 20px;
+  font-size: clamp(30px, 4.5vw, 48px); font-weight: 800; line-height: 1.2;
+  letter-spacing: -0.03em; color: #0F172A; max-width: 820px; margin: 0 auto 16px;
 }
-.lp-hero h1 .highlight {
-  color: #E04D2D;
-}
+.lp-hero h1 .highlight { color: #E04D2D; }
 .lp-hero-sub {
-  font-size: clamp(16px, 2vw, 18px); color: #64748B; max-width: 660px;
-  margin: 0 auto 36px; line-height: 1.6;
+  font-size: clamp(15px, 2vw, 17.5px); color: #64748B; max-width: 600px;
+  margin: 0 auto 30px; line-height: 1.55; font-weight: 400;
 }
-.lp-cta-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 50px;
-}
-.lp-cta-buttons { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.lp-cta-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
 .lp-btn-main {
   background: #E04D2D; color: #fff; font-size: 15px; font-weight: 700;
-  padding: 13px 26px; border-radius: 8px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  box-shadow: 0 4px 14px rgba(224, 77, 45, 0.28);
-  transition: all 0.2s ease;
+  padding: 12px 24px; border-radius: 6px; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(224, 77, 45, 0.25);
+  transition: all 0.2s;
 }
-.lp-btn-main:hover {
-  background: #C83C1E; transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(224, 77, 45, 0.38); color: #fff;
-}
+.lp-btn-main:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
 .lp-btn-secondary {
   background: #FFFFFF; color: #0F172A; font-size: 15px; font-weight: 600;
-  padding: 12px 22px; border-radius: 8px; text-decoration: none;
-  border: 1px solid #CBD5E1; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+  padding: 11px 20px; border-radius: 6px; text-decoration: none;
+  border: 1px solid #CBD5E1; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
 }
-.lp-btn-secondary:hover { background: #F8FAFC; border-color: #94A3B8; transform: translateY(-1px); }
+.lp-btn-secondary:hover { background: #F8FAFC; border-color: #94A3B8; }
 
-/* High-Aesthetic Manifest Mockup Card */
-.lp-hero-visual {
-  max-width: 900px; margin: 0 auto; background: #FFFFFF;
-  border: 1px solid #E2E8F0; border-radius: 12px;
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  overflow: hidden; text-align: left;
+/* Visual Simple Example Box */
+.lp-example-box {
+  max-width: 820px; margin: 0 auto; background: #FFFFFF; border: 1px solid #E2E8F0;
+  border-radius: 12px; padding: 24px; text-align: left; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06);
 }
-.lp-mockup-header {
-  background: #F8FAFC; border-bottom: 1px solid #E2E8F0;
-  padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
+.lp-example-header {
+  display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px;
+  border-bottom: 1px solid #F1F5F9; margin-bottom: 18px; flex-wrap: wrap; gap: 8px;
 }
-.lp-mockup-route {
-  display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px; font-weight: 700; color: #0F172A;
-}
-.lp-mockup-tag {
-  background: #E2E8F0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px;
-}
-.lp-mockup-status {
-  display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
-  color: #059669; font-family: 'IBM Plex Mono', monospace;
-}
-.lp-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #059669; }
-.lp-mockup-body { padding: 24px; }
-.lp-mockup-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-.lp-mockup-stat {
-  background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px;
-}
-.lp-mockup-stat-label {
-  font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #64748B;
-  font-family: 'IBM Plex Mono', monospace; margin-bottom: 6px; letter-spacing: 0.04em;
-}
-.lp-mockup-stat-val {
-  font-size: 19px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: #0F172A;
-}
-.lp-mockup-stat-val.accent { color: #E04D2D; }
-.lp-mockup-stat-sub { font-size: 11px; font-weight: 600; color: #059669; font-family: 'Inter', sans-serif; }
-.lp-bar-wrap {
-  background: #F1F5F9; border-radius: 6px; height: 7px; width: 100%; overflow: hidden; display: flex;
-}
-.lp-bar-labels {
-  display: flex; justify-content: space-between; margin-top: 10px; font-size: 11.5px;
-  font-family: 'IBM Plex Mono', monospace; color: #64748B;
+.lp-example-title { font-size: 13px; font-weight: 800; color: #0F172A; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; }
+.lp-example-badge { font-size: 11px; font-weight: 700; color: #059669; background: #ECFDF5; padding: 3px 8px; border-radius: 6px; }
+.lp-example-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.lp-example-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 14px; }
+.lp-example-label { font-size: 11px; font-weight: 700; color: #64748B; margin-bottom: 4px; text-transform: uppercase; }
+.lp-example-val { font-size: 18px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: #0F172A; }
+.lp-example-val.accent { color: #E04D2D; }
+.lp-example-footer {
+  background: #FFFDF5; border: 1px solid #FEF3C7; border-radius: 6px; padding: 10px 14px;
+  font-size: 12.5px; color: #92400E; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;
 }
 
-/* Sections with smooth vertical rhythm */
-.lp-section { padding: 90px 0; }
-.lp-section-header { text-align: center; max-width: 680px; margin: 0 auto 48px; }
+/* Sections */
+.lp-section { padding: 70px 0; }
+.lp-section-header { text-align: center; max-width: 640px; margin: 0 auto 40px; }
 .lp-section-tag {
-  font-size: 11px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
-  text-transform: uppercase; letter-spacing: 0.08em; color: #E04D2D;
-  background: #FEF2F2; padding: 3px 10px; border-radius: 20px;
-  display: inline-block; margin-bottom: 12px;
+  font-size: 11px; font-weight: 800; font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase; color: #E04D2D; background: #FEF2F2;
+  padding: 3px 8px; border-radius: 12px; display: inline-block; margin-bottom: 10px;
 }
-.lp-section-title {
-  font-size: clamp(26px, 3.5vw, 36px); font-weight: 800; letter-spacing: -0.02em;
-  color: #0F172A; margin-bottom: 12px; line-height: 1.25;
-}
-.lp-section-sub { font-size: 15.5px; color: #64748B; line-height: 1.6; }
+.lp-section-title { font-size: clamp(24px, 3.2vw, 32px); font-weight: 800; color: #0F172A; margin-bottom: 10px; line-height: 1.25; }
+.lp-section-sub { font-size: 15px; color: #64748B; line-height: 1.5; }
 
-/* Clean Pain Grid */
-.lp-pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-.lp-pain-card {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px;
-  padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s ease;
+/* 4 Simple Mistakes / Traps Grid */
+.lp-mistakes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.lp-mistake-card {
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-.lp-pain-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.05); border-color: #CBD5E1; }
-.lp-pain-icon {
-  width: 40px; height: 40px; border-radius: 8px; background: #FEF2F2; color: #E04D2D;
-  display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;
-}
-.lp-pain-title { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; color: #0F172A; }
-.lp-pain-desc { font-size: 13.5px; color: #64748B; line-height: 1.55; }
+.lp-mistake-icon { font-size: 22px; margin-bottom: 10px; }
+.lp-mistake-title { font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 6px; }
+.lp-mistake-desc { font-size: 13.5px; color: #64748B; line-height: 1.5; }
 
-/* Features Grid */
-.lp-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+/* 6 Core Features Grid */
+.lp-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .lp-feat-card {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px;
-  padding: 26px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s ease;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 22px;
 }
-.lp-feat-card:hover { border-color: #0F172A; box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
-.lp-feat-badge {
-  font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
-  background: #F1F5F9; color: #475569; padding: 2px 7px;
-  border-radius: 6px; display: inline-block; margin-bottom: 12px; text-transform: uppercase;
-}
-.lp-feat-badge.pro { background: #FEF2F2; color: #E04D2D; }
-.lp-feat-icon { font-size: 24px; margin-bottom: 12px; line-height: 1; }
-.lp-feat-title { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; color: #0F172A; }
-.lp-feat-desc { font-size: 13.5px; color: #64748B; line-height: 1.6; }
+.lp-feat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.lp-feat-icon { font-size: 22px; }
+.lp-feat-pill { font-size: 10px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; padding: 2px 6px; border-radius: 4px; }
+.lp-feat-pill.pro { background: #FEF2F2; color: #E04D2D; }
+.lp-feat-pill.free { background: #F1F5F9; color: #475569; }
+.lp-feat-title { font-size: 15.5px; font-weight: 700; color: #0F172A; margin-bottom: 6px; }
+.lp-feat-desc { font-size: 13.5px; color: #64748B; line-height: 1.5; }
 
-/* Aesthetic Light Free Tool Banner */
-.lp-freetool-section {
-  padding: 60px 0 80px; background: #F8FAFC;
-  border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
+/* Free Tool Section Wrap */
+.lp-freetool-wrap {
+  padding: 50px 0 70px; background: #F1F5F9; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
 }
 .lp-freetool-banner {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px 24px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  margin-bottom: 24px; flex-wrap: wrap; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
 }
-.lp-freetool-banner-text h3 {
-  font-size: 16px; font-weight: 700; margin-bottom: 3px; color: #0F172A;
-  display: flex; align-items: center; gap: 8px;
+.lp-freetool-banner h3 { font-size: 15px; font-weight: 700; color: #0F172A; margin: 0 0 2px; }
+.lp-freetool-banner p { font-size: 13px; color: #64748B; margin: 0; }
+.lp-freetool-banner a {
+  background: #0F172A; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 6px;
+  font-size: 13px; font-weight: 600; white-space: nowrap;
 }
-.lp-freetool-banner-text p { font-size: 13px; color: #64748B; margin: 0; }
-.lp-freetool-banner-cta {
-  background: #0F172A; color: #fff; text-decoration: none; padding: 9px 18px;
-  border-radius: 6px; font-size: 13px; font-weight: 600; white-space: nowrap;
-  transition: all 0.2s ease;
-}
-.lp-freetool-banner-cta:hover { background: #1E293B; transform: translateY(-1px); color: #fff; }
 
-/* Pricing Section */
-.lp-pricing-wrap { max-width: 820px; margin: 0 auto; }
-.lp-pricing-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 20px; align-items: stretch; }
+/* Pricing Grid */
+.lp-pricing-grid {
+  display: grid; grid-template-columns: 1fr 1.1fr; gap: 18px; max-width: 780px; margin: 0 auto; align-items: stretch;
+}
 .lp-price-card {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px;
-  padding: 32px 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column;
-  position: relative; transition: all 0.2s ease;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 28px 24px;
+  display: flex; flex-direction: column; position: relative;
 }
 .lp-price-card.featured {
-  border: 2px solid #0F172A; box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.1);
-  background: #FFFFFF;
+  border: 2px solid #0F172A;
 }
 .lp-price-ribbon {
-  position: absolute; top: -11px; right: 24px; background: #E04D2D; color: #fff;
-  font-size: 10px; font-weight: 800; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace;
-  padding: 2px 10px; border-radius: 12px; letter-spacing: 0.04em;
+  position: absolute; top: -10px; right: 20px; background: #E04D2D; color: #fff;
+  font-size: 10px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; padding: 2px 8px; border-radius: 10px;
 }
-.lp-price-plan { font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 4px; }
-.lp-price-desc { font-size: 13px; color: #64748B; margin-bottom: 18px; }
-.lp-price-amount {
-  font-size: 38px; font-weight: 800; font-family: 'IBM Plex Mono', monospace;
-  color: #0F172A; display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px;
+.lp-price-title { font-size: 17px; font-weight: 800; color: #0F172A; margin-bottom: 2px; }
+.lp-price-sub { font-size: 13px; color: #64748B; margin-bottom: 14px; }
+.lp-price-num { font-size: 36px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: #0F172A; margin-bottom: 4px; }
+.lp-price-num span { font-size: 13px; font-weight: 500; color: #64748B; font-family: 'Inter', sans-serif; }
+.lp-price-note { font-size: 12px; font-weight: 600; color: #059669; margin-bottom: 18px; }
+.lp-price-list { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
+.lp-price-list li { font-size: 13.5px; color: #334155; padding: 5px 0; display: flex; align-items: center; gap: 8px; }
+.lp-price-list li.off { color: #94A3B8; text-decoration: line-through; }
+.lp-price-list li .chk { color: #059669; font-weight: 800; }
+.lp-btn-price {
+  width: 100%; padding: 11px; border-radius: 6px; font-size: 14px; font-weight: 700;
+  text-align: center; text-decoration: none; display: block; border: 1px solid transparent;
 }
-.lp-price-amount span.period { font-size: 13px; font-weight: 500; color: #64748B; font-family: 'Inter', sans-serif; }
-.lp-price-subnote { font-size: 12px; font-weight: 600; color: #059669; margin-bottom: 20px; }
-.lp-price-list { list-style: none; padding: 0; margin: 0 0 28px; flex: 1; }
-.lp-price-list li {
-  font-size: 13.5px; color: #334155; padding: 6px 0; display: flex; align-items: flex-start; gap: 9px;
-}
-.lp-price-list li.disabled { color: #94A3B8; text-decoration: line-through; }
-.lp-price-list li .check { color: #059669; font-weight: 800; }
-.lp-price-btn {
-  width: 100%; padding: 12px; border-radius: 6px; font-size: 14.5px; font-weight: 700;
-  text-align: center; text-decoration: none; transition: all 0.2s ease; cursor: pointer;
-  display: block; border: 1px solid transparent;
-}
-.lp-price-btn.btn-free { background: #F1F5F9; color: #0F172A; border-color: #CBD5E1; }
-.lp-price-btn.btn-free:hover { background: #E2E8F0; }
-.lp-price-btn.btn-pro {
-  background: #E04D2D; color: #fff; box-shadow: 0 4px 12px rgba(224, 77, 45, 0.25);
-}
-.lp-price-btn.btn-pro:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
-.lp-pricing-trust {
-  text-align: center; font-size: 12px; color: #64748B; margin-top: 16px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
+.lp-btn-price.free { background: #F1F5F9; color: #0F172A; border-color: #CBD5E1; }
+.lp-btn-price.pro { background: #E04D2D; color: #fff; box-shadow: 0 2px 8px rgba(224, 77, 45, 0.25); }
+.lp-price-trust { text-align: center; font-size: 11.5px; color: #64748B; margin-top: 12px; }
 
 /* FAQ Accordion */
-.lp-faq-wrap { max-width: 740px; margin: 0 auto; }
+.lp-faq-wrap { max-width: 680px; margin: 0 auto; }
 .lp-faq-item {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px;
-  margin-bottom: 10px; overflow: hidden; transition: border-color 0.2s ease;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 8px; overflow: hidden;
 }
-.lp-faq-item:hover { border-color: #CBD5E1; }
 .lp-faq-q {
-  padding: 16px 20px; font-size: 15px; font-weight: 700; color: #0F172A;
+  padding: 14px 18px; font-size: 14.5px; font-weight: 700; color: #0F172A;
   cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-  user-select: none;
 }
-.lp-faq-q:hover { color: #E04D2D; }
-.lp-faq-icon { font-size: 16px; transition: transform 0.2s ease; color: #94A3B8; font-weight: 600; }
+.lp-faq-icon { font-size: 16px; color: #94A3B8; transition: transform 0.2s; }
 .lp-faq-a {
-  padding: 0 20px 16px; font-size: 14px; color: #64748B; line-height: 1.6;
-  display: none; border-top: 1px dashed #E2E8F0; padding-top: 12px;
+  padding: 0 18px 14px; font-size: 13.5px; color: #64748B; line-height: 1.55; display: none;
+  border-top: 1px dashed #E2E8F0; padding-top: 10px;
 }
 .lp-faq-item.open .lp-faq-a { display: block; }
 .lp-faq-item.open .lp-faq-icon { transform: rotate(45deg); color: #E04D2D; }
 
-/* Refined Minimal Footer */
-.lp-footer {
-  background: #F8FAFC; color: #64748B; padding: 56px 0 28px; font-size: 13px;
-  border-top: 1px solid #E2E8F0;
-}
-.lp-footer-top {
-  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 36px; margin-bottom: 40px;
-}
-.lp-footer-brand h4 { color: #0F172A; font-size: 16px; font-weight: 800; margin-bottom: 6px; }
-.lp-footer-brand p { font-size: 13px; line-height: 1.55; max-width: 360px; margin-bottom: 12px; color: #64748B; }
-.lp-lemon-badge {
-  display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF;
-  border: 1px solid #E2E8F0; padding: 5px 10px; border-radius: 6px;
-  color: #334155; font-size: 12px; font-weight: 500;
-}
-.lp-footer-col h5 { color: #0F172A; font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-.lp-footer-col ul { list-style: none; padding: 0; margin: 0; }
-.lp-footer-col ul li { margin-bottom: 8px; }
-.lp-footer-col ul li a { color: #64748B; text-decoration: none; transition: color 0.2s ease; cursor: pointer; }
-.lp-footer-col ul li a:hover { color: #0F172A; }
-.lp-footer-bottom {
-  border-top: 1px solid #E2E8F0; padding-top: 20px;
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  font-size: 12.5px; color: #94A3B8;
-}
+/* Simple Footer */
+.lp-footer { background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 32px 0 24px; font-size: 13px; color: #64748B; }
+.lp-footer-row1 { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid #F1F5F9; }
+.lp-footer-row2 { padding-top: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 12px; color: #94A3B8; }
 
-/* Legal Modals */
-.lp-modal-overlay {
-  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
-  z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.lp-modal-overlay.active { display: flex; }
-.lp-modal {
-  background: #FFFFFF; border-radius: 12px; width: 100%; max-width: 600px;
-  max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-  animation: slideInUp 0.2s ease forwards;
-}
-.lp-modal-header {
-  padding: 18px 22px; border-bottom: 1px solid #E2E8F0; display: flex;
-  align-items: center; justify-content: space-between;
-}
-.lp-modal-title { font-size: 17px; font-weight: 700; color: #0F172A; }
-.lp-modal-close {
-  background: transparent; border: none; font-size: 18px; color: #64748B;
-  cursor: pointer; padding: 4px 8px; border-radius: 4px;
-}
-.lp-modal-close:hover { background: #F1F5F9; color: #0F172A; }
-.lp-modal-body {
-  padding: 22px; overflow-y: auto; font-size: 13.5px; color: #475569; line-height: 1.6;
-}
-.lp-modal-body h4 { color: #0F172A; font-size: 14.5px; font-weight: 700; margin: 14px 0 4px; }
-.lp-modal-body h4:first-child { margin-top: 0; }
-.lp-modal-footer {
-  padding: 14px 22px; border-top: 1px solid #E2E8F0; text-align: right; background: #F8FAFC;
-  border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
-}
-
-@media (max-width: 860px) {
+@media (max-width: 768px) {
+  .lp-example-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-pricing-grid { grid-template-columns: 1fr; }
-  .lp-footer-top { grid-template-columns: 1fr; gap: 28px; }
-  .lp-mockup-stat-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-nav-links { display: none; }
 }
 
@@ -1386,8 +1246,9 @@ html { scroll-behavior: smooth; }
 
 
 
+
 <div class="lp-wrapper">
-  <!-- Clean Navbar -->
+  <!-- Top Navigation -->
   <header class="lp-nav">
     <div class="lp-nav-inner">
       <a href="#" class="lp-brand">
@@ -1395,194 +1256,182 @@ html { scroll-behavior: smooth; }
         <span class="lp-brand-text">Landed Cost Manifest</span>
       </a>
       <ul class="lp-nav-links">
-        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#free-tool">Free Tool</a></li>
-        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#pricing">Pricing ($9)</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
-      <div class="lp-nav-actions">
-        <a href="pro.html" class="lp-btn-nav-pro">
-          <span>✨ Unlock Pro</span>
-          <span class="lp-nav-price-pill">$9</span>
-        </a>
+      <div>
+        <a href="pro.html" class="lp-btn-nav-pro">Unlock Pro ($9)</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="lp-hero">
     <div class="lp-container">
       <div class="lp-hero-pill">
         <span class="stars">★★★★★</span>
-        <span>Trusted by 500+ Importers & E-Commerce Sellers</span>
+        <span>Trusted by 500+ Importers & E-Com Sellers</span>
       </div>
       <h1>
-        Stop Losing Money on <br>
-        <span class="highlight">Hidden Customs Taxes and Cargo Traps</span>
+        Know Your True Product Cost <br>
+        <span class="highlight">Before You Pay Your Supplier</span>
       </h1>
       <p class="lp-hero-sub">
-        Know your true landed cost per unit before you pay your supplier. Accurately calculate Customs Duty, PAL, VAT, Sea CBM, and Air Cargo in 30 seconds.
+        Calculate exact shipping fees, customs duties, and taxes in 30 seconds. Stop losing profit on hidden import costs.
       </p>
       <div class="lp-cta-wrap">
-        <div class="lp-cta-buttons">
-          <a href="pro.html" class="lp-btn-main">
-            🚀 Get Pro Calculator — $9
-          </a>
-          <a href="#free-tool" class="lp-btn-secondary">
-            ⚡ Try Free Tool Below
-          </a>
-        </div>
+        <a href="pro.html" class="lp-btn-main">🚀 Get Pro Access ($9 One-Time)</a>
+        <a href="#free-tool" class="lp-btn-secondary">⚡ Try Free Calculator Below</a>
       </div>
 
-      <!-- Manifest Preview Mockup -->
-      <div class="lp-hero-visual">
-        <div class="lp-mockup-header">
-          <div class="lp-mockup-route">
-            <span class="lp-mockup-tag">MANIFEST</span>
-            <span>SHANGHAI (PVG) ➔ COLOMBO (CMB)</span>
+      <!-- Real Example Card (Crystal Clear) -->
+      <div class="lp-example-box">
+        <div class="lp-example-header">
+          <div class="lp-example-title">Example: 100 Watches (Air Cargo)</div>
+          <div class="lp-example-badge">Instant Cost Breakdown</div>
+        </div>
+        <div class="lp-example-grid">
+          <div class="lp-example-card">
+            <div class="lp-example-label">Supplier Price</div>
+            <div class="lp-example-val">$500.00</div>
           </div>
-          <div class="lp-mockup-status">
-            <span class="lp-status-dot"></span>
-            <span>LIVE CALCULATION</span>
+          <div class="lp-example-card">
+            <div class="lp-example-label">Air Shipping (3kg)</div>
+            <div class="lp-example-val">$45.00</div>
+          </div>
+          <div class="lp-example-card">
+            <div class="lp-example-label">Customs & VAT</div>
+            <div class="lp-example-val">$85.00</div>
+          </div>
+          <div class="lp-example-card">
+            <div class="lp-example-label">Real Cost / Watch</div>
+            <div class="lp-example-val accent">$6.30</div>
           </div>
         </div>
-        <div class="lp-mockup-body">
-          <div class="lp-mockup-stat-grid">
-            <div class="lp-mockup-stat">
-              <div class="lp-mockup-stat-label">Total Cargo Measure</div>
-              <div class="lp-mockup-stat-val">3.24 <small style="font-size:11px; color:#64748B;">CBM / KG</small></div>
-            </div>
-            <div class="lp-mockup-stat">
-              <div class="lp-mockup-stat-label">Supplier Goods Value</div>
-              <div class="lp-mockup-stat-val">¥ 24,500</div>
-            </div>
-            <div class="lp-mockup-stat">
-              <div class="lp-mockup-stat-label">Customs & Freight</div>
-              <div class="lp-mockup-stat-val">LKR 285,400</div>
-            </div>
-            <div class="lp-mockup-stat">
-              <div class="lp-mockup-stat-label">Final Landed / Unit</div>
-              <div class="lp-mockup-stat-val accent">LKR 2,750</div>
-              <div class="lp-mockup-stat-sub">+30% Target Margin</div>
-            </div>
-          </div>
-          <div class="lp-bar-wrap">
-            <div style="width:55%; background:#0F172A;" title="Goods Value: 55%"></div>
-            <div style="width:25%; background:#E04D2D;" title="Freight: 25%"></div>
-            <div style="width:20%; background:#059669;" title="Taxes & Duty: 20%"></div>
-          </div>
-          <div class="lp-bar-labels">
-            <span>■ Goods: 55%</span>
-            <span>■ Freight: 25%</span>
-            <span>■ Duty & Taxes: 20%</span>
-          </div>
+        <div class="lp-example-footer">
+          <span>💡 <strong>Result:</strong> If you sell each watch for $15.00, your clear net profit is <strong>$8.70 per watch</strong>.</span>
+          <span>Zero guesswork.</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Problem Section (Clear, No em-dashes, Plain English) -->
-  <section class="lp-section" id="problem">
+  <!-- 4 Common Traps (Simple English, No BS) -->
+  <section class="lp-section" id="how-it-works">
     <div class="lp-container">
       <div class="lp-section-header">
-        <span class="lp-section-tag">The Cost of Guessing</span>
-        <h2 class="lp-section-title">The Real Cost of Guessing Your Import Taxes</h2>
-        <p class="lp-section-sub">Excel formulas fail when real customs rules apply. Here is how profit disappears:</p>
+        <span class="lp-section-tag">Common Traps</span>
+        <h2 class="lp-section-title">Where Importers Lose Money</h2>
+        <p class="lp-section-sub">Simple mistakes in manual spreadsheets cost hundreds of dollars per order.</p>
       </div>
 
-      <div class="lp-pain-grid">
-        <div class="lp-pain-card">
-          <div class="lp-pain-icon">✈️</div>
-          <h3 class="lp-pain-title">The Air Cargo Weight Rounding</h3>
-          <p class="lp-pain-desc">Air cargo charges for every full kilogram. If your shipment weighs 2.1 kg, airlines charge you for 3.0 kg. Ignoring this loses you money on every unit.</p>
+      <div class="lp-mistakes-grid">
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">✈️</div>
+          <h3 class="lp-mistake-title">Air Cargo Rounds Up</h3>
+          <p class="lp-mistake-desc">If your box weighs 2.1 kg, airlines bill you for 3.0 kg. If you miss this, you undercharge your customers.</p>
         </div>
 
-        <div class="lp-pain-card">
-          <div class="lp-pain-icon">📑</div>
-          <h3 class="lp-pain-title">Customs Duties and Port Levies Compound</h3>
-          <p class="lp-pain-desc">Customs duty, PAL, and VAT do not calculate only on the item price. They calculate on CIF and running totals. A small error in order of operations creates large unexpected bills at the port.</p>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">🏛️</div>
+          <h3 class="lp-mistake-title">Taxes Stack on Shipping</h3>
+          <p class="lp-mistake-desc">Customs taxes apply to the product AND the shipping fee, not just the product. Missing this causes port fee surprises.</p>
         </div>
 
-        <div class="lp-pain-card">
-          <div class="lp-pain-icon">💱</div>
-          <h3 class="lp-pain-title">Currency Changes Eat Your Margin</h3>
-          <p class="lp-pain-desc">You pay suppliers in foreign currencies like RMB, USD, or AED, but sell locally. If rates change before your shipment arrives, your profit disappears.</p>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">💱</div>
+          <h3 class="lp-mistake-title">Currency Changes</h3>
+          <p class="lp-mistake-desc">You pay suppliers in foreign money like RMB, USD, or AED. If exchange rates move, your profit disappears.</p>
         </div>
 
-        <div class="lp-pain-card">
-          <div class="lp-pain-icon">⏱️</div>
-          <h3 class="lp-pain-title">Manual Spreadsheet Errors</h3>
-          <p class="lp-pain-desc">Copying 40 rows from supplier packing lists into Excel is slow and easy to mess up. One wrong decimal point can make a profitable batch look like a loss.</p>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">📄</div>
+          <h3 class="lp-mistake-title">Typing Errors in Excel</h3>
+          <p class="lp-mistake-desc">Typing 30 items by hand into spreadsheets is slow and error-prone. One wrong number ruins your pricing.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- 6 Features (Simple & Clear) -->
   <section class="lp-section" id="features" style="background:#FFFFFF; border-top:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
     <div class="lp-container">
       <div class="lp-section-header">
-        <span class="lp-section-tag">Simple & Accurate</span>
-        <h2 class="lp-section-title">Calculate True Costs in Seconds</h2>
-        <p class="lp-section-sub">Built for small businesses and importers who want accurate numbers without headache.</p>
+        <span class="lp-section-tag">Features</span>
+        <h2 class="lp-section-title">Built for Simple, Accurate Pricing</h2>
+        <p class="lp-section-sub">Everything you need to price products with confidence.</p>
       </div>
 
-      <div class="lp-feat-grid">
+      <div class="lp-features-grid">
         <div class="lp-feat-card">
-          <span class="lp-feat-badge pro">Pro</span>
-          <div class="lp-feat-icon">🌍</div>
-          <h3 class="lp-feat-title">14 Currencies Supported</h3>
-          <p class="lp-feat-desc">Convert instantly between USD, RMB, AED, INR, EUR, GBP, JPY, and more with live exchange calculation.</p>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">🌍</span>
+            <span class="lp-feat-pill pro">PRO</span>
+          </div>
+          <h3 class="lp-feat-title">14 Currencies Built-in</h3>
+          <p class="lp-feat-desc">USD, RMB, AED, INR, EUR, GBP, JPY and more. Instant currency conversion with live math.</p>
         </div>
 
         <div class="lp-feat-card">
-          <span class="lp-feat-badge pro">Pro</span>
-          <div class="lp-feat-icon">✈️</div>
-          <h3 class="lp-feat-title">Air and Ocean Freight Switch</h3>
-          <p class="lp-feat-desc">Pick Sea Cargo (CBM) or Air Cargo (Kg). Includes automatic kilogram rounding for air shipments.</p>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">✈️🚢</span>
+            <span class="lp-feat-pill pro">PRO</span>
+          </div>
+          <h3 class="lp-feat-title">Air Cargo & Sea Freight</h3>
+          <p class="lp-feat-desc">Toggle between Sea (CBM) and Air (Kg). Includes automatic whole-kilogram billing for air shipments.</p>
         </div>
 
         <div class="lp-feat-card">
-          <span class="lp-feat-badge">Standard</span>
-          <div class="lp-feat-icon">📄</div>
-          <h3 class="lp-feat-title">Upload or Paste Supplier Invoices</h3>
-          <p class="lp-feat-desc">Drop your supplier Excel sheet or paste raw text. The tool auto-detects items, quantities, and prices.</p>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">📄</span>
+            <span class="lp-feat-pill free">FREE + PRO</span>
+          </div>
+          <h3 class="lp-feat-title">Upload Excel Packing Lists</h3>
+          <p class="lp-feat-desc">Drag and drop your supplier spreadsheet or paste raw text. Items, quantities, and prices auto-fill.</p>
         </div>
 
         <div class="lp-feat-card">
-          <span class="lp-feat-badge">Standard</span>
-          <div class="lp-feat-icon">🏛️</div>
-          <h3 class="lp-feat-title">Automated Duty, PAL, and VAT</h3>
-          <p class="lp-feat-desc">Built-in rules calculate exact customs taxes and spread them fairly across each individual item.</p>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">🏛️</span>
+            <span class="lp-feat-pill free">FREE + PRO</span>
+          </div>
+          <h3 class="lp-feat-title">Automatic Customs & Taxes</h3>
+          <p class="lp-feat-desc">Calculates Customs Duty, PAL, and VAT, spreading them fairly across every item in your shipment.</p>
         </div>
 
         <div class="lp-feat-card">
-          <span class="lp-feat-badge pro">Pro</span>
-          <div class="lp-feat-icon">📲</div>
-          <h3 class="lp-feat-title">Quick WhatsApp and PDF Export</h3>
-          <p class="lp-feat-desc">Share clean landed cost summaries with buyers or customs clearing agents in one tap.</p>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">📲</span>
+            <span class="lp-feat-pill pro">PRO</span>
+          </div>
+          <h3 class="lp-feat-title">1-Click WhatsApp & PDF Share</h3>
+          <p class="lp-feat-desc">Send clean cost summaries to your team on WhatsApp or print a clear PDF manifest in one tap.</p>
         </div>
 
         <div class="lp-feat-card">
-          <span class="lp-feat-badge">Private</span>
-          <div class="lp-feat-icon">🔒</div>
+          <div class="lp-feat-top">
+            <span class="lp-feat-icon">🔒</span>
+            <span class="lp-feat-pill free">PRIVATE</span>
+          </div>
           <h3 class="lp-feat-title">100% Private on Your Device</h3>
-          <p class="lp-feat-desc">Your prices and supplier details stay in your browser. Nothing is uploaded to any external server.</p>
+          <p class="lp-feat-desc">Your prices and supplier details stay in your browser. Nothing is uploaded to any outside server.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Free Tool Section -->
-  <section class="lp-freetool-section" id="free-tool">
+  <!-- Free Tool Section -->
+  <section class="lp-freetool-wrap" id="free-tool">
     <div class="lp-container">
       <div class="lp-freetool-banner">
-        <div class="lp-freetool-banner-text">
-          <h3>🟢 Free China Sea Cargo Calculator</h3>
-          <p>Includes China sea freight and customs tax calculations. Want 14 global currencies or Air cargo?</p>
+        <div>
+          <h3>🟢 Free China Sea Cargo Calculator (Live Below)</h3>
+          <p>Need 14 currencies (AED, INR, EUR...) or Air Cargo (Kg)? Unlock the Pro Edition.</p>
         </div>
-        <a href="pro.html" class="lp-freetool-banner-cta">Unlock Pro for $9 →</a>
+        <a href="pro.html">Open Pro ($9) →</a>
       </div>
     </div>
 <div class="app-container">
@@ -1969,128 +1818,118 @@ html { scroll-behavior: smooth; }
 
   </section>
 
-  <!-- Pricing Section -->
+  <!-- Pricing -->
   <section class="lp-section" id="pricing">
     <div class="lp-container">
       <div class="lp-section-header">
         <span class="lp-section-tag">Pricing</span>
-        <h2 class="lp-section-title">Simple, Honest Pricing. No Subscriptions.</h2>
-        <p class="lp-section-sub">Pay once, own it forever. Start pricing your shipments profitably today.</p>
+        <h2 class="lp-section-title">Simple One-Time Price. No Monthly Fees.</h2>
+        <p class="lp-section-sub">Pay once, use forever. 14-day money-back guarantee.</p>
       </div>
 
-      <div class="lp-pricing-wrap">
-        <div class="lp-pricing-grid">
-          <!-- Free Plan -->
-          <div class="lp-price-card">
-            <div class="lp-price-plan">Free Version</div>
-            <div class="lp-price-desc">For basic China sea freight calculations.</div>
-            <div class="lp-price-amount">$0 <span class="period">/ forever</span></div>
-            <div class="lp-price-subnote">Always free to use</div>
-            <ul class="lp-price-list">
-              <li><span class="check">✓</span> China Sea Imports (RMB & USD)</li>
-              <li><span class="check">✓</span> Ocean Freight Calculation (CBM)</li>
-              <li><span class="check">✓</span> Customs Duty & VAT Breakdown</li>
-              <li><span class="check">✓</span> Local Browser Auto-save</li>
-              <li class="disabled"><span>✕</span> 14 Global Currencies (AED, INR, EUR...)</li>
-              <li class="disabled"><span>✕</span> Air Cargo (Automatic Kg Rounding)</li>
-              <li class="disabled"><span>✕</span> WhatsApp & PDF Sharing</li>
-            </ul>
-            <a href="#free-tool" class="lp-price-btn btn-free">Use Free Tool Above</a>
-          </div>
+      <div class="lp-pricing-grid">
+        <!-- Free Plan -->
+        <div class="lp-price-card">
+          <div class="lp-price-title">Free Plan</div>
+          <div class="lp-price-sub">For simple China ocean imports.</div>
+          <div class="lp-price-num">$0 <span>/ forever</span></div>
+          <div class="lp-price-note">Free to use</div>
+          <ul class="lp-price-list">
+            <li><span class="chk">✓</span> China Sea Imports (RMB & USD)</li>
+            <li><span class="chk">✓</span> Ocean Freight Calculation (CBM)</li>
+            <li><span class="chk">✓</span> Customs Duty & VAT Breakdown</li>
+            <li><span class="chk">✓</span> Auto-saved in your browser</li>
+            <li class="off">14 Global Currencies (AED, INR, EUR...)</li>
+            <li class="off">Air Cargo with Kg Rounding</li>
+            <li class="off">1-Click WhatsApp & PDF Sharing</li>
+          </ul>
+          <a href="#free-tool" class="lp-btn-price free">Use Free Calculator Above</a>
+        </div>
 
-          <!-- Pro Plan -->
-          <div class="lp-price-card featured">
-            <div class="lp-price-ribbon">ONE-TIME $9 DEAL</div>
-            <div class="lp-price-plan">Pro Lifetime</div>
-            <div class="lp-price-desc">For active importers, e-com sellers, and traders.</div>
-            <div class="lp-price-amount">$9 <span class="period">/ one-time payment</span></div>
-            <div class="lp-price-subnote">✓ Pay once, yours forever • No subscriptions</div>
-            <ul class="lp-price-list">
-              <li><span class="check">✓</span> <strong>Everything in Free</strong></li>
-              <li><span class="check">✓</span> <strong>14 Global Currencies</strong> (AED, INR, EUR, GBP, JPY...)</li>
-              <li><span class="check">✓</span> <strong>Air Cargo (Kg) + Sea Cargo (CBM)</strong> switch</li>
-              <li><span class="check">✓</span> <strong>Airline Rounding Logic</strong> (Auto whole-kg billing)</li>
-              <li><span class="check">✓</span> <strong>Commercial Invoice & Excel Parser</strong></li>
-              <li><span class="check">✓</span> <strong>1-Click WhatsApp Landed Cost Sharing</strong></li>
-              <li><span class="check">✓</span> <strong>Client-Ready PDF Manifest Generation</strong></li>
-              <li><span class="check">✓</span> <strong>14-Day 100% Money-Back Guarantee</strong></li>
-            </ul>
-            <a href="pro.html" class="lp-price-btn btn-pro">⚡ Get Pro Lifetime Access ($9)</a>
-            <div class="lp-pricing-trust">
-              <span>🔒 Secure payments by Lemon Squeezy</span>
-            </div>
-          </div>
+        <!-- Pro Plan -->
+        <div class="lp-price-card featured">
+          <div class="lp-price-ribbon">ONE-TIME $9</div>
+          <div class="lp-price-title">Pro Lifetime</div>
+          <div class="lp-price-sub">For anyone importing from anywhere.</div>
+          <div class="lp-price-num">$9 <span>/ pay once, keep forever</span></div>
+          <div class="lp-price-note">✓ No monthly subscription</div>
+          <ul class="lp-price-list">
+            <li><span class="chk">✓</span> <strong>Everything in Free</strong></li>
+            <li><span class="chk">✓</span> <strong>14 Global Currencies</strong> (AED, INR, EUR, GBP, JPY...)</li>
+            <li><span class="chk">✓</span> <strong>Air Cargo (Kg) & Sea Freight (CBM)</strong></li>
+            <li><span class="chk">✓</span> <strong>Automatic Air Cargo Kg Rounding</strong></li>
+            <li><span class="chk">✓</span> <strong>Upload Excel & Supplier Invoices</strong></li>
+            <li><span class="chk">✓</span> <strong>1-Click WhatsApp & PDF Export</strong></li>
+            <li><span class="chk">✓</span> <strong>14-Day Money-Back Guarantee</strong></li>
+          </ul>
+          <a href="pro.html" class="lp-btn-price pro">⚡ Get Pro Access ($9)</a>
+          <div class="lp-price-trust">🔒 Secure payment processed by Lemon Squeezy</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section -->
+  <!-- FAQ -->
   <section class="lp-section" id="faq" style="background:#FFFFFF; border-top:1px solid #E2E8F0;">
     <div class="lp-container">
       <div class="lp-section-header">
-        <span class="lp-section-tag">Got Questions?</span>
-        <h2 class="lp-section-title">Frequently Asked Questions</h2>
-        <p class="lp-section-sub">Everything you need to know about the calculator and Pro edition.</p>
+        <span class="lp-section-tag">Questions</span>
+        <h2 class="lp-section-title">Common Questions</h2>
+        <p class="lp-section-sub">Simple answers to clear any doubts.</p>
       </div>
 
       <div class="lp-faq-wrap">
         <div class="lp-faq-item">
-          <div class="lp-faq-q"><span>Is the $9 really a one-time payment or a subscription?</span><span class="lp-faq-icon">+</span></div>
-          <div class="lp-faq-a">It is strictly a <strong>one-time payment of $9</strong>. No monthly recurring charges. You pay once and have lifetime access to the Pro calculator including future updates.</div>
+          <div class="lp-faq-q"><span>Do I pay every month or just once?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">You only pay <strong>$9 one time</strong>. There are no monthly charges and no subscriptions. You keep lifetime access.</div>
         </div>
 
         <div class="lp-faq-item">
-          <div class="lp-faq-q"><span>How does the Air Cargo weight rounding work?</span><span class="lp-faq-icon">+</span></div>
-          <div class="lp-faq-a">Airlines bill by whole kilograms (for example 2.1 kg is charged as 3.0 kg). Our Pro calculator calculates the true airline billing while dividing the cost fairly across all individual product items.</div>
+          <div class="lp-faq-q"><span>How does Air Cargo weight work?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">Airlines charge for full kilograms (for example, 2.1 kg is charged as 3.0 kg). Pro automatically calculates this so you never lose money on shipping.</div>
         </div>
 
         <div class="lp-faq-item">
-          <div class="lp-faq-q"><span>Can I upload my supplier Excel packing list?</span><span class="lp-faq-icon">+</span></div>
-          <div class="lp-faq-a">Yes. You can drag and drop any <code>.xlsx</code> spreadsheet or paste raw table text. The parser automatically detects item names, quantities, unit prices, and packaging metrics.</div>
+          <div class="lp-faq-q"><span>Can I upload my supplier's Excel sheet?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">Yes. Drop your Excel file or paste rows of text. The calculator automatically reads the item name, quantity, and price.</div>
         </div>
 
         <div class="lp-faq-item">
-          <div class="lp-faq-q"><span>Which 14 currencies are supported in Pro?</span><span class="lp-faq-icon">+</span></div>
-          <div class="lp-faq-a">Pro supports RMB (Chinese Yuan), USD (US Dollar), AED (UAE Dirham), INR (Indian Rupee), EUR (Euro), GBP (British Pound), JPY (Japanese Yen), AUD (Australian Dollar), CAD (Canadian Dollar), SGD (Singapore Dollar), CHF (Swiss Franc), HKD (Hong Kong Dollar), MYR (Malaysian Ringgit), and THB (Thai Baht).</div>
-        </div>
-
-        <div class="lp-faq-item">
-          <div class="lp-faq-q"><span>What is your refund policy?</span><span class="lp-faq-icon">+</span></div>
-          <div class="lp-faq-a">We offer a <strong>14-Day Money-Back Guarantee</strong>. If the calculator does not save you time or prevent costly import mistakes, email support and we will refund your $9 payment.</div>
+          <div class="lp-faq-q"><span>What if I am not happy with it?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">We give you a <strong>14-day money-back guarantee</strong>. If you want a refund, email aadil.mohomed786@gmail.com and we will refund your $9.</div>
         </div>
       </div>
     </div>
   </section>
 
-    <!-- Clean Minimal Footer -->
-  <footer class="lp-footer" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 40px 0 30px;">
+  <!-- Simple Clean Footer -->
+  <footer class="lp-footer">
     <div class="lp-container">
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid #F1F5F9;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 20px;">🚢</span>
-          <span style="font-weight: 800; font-size: 15px; color: #0F172A;">Landed Cost Manifest</span>
-          <span style="color: #94A3B8; font-size: 13px; margin-left: 8px;">— Payments processed by Lemon Squeezy</span>
+      <div class="lp-footer-row1">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:18px;">🚢</span>
+          <strong style="color:#0F172A;">Landed Cost Manifest</strong>
+          <span style="color:#94A3B8; font-size:12px;">— Payments by Lemon Squeezy</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 13px;">
-          <a href="#free-tool" style="color: #64748B; text-decoration: none;">Free Tool</a>
-          <a href="pro.html" style="color: #E04D2D; font-weight: 700; text-decoration: none;">Pro ($9)</a>
-          <a href="#pricing" style="color: #64748B; text-decoration: none;">Pricing</a>
-          <a onclick="openModal('terms')" style="color: #64748B; cursor: pointer;">Terms</a>
-          <a onclick="openModal('privacy')" style="color: #64748B; cursor: pointer;">Privacy</a>
-          <a onclick="openModal('refund')" style="color: #64748B; cursor: pointer;">Refunds (14 Days)</a>
-          <a onclick="openModal('contact')" style="color: #0F172A; font-weight: 600; cursor: pointer;">Contact</a>
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:13px;">
+          <a href="#free-tool" style="color:#64748B; text-decoration:none;">Free Tool</a>
+          <a href="pro.html" style="color:#E04D2D; font-weight:700; text-decoration:none;">Pro ($9)</a>
+          <a href="#pricing" style="color:#64748B; text-decoration:none;">Pricing</a>
+          <a onclick="openModal('terms')" style="color:#64748B; cursor:pointer;">Terms</a>
+          <a onclick="openModal('privacy')" style="color:#64748B; cursor:pointer;">Privacy</a>
+          <a onclick="openModal('refund')" style="color:#64748B; cursor:pointer;">Refunds (14 Days)</a>
+          <a onclick="openModal('contact')" style="color:#0F172A; font-weight:600; cursor:pointer;">Contact</a>
         </div>
       </div>
-      <div style="padding-top: 18px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #94A3B8; flex-wrap: wrap; gap: 10px;">
+      <div class="lp-footer-row2">
         <div>© 2026 Landed Cost Manifest. All rights reserved.</div>
-        <div>Support: <a href="mailto:aadil.mohomed786@gmail.com" style="color: #64748B; text-decoration: none;">aadil.mohomed786@gmail.com</a></div>
+        <div>Support: <a href="mailto:aadil.mohomed786@gmail.com" style="color:#64748B; text-decoration:none;">aadil.mohomed786@gmail.com</a></div>
       </div>
     </div>
   </footer>
 </div>
 
-<!-- POLICY MODALS (Lemon Squeezy Compliance) -->
+<!-- Legal Modals -->
 <div class="lp-modal-overlay" id="policyModal" onclick="closeModal(event)">
   <div class="lp-modal" onclick="event.stopPropagation()">
     <div class="lp-modal-header">
@@ -2105,26 +1944,23 @@ html { scroll-behavior: smooth; }
 </div>
 
 <script>
-// Modal Data & Interactions for Lemon Squeezy Approval
 const POLICIES = {
   terms: {
     title: 'Terms of Service',
     body: `
-      <h4>1. Terms of Use</h4>
-      <p>By purchasing or using Landed Cost Manifest, you receive a lifetime personal or commercial license to use the Pro calculator.</p>
-      <h4>2. Merchant of Record</h4>
-      <p>Our orders are securely processed by Lemon Squeezy, our Merchant of Record.</p>
-      <h4>3. Disclaimer</h4>
-      <p>Estimates are calculated based on user input rates and standard tariff rules. Verify official clearances with your local customs broker.</p>
+      <h4>Terms of Use</h4>
+      <p>Paying the $9 one-time fee gives you lifetime personal or business access to the Pro Calculator.</p>
+      <h4>Payment Processing</h4>
+      <p>Payments are securely processed by Lemon Squeezy, our Merchant of Record.</p>
     `
   },
   privacy: {
     title: 'Privacy Policy',
     body: `
-      <h4>1. Private on Device</h4>
-      <p>Your prices, supplier invoices, and product data remain 100% inside your browser localStorage. We do not store or transmit your data to any external server.</p>
-      <h4>2. Payments</h4>
-      <p>All payments are securely handled by Lemon Squeezy. We do not store credit cards.</p>
+      <h4>100% Private</h4>
+      <p>Your pricing and supplier details stay in your browser. We never see, store, or sell your product data.</p>
+      <h4>Payments</h4>
+      <p>All payments are securely handled by Lemon Squeezy. We do not store payment card information.</p>
     `
   },
   refund: {
@@ -2139,10 +1975,10 @@ const POLICIES = {
   contact: {
     title: 'Contact Support',
     body: `
-      <h4>Support & Inquiries</h4>
-      <p>For any questions, feedback, or assistance, reach us directly at:</p>
+      <h4>Support & Contact</h4>
+      <p>For any questions or help, email us directly:</p>
       <p style="margin: 14px 0;"><a href="mailto:aadil.mohomed786@gmail.com" style="color: #E04D2D; font-weight: 700; font-size: 16px; font-family: 'IBM Plex Mono', monospace;">aadil.mohomed786@gmail.com</a></p>
-      <p style="font-size: 13px; color: #64748B;">We reply promptly to all customer inquiries.</p>
+      <p style="font-size: 13px; color: #64748B;">We reply quickly to all customer emails.</p>
     `
   }
 };
@@ -2161,7 +1997,6 @@ function closeModal(e) {
   }
 }
 
-// FAQ Accordion Toggle
 document.querySelectorAll('.lp-faq-q').forEach(q => {
   q.onclick = () => {
     const item = q.closest('.lp-faq-item');
