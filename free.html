@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Landed Cost Manifest</title>
+<title>Free China Sea Import Calculator - Landed Cost Manifest</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1053,8 +1053,9 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .summary-stamp { border-color: #000; color: #000; }
 }
 
-/* === AESTHETIC PRO SUITE NAVIGATION HEADER === */
-.pro-nav-header {
+
+/* === AESTHETIC FREE SUITE NAVIGATION HEADER === */
+.free-nav-header {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1065,7 +1066,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   z-index: 1000;
   box-shadow: 0 1px 4px rgba(0,0,0,0.03);
 }
-.pro-nav-inner {
+.free-nav-inner {
   max-width: 1400px;
   margin: 0 auto;
   height: 56px;
@@ -1074,24 +1075,24 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   justify-content: space-between;
   gap: 12px;
 }
-.pro-nav-brand-group {
+.free-nav-brand-group {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.pro-nav-brand {
+.free-nav-brand {
   display: flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
   color: #0F172A;
 }
-.pro-nav-logo { font-size: 20px; }
-.pro-nav-title { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: #0F172A; }
-.pro-nav-badge {
-  background: #FEF2F2;
-  color: #E04D2D;
-  border: 1px solid rgba(224, 77, 45, 0.2);
+.free-nav-logo { font-size: 20px; }
+.free-nav-title { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: #0F172A; }
+.free-nav-badge {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
   font-weight: 800;
@@ -1100,7 +1101,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
-.pro-nav-status {
+.free-nav-status {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1109,42 +1110,45 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   padding-left: 10px;
   border-left: 1px solid #CBD5E1;
 }
-.pro-status-dot {
+.free-status-dot {
   display: inline-block;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #10B981;
 }
-.pro-status-title { font-weight: 600; color: #334155; }
-.pro-status-sep { color: #94A3B8; }
-.pro-status-sub {
+.free-status-title { font-weight: 600; color: #334155; }
+.free-status-sep { color: #94A3B8; }
+.free-status-sub {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11.5px;
   color: #64748B;
 }
-.pro-nav-actions {
+.free-nav-actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.pro-nav-license {
-  display: flex;
+.free-nav-pro-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
-  padding: 4px 10px;
-  border-radius: 6px;
-}
-.license-chk { color: #16A34A; font-size: 11px; font-weight: 800; }
-.license-text {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  gap: 6px;
+  background: #E04D2D;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 12px;
   font-weight: 700;
-  color: #15803D;
+  padding: 6px 14px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(224, 77, 45, 0.25);
+  transition: all 0.2s;
 }
-.pro-nav-back-btn {
+.free-nav-pro-btn:hover {
+  background: #C83C1E;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+.free-nav-back-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1158,40 +1162,38 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   border: 1px solid #CBD5E1;
   transition: all 0.2s;
 }
-.pro-nav-back-btn:hover {
+.free-nav-back-btn:hover {
   background: #F1F5F9;
   border-color: #94A3B8;
 }
 
 @media (max-width: 768px) {
-  .pro-nav-header {
+  .free-nav-header {
     padding: 0 14px;
     height: 48px;
   }
-  .pro-nav-inner {
+  .free-nav-inner {
     height: 48px;
     gap: 8px;
   }
-  .pro-nav-status {
+  .free-nav-status {
     display: none !important;
   }
-  .pro-nav-title {
+  .free-nav-title {
     font-size: 13.5px;
   }
-  .pro-nav-license {
-    padding: 3px 6px;
+  .free-nav-pro-btn {
+    padding: 5px 10px;
+    font-size: 11px;
   }
-  .pro-nav-license .license-text {
-    font-size: 10px;
-  }
-  .pro-nav-back-btn {
+  .free-nav-back-btn {
     padding: 5px 8px;
     font-size: 11px;
     gap: 4px;
   }
 }
 @media (max-width: 400px) {
-  .pro-nav-license {
+  .free-nav-status {
     display: none !important;
   }
 }
@@ -1200,42 +1202,40 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 </head>
 <body>
 
-
-<!-- AESTHETIC PRO SUITE TOPBAR -->
-<header class="pro-nav-header">
-  <div class="pro-nav-inner">
+<!-- AESTHETIC FREE SUITE TOPBAR -->
+<header class="free-nav-header">
+  <div class="free-nav-inner">
     
-    <!-- Left: Pro Brand & Global Status -->
-    <div class="pro-nav-brand-group">
-      <a href="/" class="pro-nav-brand">
-        <span class="pro-nav-logo">🚢</span>
-        <span class="pro-nav-title">Landed Cost</span>
+    <!-- Left: Free Brand & Global Status -->
+    <div class="free-nav-brand-group">
+      <a href="/" class="free-nav-brand">
+        <span class="free-nav-logo">🚢</span>
+        <span class="free-nav-title">Landed Cost</span>
       </a>
-      <span class="pro-nav-badge">PRO</span>
-      <div class="pro-nav-status">
-        <span class="pro-status-dot"></span>
-        <span class="pro-status-title">Global Engine Active</span>
-        <span class="pro-status-sep">•</span>
-        <span class="pro-status-sub">14 Currencies & Air/Sea Freight</span>
+      <span class="free-nav-badge">FREE EDITION</span>
+      <div class="free-nav-status">
+        <span class="free-status-dot"></span>
+        <span class="free-status-title">China Sea Cargo Active</span>
+        <span class="free-status-sep">•</span>
+        <span class="free-status-sub">RMB / USD to Local Currency</span>
       </div>
     </div>
 
-    <!-- Right: License Verified & Home Link -->
-    <div class="pro-nav-actions">
-      <div class="pro-nav-license">
-        <span class="license-chk">✓</span>
-        <span class="license-text">$9 LIFETIME LICENSE</span>
-      </div>
-      <a href="free.html" class="pro-nav-back-btn">
-        <span>Free Tool</span>
+    <!-- Right: Pro Upgrade & Home Link -->
+    <div class="free-nav-actions">
+      <a href="pro.html" class="free-nav-pro-btn">
+        <span>🚀</span>
+        <span>Unlock Pro ($9)</span>
       </a>
-      <a href="/" class="pro-nav-back-btn">
-        <span>← Home</span>
+      <a href="/" class="free-nav-back-btn">
+        <span>←</span>
+        <span>Back to Home</span>
       </a>
     </div>
 
   </div>
 </header>
+
 <div class="app-container">
   <aside class="sidebar">
     <div class="history-header">
@@ -1265,27 +1265,27 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
         </div>
         <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
         <div class="manifest-route-ribbon">
-          <div class="route-station" title="Origin Country & Port">
-            <span class="station-flag" id="originFlag">🌐 WORLD</span>
-            <input type="text" id="routeOrigin" value="DUBAI / GLOBAL" class="station-input" title="Origin City / Port" style="width:115px;" placeholder="Origin City">
+          <div class="route-station">
+            <span class="station-flag">CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City">
           </div>
-          <div class="route-transit" title="Transit Mode">
+          <div class="route-transit">
             <span class="transit-line"></span>
-            <span class="transit-badge" id="routeTransitBadge">🚢 SEA CARGO</span>
+            <span class="transit-badge">🚢 SEA</span>
             <span class="transit-line"></span>
           </div>
-          <div class="route-station" title="Destination Customs Port">
-            <span class="station-flag">PORT</span>
-            <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port" placeholder="Customs Port" style="width:85px;">
+          <div class="route-station">
+            <span class="station-flag">LK</span>
+            <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port">
           </div>
-          <div class="route-transit" title="Local Inland Transport">
+          <div class="route-transit">
             <span class="transit-line"></span>
             <span class="transit-badge">🚛 INLAND</span>
             <span class="transit-line"></span>
           </div>
-          <div class="route-station" title="Final Delivery Location">
+          <div class="route-station">
             <span class="station-flag dest">📍</span>
-            <input type="text" id="routeDest" value="DESTINATION" class="station-input" title="Final Destination" placeholder="Final City" style="width:95px;">
+            <input type="text" id="routeDest" value="MATARA" class="station-input" title="Final Destination">
           </div>
         </div>
       </div>
@@ -1427,7 +1427,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
                   <th>Description</th>
                   <th class="num" style="width:100px">Qty</th>
                   <th class="num" style="width:140px">Unit Price</th>
-                  <th class="num" style="width:120px" id="thMeasure">Total CBM</th>
+                  <th class="num" style="width:120px">Total CBM</th>
                   <th class="num" style="width:140px">Value Total</th>
                   <th style="width:40px"></th>
                 </tr>
@@ -1461,18 +1461,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
               <select id="baseCurrency">
                 <option value="RMB">RMB (¥) Chinese Yuan</option>
                 <option value="USD">USD ($) US Dollar</option>
-                <option value="EUR">EUR (€) Euro</option>
-                <option value="GBP">GBP (£) British Pound</option>
-                <option value="INR">INR (₹) Indian Rupee</option>
-                <option value="AED">AED (د.إ) UAE Dirham</option>
-                <option value="JPY">JPY (¥) Japanese Yen</option>
-                <option value="AUD">AUD ($) Australian Dollar</option>
-                <option value="CAD">CAD ($) Canadian Dollar</option>
-                <option value="SGD">SGD ($) Singapore Dollar</option>
-                <option value="CHF">CHF (Fr) Swiss Franc</option>
-                <option value="HKD">HKD ($) Hong Kong Dollar</option>
-                <option value="MYR">MYR (RM) Malaysian Ringgit</option>
-                <option value="THB">THB (฿) Thai Baht</option>
               </select>
             </div>
           </div>
@@ -1487,22 +1475,12 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
           </div>
 
           <div class="rate-card">
-            <div class="rate-card-title">🚢 Transport Mode</div>
-            <div class="input-field" style="margin:0;">
-              <select id="cargoMode">
-                <option value="sea">Sea Cargo (by CBM)</option>
-                <option value="air">Air Cargo (by Kg)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="rate-card">
             <div class="rate-card-title">🚢 Ocean Freight Rate</div>
             <div style="display:flex; gap:6px; align-items:center;">
               <div class="input-field" style="margin:0; flex:1;">
                 <span class="input-prefix" id="cbmPrefix">LKR</span>
                 <input type="number" id="cbmRate" step="any" placeholder="35000" class="mono">
-                <span class="input-suffix" id="cbmSuffix">/ CBM</span>
+                <span class="input-suffix">/ CBM</span>
               </div>
               <div class="input-field" style="margin:0; width:95px;">
                 <select id="freightCurrency" style="padding:8px 4px; font-weight:700; font-size:12px;">
@@ -1574,7 +1552,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       <div class="summary-grid">
         <div class="summary-card">
           <div class="summary-label"><span>📦 Total Volume</span></div>
-          <div class="summary-value"><span id="sumCbm">0.00</span> <span class="summary-unit" id="sumMeasureUnit">CBM</span></div>
+          <div class="summary-value"><span id="sumCbm">0.00</span> <span class="summary-unit">CBM</span></div>
         </div>
         <div class="summary-card">
           <div class="summary-label"><span>🏷️ Goods Value</span></div>
@@ -1640,7 +1618,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- SheetJS for XLSX support -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <!-- PDF.js for in-browser PDF parsing -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1661,15 +1638,14 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
   };
 
-  const DEFAULT_SHIPMENT = (name = 'Global Shipment 1') => ({
+  const DEFAULT_SHIPMENT = (name = 'Guangzhou Cargo') => ({
     name: name,
-    cargoMode: 'sea',
-    route: { origin: 'DUBAI / GLOBAL', port: 'COLOMBO', dest: 'DESTINATION' },
-    baseCurrency: 'USD', // Global default
-    exRate: 305.00, // Standard exchange rate default
-    freightCurrency: 'LKR',
-    cbmRate: 35000,
-    usdToLkr: 305.00,
+    route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
+    baseCurrency: 'RMB', // RMB or USD
+    exRate: 45.00, // Sensible pre-populated default so calculations run immediately
+    freightCurrency: 'LKR', // LKR or USD
+    cbmRate: 35000, // Sensible default freight rate
+    usdToLkr: 305.00, // Standard conversion rate for USD freight
     items: [],
     fees: [
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
@@ -1737,7 +1713,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   // ==== STORAGE & HISTORY ====
   function loadState() {
     try {
-      const saved = localStorage.getItem('landed-cost-pro-v1');
+      const saved = localStorage.getItem('landed-cost-v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         state.history = parsed.history || {};
@@ -1762,7 +1738,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     current.route.origin = document.getElementById('routeOrigin').value;
     current.route.port = document.getElementById('routePort').value;
     current.route.dest = document.getElementById('routeDest').value;
-    current.cargoMode = document.getElementById('cargoMode')?.value || 'sea';
     current.baseCurrency = document.getElementById('baseCurrency').value;
     current.exRate = parseFloat(document.getElementById('exRate').value) || 0;
     current.freightCurrency = document.getElementById('freightCurrency')?.value || 'LKR';
@@ -1770,7 +1745,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     
     state.history[state.currentId] = current;
     try {
-      localStorage.setItem('landed-cost-pro-v1', JSON.stringify({ history: state.history, currentId: state.currentId }));
+      localStorage.setItem('landed-cost-v2', JSON.stringify({ history: state.history, currentId: state.currentId }));
       const status = document.getElementById('saveStatus');
       status.textContent = `Auto-saved at ${new Date().toLocaleTimeString()}`;
     } catch (e) {}
@@ -1868,7 +1843,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     document.getElementById('routeOrigin').value = current.route.origin || '';
     document.getElementById('routePort').value = current.route.port || '';
     document.getElementById('routeDest').value = current.route.dest || '';
-    document.getElementById('cargoMode').value = current.cargoMode || 'sea';
     document.getElementById('baseCurrency').value = current.baseCurrency || 'RMB';
     document.getElementById('exRate').value = current.exRate !== undefined ? current.exRate : 45.00;
     document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 35000;
@@ -1881,71 +1855,16 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     renderFees();
   }
 
-  function getCurrencySymbol(code) {
-    const symbols = {
-      USD: '$', RMB: '¥', EUR: '€', GBP: '£', INR: '₹', 
-      AED: 'د.إ', JPY: '¥', AUD: '$', CAD: '$', SGD: '$', 
-      CHF: 'Fr', HKD: '$', MYR: 'RM', THB: '฿'
-    };
-    return symbols[code] || code;
-  }
-
-  const COUNTRY_FLAGS = {
-    RMB: '🇨🇳 CN', USD: '🇺🇸 US', EUR: '🇪🇺 EU', GBP: '🇬🇧 UK',
-    INR: '🇮🇳 IN', AED: '🇦🇪 AE', JPY: '🇯🇵 JP', AUD: '🇦🇺 AU',
-    CAD: '🇨🇦 CA', SGD: '🇸🇬 SG', CHF: '🇨🇭 CH', HKD: '🇭🇰 HK',
-    MYR: '🇲🇾 MY', THB: '🇹🇭 TH'
-  };
-
-  const COUNTRY_FLAGS = {
-    USD: '🇺🇸 US', RMB: '🇨🇳 CN', AED: '🇦🇪 AE', INR: '🇮🇳 IN',
-    EUR: '🇪🇺 EU', GBP: '🇬🇧 UK', JPY: '🇯🇵 JP', AUD: '🇦🇺 AU',
-    CAD: '🇨🇦 CA', SGD: '🇸🇬 SG', CHF: '🇨🇭 CH', HKD: '🇭🇰 HK',
-    MYR: '🇲🇾 MY', THB: '🇹🇭 TH'
-  };
-
   function updateCurrencyLabels() {
     const curr = document.getElementById('baseCurrency').value;
-    const sym = getCurrencySymbol(curr);
+    const sym = curr === 'USD' ? '$' : '¥';
     document.getElementById('ratePrefix').textContent = `${sym}1 = `;
-
-    const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
-    const measureName = cargoMode === 'air' ? 'Kg' : 'CBM';
-
-    // Update dynamic Route Ribbon Origin Flag & Transit Badge
-    const originFlag = document.getElementById('originFlag');
-    if (originFlag) originFlag.textContent = COUNTRY_FLAGS[curr] || '🌐 WORLD';
-
-    const routeTransitBadge = document.getElementById('routeTransitBadge');
-    if (routeTransitBadge) {
-      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR CARGO' : '🚢 SEA CARGO';
-    }
-
-    // Update dynamic Route Ribbon
-    const originFlag = document.getElementById('originFlag');
-    if (originFlag) originFlag.textContent = COUNTRY_FLAGS[curr] || '🌐 GLOBAL';
-
-    const routeTransitBadge = document.getElementById('routeTransitBadge');
-    if (routeTransitBadge) {
-      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR' : '🚢 SEA';
-    }
-
-    const thMeasure = document.getElementById('thMeasure');
-    if (thMeasure) thMeasure.textContent = `Total ${measureName}`;
-    const sumMeasureUnit = document.getElementById('sumMeasureUnit');
-    if (sumMeasureUnit) sumMeasureUnit.textContent = measureName;
 
     // Freight Currency prefix and note
     const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
     const cbmPrefix = document.getElementById('cbmPrefix');
     const freightUsdNote = document.getElementById('freightUsdNote');
-    if (cbmPrefix) {
-       cbmPrefix.textContent = fCurr === 'USD' ? '$' : 'LKR';
-    }
-    const cbmSuffix = document.getElementById('cbmSuffix');
-    if (cbmSuffix) {
-       cbmSuffix.textContent = `/ ${measureName}`;
-    }
+    if (cbmPrefix) cbmPrefix.textContent = fCurr === 'USD' ? '$' : 'LKR';
     if (freightUsdNote) {
       if (fCurr === 'USD') {
         const rate = curr === 'USD' ? (parseFloat(document.getElementById('exRate').value) || 305) : (current.usdToLkr || 305);
@@ -1993,28 +1912,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     };
   }
 
-  
-
-  const cargoModeEl = document.getElementById('cargoMode');
-  if (cargoModeEl) {
-    cargoModeEl.onchange = (e) => {
-      const oldMode = current.cargoMode || 'sea';
-      current.cargoMode = e.target.value;
-      const cbmRateInput = document.getElementById('cbmRate');
-      const rate = parseFloat(cbmRateInput.value);
-      if (oldMode === 'sea' && current.cargoMode === 'air' && (isNaN(rate) || rate === 35000)) {
-         current.cbmRate = 3400;
-         cbmRateInput.value = 3400;
-      } else if (oldMode === 'air' && current.cargoMode === 'sea' && (isNaN(rate) || rate === 3400)) {
-         current.cbmRate = 35000;
-         cbmRateInput.value = 35000;
-      }
-      updateCurrencyLabels();
-      calculate();
-      debouncedSave();
-    };
-  }
-
   ['shipmentName', 'routeOrigin', 'routePort', 'routeDest', 'exRate', 'cbmRate'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => { 
       updateCurrencyLabels();
@@ -2044,7 +1941,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     current.items.forEach((it, idx) => {
       const tr = document.createElement('tr');
       const val = it.qty * it.price;
-      const sym = getCurrencySymbol(current.baseCurrency);
+      const sym = current.baseCurrency === 'USD' ? '$' : '¥';
       
       tr.innerHTML = `
         <td class="text-muted text-sm">${idx+1}</td>
@@ -2077,7 +1974,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
         
         const row = e.target.closest('tr');
         const valCell = row.querySelector('.line-val');
-        const sym = getCurrencySymbol(current.baseCurrency);
+        const sym = current.baseCurrency === 'USD' ? '$' : '¥';
         if (valCell) valCell.textContent = sym + fmt2(it.qty * it.price);
         
         calculate();
@@ -2330,44 +2227,29 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       }
     }
 
-    const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
-    
-    // Calculate total measure (CBM or Kg) with rounding for air
-    let totalMeasure = 0;
-    const itemMeasures = current.items.map(i => {
-      let m = parseFloat(i.cbm) || 0;
-      totalMeasure += m;
-      return m;
-    });
-    
-    const billableMeasure = cargoMode === 'air' ? Math.ceil(totalMeasure) : totalMeasure;
-
+    const totalCBM = current.items.reduce((s,i) => s + (parseFloat(i.cbm)||0), 0);
     const totalValueBase = current.items.reduce((s,i) => s + (i.qty * i.price), 0);
     const totalValueLKR = totalValueBase * exRate;
 
     // Convert freight if quoted in USD
-    let effFreightLkrPerUnit = cbmRate;
+    let effFreightLkrPerCbm = cbmRate;
     if (fCurr === 'USD') {
       const convRate = current.baseCurrency === 'USD' ? (exRate || 305) : (current.usdToLkr || 305);
-      effFreightLkrPerUnit = cbmRate * convRate;
+      effFreightLkrPerCbm = cbmRate * convRate;
     }
-    const freightTotal = billableMeasure * effFreightLkrPerUnit;
+    const freightTotal = totalCBM * effFreightLkrPerCbm;
 
-    const perItem = current.items.map((it, idx) => {
+    const perItem = current.items.map(it => {
       const valueLKR = it.qty * it.price * exRate;
-      const measure = itemMeasures[idx];
-      const freightShare = totalMeasure > 0 ? (measure/totalMeasure) * freightTotal : 0;
+      const freightShare = totalCBM > 0 ? (it.cbm/totalCBM) * freightTotal : 0;
       return { it, valueLKR, freightShare, feesShare: 0, running: valueLKR + freightShare };
     });
 
     current.fees.forEach(fe => {
       if (fe.type === 'flat'){
-        perItem.forEach((row, idx) => {
+        perItem.forEach(row => {
           let share = 0;
-          if (fe.method === 'cbm') {
-            const measure = itemMeasures[idx];
-            share = totalMeasure > 0 ? (measure/totalMeasure) * fe.amount : 0;
-          }
+          if (fe.method === 'cbm') share = totalCBM > 0 ? (row.it.cbm/totalCBM) * fe.amount : 0;
           else if (fe.method === 'value') share = totalValueLKR > 0 ? (row.valueLKR/totalValueLKR) * fe.amount : 0;
           else share = perItem.length > 0 ? fe.amount / perItem.length : 0;
           
@@ -2394,7 +2276,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       sumQty += row.it.qty;
     });
 
-    renderResults(perItem, billableMeasure, totalValueLKR, freightTotal, grandFees, grandTotal, sumQty, markupPct);
+    renderResults(perItem, totalCBM, totalValueLKR, freightTotal, grandFees, grandTotal, sumQty, markupPct);
   }
 
   function renderResults(perItem, tCbm, tVal, tFr, tFee, tTot, tQty, markupPct) {
