@@ -788,11 +788,47 @@
   let currentHeaderRowIdx = 0;
 
   if (dropzone && fileInput) {
-    dropzone.onclick = () => fileInput.click();
+    const btnPhoto = document.getElementById('btnUploadPhoto');
+    const btnPdf = document.getElementById('btnUploadPdf');
+    const btnExcel = document.getElementById('btnUploadExcel');
+
+    if (btnPhoto) {
+      btnPhoto.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = 'image/*,.jpg,.jpeg,.png,.webp';
+        fileInput.click();
+      };
+    }
+    if (btnPdf) {
+      btnPdf.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = 'application/pdf,.pdf';
+        fileInput.click();
+      };
+    }
+    if (btnExcel) {
+      btnExcel.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = '.xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,*/*';
+        fileInput.click();
+      };
+    }
+
+    dropzone.onclick = () => {
+      fileInput.accept = '*/*,.xlsx,.xls,.csv,.pdf,image/*,application/pdf';
+      fileInput.click();
+    };
+
     ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
     ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
     dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-    fileInput.onchange = e => { const f = e.target.files?.[0]; if(f) handleFile(f); };
+    fileInput.onchange = e => { 
+      const f = e.target.files?.[0]; 
+      if (f) {
+        handleFile(f);
+        fileInput.value = ''; 
+      }
+    };
   }
 
   // ==== IN-BROWSER DOCUMENT & OCR ENGINE ====
@@ -1512,9 +1548,15 @@
     
     rows.forEach(r => current.items.push({ id: 'it'+(current.itemSeq++), ...r }));
     document.getElementById('mappingPanel').classList.add('hidden');
-    showToast(`Imported ${rows.length} items`);
+    showToast(`Imported ${rows.length} items from spreadsheet`);
     renderItems();
+    calculate();
     debouncedSave();
+    
+    const tableWrap = document.getElementById('itemsTableWrap');
+    if (tableWrap) {
+      tableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   };
 
   document.getElementById('cancelImportBtn').onclick = () => {

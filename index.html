@@ -864,6 +864,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     padding: 12px 16px; 
     gap: 10px;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   .history-item { min-width: 210px; margin-bottom: 0; flex-shrink: 0; }
   .main-content { padding: 0 16px 40px; }
@@ -871,30 +872,36 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .topbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 16px;
+    gap: 14px;
     padding: 16px 0;
   }
   
   .topbar-actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     width: 100%;
   }
   .topbar-actions button {
-    flex: 1;
-    padding: 8px 10px;
+    padding: 10px 12px;
     font-size: 12px;
+    font-weight: 600;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .manifest-route-bar {
+    flex-wrap: wrap;
     gap: 6px;
   }
   .route-node {
-    padding: 2px 6px;
+    padding: 4px 8px;
   }
   .route-input {
-    width: 72px;
-    font-size: 11px;
+    width: 80px;
+    font-size: 12px;
   }
 
   .fee-header, .fee-item { grid-template-columns: 1fr; gap: 8px; }
@@ -924,6 +931,21 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     gap: 8px;
   }
   
+  .dropzone {
+    padding: 24px 16px;
+  }
+  .dz-title {
+    font-size: 14px;
+  }
+  .dz-sub {
+    font-size: 12px;
+  }
+
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm);
+  }
+  
   .toast-container {
     left: 16px;
     right: 16px;
@@ -942,6 +964,13 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   }
   .inline-input {
     font-size: 14px !important;
+  }
+  button, .preset-chip, .tab {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active, .preset-chip:active {
+    transform: scale(0.97);
   }
 }
 
@@ -1056,14 +1085,19 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
             <div class="dz-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
-            <div class="dz-title">Drop your packing list or invoice here</div>
-            <div class="dz-sub">Drag & drop files or click anywhere to browse</div>
+            <div class="dz-title">Drop your packing list, invoice, or Excel here</div>
+            <div class="dz-sub">Drag & drop files or tap to choose from your device</div>
             <div class="dz-badges">
               <span class="dz-badge">📊 Excel (.xlsx, .xls, .csv)</span>
               <span class="dz-badge">📄 PDF Invoice (.pdf)</span>
               <span class="dz-badge">📷 WhatsApp Photo / Scans (.jpg, .png)</span>
             </div>
-            <input type="file" id="fileInput" accept=".xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
+            <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:14px;">
+              <button type="button" class="btn-secondary btn-sm" id="btnUploadPhoto" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📷 Photo / Scan</button>
+              <button type="button" class="btn-secondary btn-sm" id="btnUploadPdf" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📄 PDF Document</button>
+              <button type="button" class="btn-secondary btn-sm" id="btnUploadExcel" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📊 Excel Sheet</button>
+            </div>
+            <input type="file" id="fileInput" accept="*/*,.xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" style="display:none;">
           </div>
 
           <div id="parseStatus" class="hidden mt-4" style="text-align:center;">
@@ -2131,11 +2165,47 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   let currentHeaderRowIdx = 0;
 
   if (dropzone && fileInput) {
-    dropzone.onclick = () => fileInput.click();
+    const btnPhoto = document.getElementById('btnUploadPhoto');
+    const btnPdf = document.getElementById('btnUploadPdf');
+    const btnExcel = document.getElementById('btnUploadExcel');
+
+    if (btnPhoto) {
+      btnPhoto.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = 'image/*,.jpg,.jpeg,.png,.webp';
+        fileInput.click();
+      };
+    }
+    if (btnPdf) {
+      btnPdf.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = 'application/pdf,.pdf';
+        fileInput.click();
+      };
+    }
+    if (btnExcel) {
+      btnExcel.onclick = (e) => {
+        e.stopPropagation();
+        fileInput.accept = '.xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,*/*';
+        fileInput.click();
+      };
+    }
+
+    dropzone.onclick = () => {
+      fileInput.accept = '*/*,.xlsx,.xls,.csv,.pdf,image/*,application/pdf';
+      fileInput.click();
+    };
+
     ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
     ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
     dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-    fileInput.onchange = e => { const f = e.target.files?.[0]; if(f) handleFile(f); };
+    fileInput.onchange = e => { 
+      const f = e.target.files?.[0]; 
+      if (f) {
+        handleFile(f);
+        fileInput.value = ''; 
+      }
+    };
   }
 
   // ==== IN-BROWSER DOCUMENT & OCR ENGINE ====
@@ -2855,9 +2925,15 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     
     rows.forEach(r => current.items.push({ id: 'it'+(current.itemSeq++), ...r }));
     document.getElementById('mappingPanel').classList.add('hidden');
-    showToast(`Imported ${rows.length} items`);
+    showToast(`Imported ${rows.length} items from spreadsheet`);
     renderItems();
+    calculate();
     debouncedSave();
+    
+    const tableWrap = document.getElementById('itemsTableWrap');
+    if (tableWrap) {
+      tableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   };
 
   document.getElementById('cancelImportBtn').onclick = () => {
