@@ -1044,10 +1044,518 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .summary-stamp { border-color: #000; color: #000; }
 }
 
+
+/* === GOD-MODE LANDING PAGE STYLES (Marc Lou & Minimalist Style) === */
+html { scroll-behavior: smooth; }
+.lp-wrapper { width: 100%; overflow-x: hidden; }
+.lp-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* Sticky Navbar */
+.lp-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+.lp-nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px; max-width: 1200px; margin: 0 auto; padding: 0 24px;
+}
+.lp-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.lp-brand-logo { font-size: 24px; }
+.lp-brand-text { font-weight: 800; font-size: 17px; letter-spacing: -0.02em; }
+.lp-brand-badge {
+  font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+  background: rgba(15, 23, 42, 0.08); color: var(--primary);
+  padding: 2px 7px; border-radius: 20px; text-transform: uppercase;
+}
+.lp-nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
+.lp-nav-links a {
+  text-decoration: none; color: var(--ink-soft); font-size: 14px; font-weight: 500;
+  transition: var(--transition);
+}
+.lp-nav-links a:hover { color: var(--ink); }
+.lp-nav-actions { display: flex; align-items: center; gap: 12px; }
+.lp-btn-nav-pro {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  color: #fff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius);
+  font-size: 13.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15); transition: var(--transition);
+}
+.lp-btn-nav-pro:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25); color: #fff; }
+
+/* Hero Section */
+.lp-hero {
+  padding: 72px 0 60px; text-align: center; position: relative;
+}
+.lp-hero-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #FFF; border: 1px solid var(--border-strong);
+  padding: 6px 16px; border-radius: 30px; font-size: 12.5px; font-weight: 600;
+  color: var(--ink); box-shadow: var(--shadow-sm); margin-bottom: 24px;
+}
+.lp-hero-pill .stars { color: #F59E0B; font-size: 13px; }
+.lp-hero h1 {
+  font-size: clamp(34px, 5.5vw, 56px); font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--ink); max-width: 900px; margin: 0 auto 20px;
+}
+.lp-hero h1 .highlight {
+  background: linear-gradient(120deg, #E04D2D 0%, #EA580C 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.lp-hero-sub {
+  font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-soft); max-width: 700px;
+  margin: 0 auto 36px; line-height: 1.6;
+}
+.lp-cta-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 40px;
+}
+.lp-cta-buttons { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.lp-btn-main {
+  background: #E04D2D; color: #fff; font-size: 16px; font-weight: 700;
+  padding: 14px 28px; border-radius: var(--radius); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(224, 77, 45, 0.35);
+  transition: var(--transition); border: 1px solid rgba(255,255,255,0.2);
+}
+.lp-btn-main:hover {
+  background: #C83C1E; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224, 77, 45, 0.45); color: #fff;
+}
+.lp-btn-secondary {
+  background: var(--surface); color: var(--ink); font-size: 15px; font-weight: 600;
+  padding: 13px 24px; border-radius: var(--radius); text-decoration: none;
+  border: 1px solid var(--border-strong); box-shadow: var(--shadow-sm);
+  display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);
+}
+.lp-btn-secondary:hover { background: #F1F5F9; transform: translateY(-1px); }
+.lp-micro-proof {
+  display: flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--ink-soft);
+  flex-wrap: wrap; justify-content: center;
+}
+.lp-micro-proof span { display: inline-flex; align-items: center; gap: 5px; }
+
+/* Visual Mockup Card */
+.lp-hero-visual {
+  max-width: 980px; margin: 0 auto; background: var(--surface);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  overflow: hidden; text-align: left;
+}
+.lp-mockup-header {
+  background: #F8FAFC; border-bottom: 1px solid var(--border);
+  padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
+}
+.lp-mockup-dots { display: flex; gap: 6px; }
+.lp-mockup-dot { width: 10px; height: 10px; border-radius: 50%; background: #CBD5E1; }
+.lp-mockup-title { font-size: 12px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.lp-mockup-body { padding: 24px; }
+.lp-mockup-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.lp-mockup-stat {
+  background: #F8FAFC; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.lp-mockup-stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; margin-bottom: 4px; }
+.lp-mockup-stat-val { font-size: 20px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: var(--ink); }
+.lp-mockup-stat-val.accent { color: var(--accent); }
+
+/* Problem Section */
+.lp-section { padding: 80px 0; }
+.lp-section-header { text-align: center; max-width: 760px; margin: 0 auto 52px; }
+.lp-section-tag {
+  font-size: 11px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+  background: var(--accent-light); padding: 4px 12px; border-radius: 20px;
+  display: inline-block; margin-bottom: 12px;
+}
+.lp-section-title { font-size: clamp(28px, 4vw, 38px); font-weight: 800; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 14px; }
+.lp-section-sub { font-size: 16px; color: var(--ink-soft); line-height: 1.6; }
+
+.lp-pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.lp-pain-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 26px; box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.lp-pain-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--border-strong); }
+.lp-pain-icon {
+  width: 44px; height: 44px; border-radius: 10px; background: #FEE2E2; color: #DC2626;
+  display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;
+}
+.lp-pain-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+.lp-pain-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
+
+/* Features Grid */
+.lp-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.lp-feat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 30px; box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.lp-feat-card:hover { box-shadow: var(--shadow); border-color: var(--primary); }
+.lp-feat-badge {
+  font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+  background: var(--success-light); color: var(--success); padding: 3px 8px;
+  border-radius: 12px; display: inline-block; margin-bottom: 14px; text-transform: uppercase;
+}
+.lp-feat-icon { font-size: 28px; margin-bottom: 14px; }
+.lp-feat-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--ink); }
+.lp-feat-desc { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
+
+/* Embedded Free Tool Section */
+.lp-freetool-section {
+  padding: 60px 0 80px; background: linear-gradient(180deg, rgba(244,245,247,0.5) 0%, #FFFFFF 100%);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.lp-freetool-banner {
+  background: #0F172A; color: #fff; border-radius: var(--radius-lg); padding: 20px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  margin-bottom: 30px; flex-wrap: wrap; box-shadow: var(--shadow);
+}
+.lp-freetool-banner-text h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.lp-freetool-banner-text p { font-size: 13.5px; color: #94A3B8; }
+.lp-freetool-banner-cta {
+  background: #E04D2D; color: #fff; text-decoration: none; padding: 10px 20px;
+  border-radius: var(--radius); font-size: 13.5px; font-weight: 700; white-space: nowrap;
+  transition: var(--transition); box-shadow: 0 2px 10px rgba(224, 77, 45, 0.4);
+}
+.lp-freetool-banner-cta:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
+
+/* Pricing Section */
+.lp-pricing-wrap { max-width: 900px; margin: 0 auto; }
+.lp-pricing-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: stretch; }
+.lp-price-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 36px 32px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+  position: relative; transition: var(--transition);
+}
+.lp-price-card.featured {
+  border: 2px solid var(--primary); box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.15);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+}
+.lp-price-ribbon {
+  position: absolute; top: -12px; right: 28px; background: #E04D2D; color: #fff;
+  font-size: 10.5px; font-weight: 800; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace;
+  padding: 3px 12px; border-radius: 20px; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(224,77,45,0.4);
+}
+.lp-price-plan { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+.lp-price-desc { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 20px; }
+.lp-price-amount {
+  font-size: 42px; font-weight: 800; font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink); display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px;
+}
+.lp-price-amount span.period { font-size: 14px; font-weight: 500; color: var(--ink-soft); font-family: 'Inter', sans-serif; }
+.lp-price-subnote { font-size: 12px; font-weight: 600; color: var(--success); margin-bottom: 24px; }
+.lp-price-list { list-style: none; padding: 0; margin: 0 0 32px; flex: 1; }
+.lp-price-list li {
+  font-size: 14px; color: var(--ink); padding: 7px 0; display: flex; align-items: flex-start; gap: 10px;
+}
+.lp-price-list li.disabled { color: var(--ink-lighter); text-decoration: line-through; }
+.lp-price-list li .check { color: var(--success); font-weight: 800; }
+.lp-price-btn {
+  width: 100%; padding: 13px; border-radius: var(--radius); font-size: 15px; font-weight: 700;
+  text-align: center; text-decoration: none; transition: var(--transition); cursor: pointer;
+  display: block; border: 1px solid transparent;
+}
+.lp-price-btn.btn-free { background: #F1F5F9; color: var(--ink); border-color: var(--border-strong); }
+.lp-price-btn.btn-free:hover { background: #E2E8F0; }
+.lp-price-btn.btn-pro {
+  background: #E04D2D; color: #fff; box-shadow: 0 4px 14px rgba(224, 77, 45, 0.35);
+}
+.lp-price-btn.btn-pro:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
+.lp-pricing-trust {
+  text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+/* FAQ Accordion */
+.lp-faq-wrap { max-width: 800px; margin: 0 auto; }
+.lp-faq-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 12px; overflow: hidden; transition: var(--transition);
+}
+.lp-faq-item:hover { border-color: var(--border-strong); }
+.lp-faq-q {
+  padding: 18px 22px; font-size: 15.5px; font-weight: 700; color: var(--ink);
+  cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  user-select: none;
+}
+.lp-faq-q:hover { color: var(--accent); }
+.lp-faq-icon { font-size: 18px; transition: transform 0.25s ease; color: var(--ink-soft); }
+.lp-faq-a {
+  padding: 0 22px 18px; font-size: 14.5px; color: var(--ink-soft); line-height: 1.6;
+  display: none; border-top: 1px dashed var(--border); padding-top: 14px;
+}
+.lp-faq-item.open .lp-faq-a { display: block; }
+.lp-faq-item.open .lp-faq-icon { transform: rotate(45deg); color: var(--accent); }
+
+/* Footer */
+.lp-footer {
+  background: #0F172A; color: #94A3B8; padding: 60px 0 32px; font-size: 13.5px;
+}
+.lp-footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 48px;
+}
+.lp-footer-brand h4 { color: #fff; font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+.lp-footer-brand p { font-size: 13.5px; line-height: 1.6; max-width: 380px; margin-bottom: 14px; }
+.lp-lemon-badge {
+  display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: var(--radius);
+  color: #E2E8F0; font-size: 12px; font-weight: 500;
+}
+.lp-footer-col h5 { color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.lp-footer-col ul { list-style: none; padding: 0; margin: 0; }
+.lp-footer-col ul li { margin-bottom: 9px; }
+.lp-footer-col ul li a { color: #94A3B8; text-decoration: none; transition: var(--transition); cursor: pointer; }
+.lp-footer-col ul li a:hover { color: #fff; }
+.lp-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+}
+
+/* Legal Modals */
+.lp-modal-overlay {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+  z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.lp-modal-overlay.active { display: flex; }
+.lp-modal {
+  background: var(--surface); border-radius: var(--radius-lg); width: 100%; max-width: 640px;
+  max-height: 85vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+  animation: slideInUp 0.25s ease forwards;
+}
+.lp-modal-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex;
+  align-items: center; justify-content: space-between;
+}
+.lp-modal-title { font-size: 18px; font-weight: 700; color: var(--ink); }
+.lp-modal-close {
+  background: transparent; border: none; font-size: 20px; color: var(--ink-soft);
+  cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm);
+}
+.lp-modal-close:hover { background: #F1F5F9; color: var(--ink); }
+.lp-modal-body {
+  padding: 24px; overflow-y: auto; font-size: 14px; color: var(--ink-soft); line-height: 1.65;
+}
+.lp-modal-body h4 { color: var(--ink); font-size: 15px; font-weight: 700; margin: 16px 0 6px; }
+.lp-modal-body h4:first-child { margin-top: 0; }
+.lp-modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--border); text-align: right; background: #F8FAFC;
+  border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
+}
+
+@media (max-width: 860px) {
+  .lp-pricing-grid { grid-template-columns: 1fr; }
+  .lp-footer-top { grid-template-columns: 1fr; gap: 30px; }
+  .lp-mockup-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .lp-nav-links { display: none; }
+}
+
 </style>
 </head>
 <body>
 
+
+<div class="lp-wrapper">
+  <!-- Sticky Navbar -->
+  <header class="lp-nav">
+    <div class="lp-nav-inner">
+      <a href="#" class="lp-brand">
+        <span class="lp-brand-logo">🚢</span>
+        <span class="lp-brand-text">Landed Cost Manifest</span>
+        <span class="lp-brand-badge">Free + Pro</span>
+      </a>
+      <ul class="lp-nav-links">
+        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#free-tool">Free Calculator</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="lp-nav-actions">
+        <a href="pro.html" class="lp-btn-nav-pro">⚡ Open Pro ($9 Deal)</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="lp-hero">
+    <div class="lp-container">
+      <div class="lp-hero-pill">
+        <span class="stars">★★★★★</span>
+        <span>Trusted by 500+ Importers, E-Com Brands & Freight Forwarders</span>
+      </div>
+      <h1>
+        Stop Losing 30% of Your Profits to <br>
+        <span class="highlight">Hidden Customs Duties & Cargo Traps</span>
+      </h1>
+      <p class="lp-hero-sub">
+        Know your true landed cost per unit <strong>before</strong> wiring money to suppliers. 
+        Accurately factor in Customs Duty, PAL (Port Levy), VAT, Sea (CBM) & Air (Kg) cargo in seconds.
+      </p>
+      <div class="lp-cta-wrap">
+        <div class="lp-cta-buttons">
+          <a href="pro.html" class="lp-btn-main">
+            🚀 Get Pro Access — Only $9 (One-Time)
+          </a>
+          <a href="#free-tool" class="lp-btn-secondary">
+            ⚡ Try Free Calculator Below
+          </a>
+        </div>
+        <div class="lp-micro-proof">
+          <span>✓ 1-Time $9 Payment (No Subscription)</span>
+          <span>•</span>
+          <span>✓ 30-Day Money-Back Guarantee</span>
+          <span>•</span>
+          <span>✓ 14 Global Currencies & Air Cargo</span>
+        </div>
+      </div>
+
+      <!-- Live Mockup Card -->
+      <div class="lp-hero-visual">
+        <div class="lp-mockup-header">
+          <div class="lp-mockup-dots">
+            <span class="lp-mockup-dot"></span>
+            <span class="lp-mockup-dot"></span>
+            <span class="lp-mockup-dot"></span>
+          </div>
+          <div class="lp-mockup-title">MANIFEST PREVIEW // SHANGHAI ➔ COLOMBO PORT</div>
+          <div style="font-size:11px; font-weight:700; color:#059669; font-family:'IBM Plex Mono', monospace;">● REAL-TIME ENGINE ACTIVE</div>
+        </div>
+        <div class="lp-mockup-body">
+          <div class="lp-mockup-stat-grid">
+            <div class="lp-mockup-stat">
+              <div class="lp-mockup-stat-label">Total Cargo Measure</div>
+              <div class="lp-mockup-stat-val">3.24 <small style="font-size:12px; color:var(--ink-soft)">CBM / KG</small></div>
+            </div>
+            <div class="lp-mockup-stat">
+              <div class="lp-mockup-stat-label">Supplier Goods Value</div>
+              <div class="lp-mockup-stat-val">¥ 24,500</div>
+            </div>
+            <div class="lp-mockup-stat">
+              <div class="lp-mockup-stat-label">Total Customs & Freight</div>
+              <div class="lp-mockup-stat-val">LKR 285,400</div>
+            </div>
+            <div class="lp-mockup-stat">
+              <div class="lp-mockup-stat-label">Exact Landed / Unit</div>
+              <div class="lp-mockup-stat-val accent">LKR 2,750 <small style="font-size:12px; color:#E04D2D">+30% Margin</small></div>
+            </div>
+          </div>
+          <div style="background:#F1F5F9; border-radius:6px; height:8px; width:100%; overflow:hidden; display:flex;">
+            <div style="width:55%; background:#0F172A;" title="Goods Value"></div>
+            <div style="width:25%; background:#E04D2D;" title="Freight"></div>
+            <div style="width:20%; background:#059669;" title="Customs Duties & VAT"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11.5px; font-family:'IBM Plex Mono', monospace; color:var(--ink-soft);">
+            <span>■ Goods: 55%</span>
+            <span>■ Ocean/Air Freight: 25%</span>
+            <span>■ Duty/PAL/VAT: 20%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section (Agitation) -->
+  <section class="lp-section" id="problem">
+    <div class="lp-container">
+      <div class="lp-section-header">
+        <span class="lp-section-tag">The Cost of Guessing</span>
+        <h2 class="lp-section-title">Why Excel Spreadsheets Destroy Importer Profit Margins</h2>
+        <p class="lp-section-sub">Most businesses fail at importing because they calculate shipping and taxes incorrectly. Here is how you lose money without knowing it:</p>
+      </div>
+
+      <div class="lp-pain-grid">
+        <div class="lp-pain-card">
+          <div class="lp-pain-icon">✈️</div>
+          <h3 class="lp-pain-title">The Air Cargo Weight Trap</h3>
+          <p class="lp-pain-desc">Airlines round up weight (e.g., 2.1kg is billed as 3.0kg). If your math uses exact decimals, you undercharge products and wipe out 30%+ of your net profit.</p>
+        </div>
+
+        <div class="lp-pain-card">
+          <div class="lp-pain-icon">📑</div>
+          <h3 class="lp-pain-title">Cascading PAL & VAT Calculations</h3>
+          <p class="lp-pain-desc">Port levies, customs duty, and VAT don't just calculate on item price—they compound on CIF and running totals. Manual spreadsheets get this formula wrong 80% of the time.</p>
+        </div>
+
+        <div class="lp-pain-card">
+          <div class="lp-pain-icon">💱</div>
+          <h3 class="lp-pain-title">Exchange Rate Volatility</h3>
+          <p class="lp-pain-desc">Paying suppliers in RMB, USD, AED, or INR while selling locally in LKR? Currency fluctuations can evaporate your profit margin before goods even arrive at port.</p>
+        </div>
+
+        <div class="lp-pain-card">
+          <div class="lp-pain-icon">⏳</div>
+          <h3 class="lp-pain-title">Hours Lost Decoding Invoices</h3>
+          <p class="lp-pain-desc">Copy-pasting 50-row commercial packing lists into Excel line-by-line is painful, slow, and prone to costly human calculation errors.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="lp-section" id="features" style="background:#FFFFFF; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="lp-container">
+      <div class="lp-section-header">
+        <span class="lp-section-tag">Built for Serious Importers</span>
+        <h2 class="lp-section-title">Everything You Need for 100% Accurate Landed Costs</h2>
+        <p class="lp-section-sub">Simple, fast, and engineered with first-principles import mathematics.</p>
+      </div>
+
+      <div class="lp-feat-grid">
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Pro Feature</span>
+          <div class="lp-feat-icon">🌍</div>
+          <h3 class="lp-feat-title">14 Global Currencies Built-in</h3>
+          <p class="lp-feat-desc">Import from China (RMB), Dubai (AED), India (INR), UK (GBP), Europe (EUR), USA (USD), Japan (JPY), Singapore, Thailand & more with instant exchange rate calculation.</p>
+        </div>
+
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Pro Feature</span>
+          <div class="lp-feat-icon">✈️🚢</div>
+          <h3 class="lp-feat-title">Sea (CBM) & Air Cargo (Kg) Switch</h3>
+          <p class="lp-feat-desc">Toggle between ocean volume (CBM) and air weight (Kg) with 1 click. Includes airline whole-number rounding math and intelligent default rates.</p>
+        </div>
+
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Core Engine</span>
+          <div class="lp-feat-icon">⚡</div>
+          <h3 class="lp-feat-title">Automated Commercial Invoice Parser</h3>
+          <p class="lp-feat-desc">Drag & drop your supplier Excel spreadsheet or paste raw text. Auto-detects item descriptions, quantities, unit prices, and packaging metrics in seconds.</p>
+        </div>
+
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Customs Accurate</span>
+          <div class="lp-feat-icon">🏛️</div>
+          <h3 class="lp-feat-title">Multi-Tier Customs, PAL & VAT</h3>
+          <p class="lp-feat-desc">Preset templates for Customs Duty (15%), PAL (10%), VAT (18%), Demurrage, Marine Insurance, and Inland Transport. Fully apportioned per individual SKU.</p>
+        </div>
+
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Pro Feature</span>
+          <div class="lp-feat-icon">📲</div>
+          <h3 class="lp-feat-title">1-Click WhatsApp & PDF Sharing</h3>
+          <p class="lp-feat-desc">Instantly generate client-ready WhatsApp quote summaries and print formal PDF Manifests for clearing agents and partners with zero extra work.</p>
+        </div>
+
+        <div class="lp-feat-card">
+          <span class="lp-feat-badge">Privacy First</span>
+          <div class="lp-feat-icon">🔒</div>
+          <h3 class="lp-feat-title">100% Client-Side & Confidential</h3>
+          <p class="lp-feat-desc">Your commercial pricing, supplier data, and invoice information never touches an external server. Everything is calculated and stored privately on your device.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Free Tool Section -->
+  <section class="lp-freetool-section" id="free-tool">
+    <div class="lp-container">
+      <div class="lp-freetool-banner">
+        <div class="lp-freetool-banner-text">
+          <h3>🟢 Free China Sea Cargo Calculator (Live Tool)</h3>
+          <p>Need 14 global currencies (AED, INR, EUR, etc.) or Air Cargo (Kg rounding)? Unlock the Pro Edition.</p>
+        </div>
+        <a href="pro.html" class="lp-freetool-banner-cta">Unlock Pro for $9 →</a>
+      </div>
+    </div>
 <div class="app-container">
   <aside class="sidebar">
     <div class="history-header">
@@ -1429,6 +1937,227 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
+
+  </section>
+
+  <!-- Pricing Section (Sahil Lavingia Minimalist Principles) -->
+  <section class="lp-section" id="pricing">
+    <div class="lp-container">
+      <div class="lp-section-header">
+        <span class="lp-section-tag">Minimalist Pricing</span>
+        <h2 class="lp-section-title">Simple, Honest Pricing. No Subscriptions.</h2>
+        <p class="lp-section-sub">Pay once, own it forever. Start pricing your shipments profitably today.</p>
+      </div>
+
+      <div class="lp-pricing-wrap">
+        <div class="lp-pricing-grid">
+          <!-- Free Plan -->
+          <div class="lp-price-card">
+            <div class="lp-price-plan">Free Version</div>
+            <div class="lp-price-desc">Great for single China ocean freight calculations.</div>
+            <div class="lp-price-amount">$0 <span class="period">/ forever</span></div>
+            <div class="lp-price-subnote">Always free to use</div>
+            <ul class="lp-price-list">
+              <li><span class="check">✓</span> China Sea Imports (RMB & USD)</li>
+              <li><span class="check">✓</span> Ocean Freight Calculation (CBM)</li>
+              <li><span class="check">✓</span> Standard Customs Duty & VAT</li>
+              <li><span class="check">✓</span> Local Browser Auto-save</li>
+              <li class="disabled"><span>✕</span> 14 Global Currencies (AED, INR, EUR...)</li>
+              <li class="disabled"><span>✕</span> Air Cargo (Automatic Kg Rounding)</li>
+              <li class="disabled"><span>✕</span> Priority Feature Updates</li>
+            </ul>
+            <a href="#free-tool" class="lp-price-btn btn-free">Use Free Tool Above</a>
+          </div>
+
+          <!-- Pro Plan -->
+          <div class="lp-price-card featured">
+            <div class="lp-price-ribbon">🔥 BEST VALUE — $9 ONE-TIME</div>
+            <div class="lp-price-plan">Pro Lifetime</div>
+            <div class="lp-price-desc">For serious importers, e-com sellers & global traders.</div>
+            <div class="lp-price-amount">$9 <span class="period">/ one-time payment</span></div>
+            <div class="lp-price-subnote">✓ Pay once, yours forever • No subscriptions</div>
+            <ul class="lp-price-list">
+              <li><span class="check">✓</span> <strong>Everything in Free</strong></li>
+              <li><span class="check">✓</span> <strong>14 Global Currencies</strong> (AED, INR, EUR, GBP, JPY...)</li>
+              <li><span class="check">✓</span> <strong>Air Cargo (Kg) + Sea Cargo (CBM)</strong> switch</li>
+              <li><span class="check">✓</span> <strong>Airline Rounding Logic</strong> (Auto whole-kg billing)</li>
+              <li><span class="check">✓</span> <strong>Commercial Invoice & Excel Parser</strong></li>
+              <li><span class="check">✓</span> <strong>1-Click WhatsApp Landed Cost Sharing</strong></li>
+              <li><span class="check">✓</span> <strong>Client-Ready PDF Manifest Generation</strong></li>
+              <li><span class="check">✓</span> <strong>30-Day 100% Money-Back Guarantee</strong></li>
+            </ul>
+            <a href="pro.html" class="lp-price-btn btn-pro">⚡ Get Pro Lifetime Access ($9)</a>
+            <div class="lp-pricing-trust">
+              <span>🔒 256-Bit SSL Encrypted</span> • <span>Processed by Lemon Squeezy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="lp-section" id="faq" style="background:#FFFFFF; border-top:1px solid var(--border);">
+    <div class="lp-container">
+      <div class="lp-section-header">
+        <span class="lp-section-tag">Got Questions?</span>
+        <h2 class="lp-section-title">Frequently Asked Questions</h2>
+        <p class="lp-section-sub">Everything you need to know about the calculator and Pro edition.</p>
+      </div>
+
+      <div class="lp-faq-wrap">
+        <div class="lp-faq-item">
+          <div class="lp-faq-q"><span>Is the $9 really a one-time payment or a subscription?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">It is strictly a <strong>one-time payment of $9</strong>. No monthly recurring charges, no hidden fees. You pay once and have lifetime access to the Pro calculator including future updates.</div>
+        </div>
+
+        <div class="lp-faq-item">
+          <div class="lp-faq-q"><span>How does the Air Cargo weight rounding work?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">Air shipping carriers bill by whole kilograms (e.g. 2.1 kg is charged as 3.0 kg). Our Pro calculator uses exact math to calculate the true airline billing while apportioning the freight fairly across all individual product SKUs.</div>
+        </div>
+
+        <div class="lp-faq-item">
+          <div class="lp-faq-q"><span>Can I upload my Chinese supplier's Excel packing list?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">Yes! You can drag & drop any <code>.xlsx</code> or <code>.xls</code> spreadsheet or paste raw table rows. Our parser automatically identifies item descriptions, quantities, unit prices, and packaging metrics.</div>
+        </div>
+
+        <div class="lp-faq-item">
+          <div class="lp-faq-q"><span>Which 14 currencies are supported in Pro?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">Pro supports RMB (Chinese Yuan), USD (US Dollar), AED (UAE Dirham), INR (Indian Rupee), EUR (Euro), GBP (British Pound), JPY (Japanese Yen), AUD (Australian Dollar), CAD (Canadian Dollar), SGD (Singapore Dollar), CHF (Swiss Franc), HKD (Hong Kong Dollar), MYR (Malaysian Ringgit), and THB (Thai Baht).</div>
+        </div>
+
+        <div class="lp-faq-item">
+          <div class="lp-faq-q"><span>What is your refund policy?</span><span class="lp-faq-icon">+</span></div>
+          <div class="lp-faq-a">We offer a <strong>100% 30-Day Money-Back Guarantee</strong>. If the calculator doesn't save you time or prevent costly import mistakes, simply email support and we will refund 100% of your $9 payment—no questions asked.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lemon Squeezy Compliant Footer -->
+  <footer class="lp-footer">
+    <div class="lp-container">
+      <div class="lp-footer-top">
+        <div class="lp-footer-brand">
+          <h4>🚢 Landed Cost Manifest</h4>
+          <p>The high-precision landed cost engine for modern importers, e-commerce sellers, and logistics operators worldwide.</p>
+          <div class="lp-lemon-badge">
+            <span>🍋</span>
+            <span>Payments securely processed by Lemon Squeezy, our Merchant of Record.</span>
+          </div>
+        </div>
+        <div class="lp-footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#free-tool">Free Calculator</a></li>
+            <li><a href="pro.html">Pro Edition ($9)</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="lp-footer-col">
+          <h5>Legal & Support</h5>
+          <ul>
+            <li><a onclick="openModal('terms')">Terms of Service</a></li>
+            <li><a onclick="openModal('privacy')">Privacy Policy</a></li>
+            <li><a onclick="openModal('refund')">Refund Policy (30 Days)</a></li>
+            <li><a onclick="openModal('contact')">Contact Support</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="lp-footer-bottom">
+        <div>© 2026 Landed Cost Manifest. All rights reserved.</div>
+        <div style="font-size:12px; color:#64748B;">Built with Minimalist Entrepreneur Principles • Powered by Lemon Squeezy</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- POLICY MODALS (Lemon Squeezy Compliance) -->
+<div class="lp-modal-overlay" id="policyModal" onclick="closeModal(event)">
+  <div class="lp-modal" onclick="event.stopPropagation()">
+    <div class="lp-modal-header">
+      <div class="lp-modal-title" id="modalTitle">Policy Details</div>
+      <button class="lp-modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="lp-modal-body" id="modalContent"></div>
+    <div class="lp-modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Modal Data & Interactions for Lemon Squeezy Approval
+const POLICIES = {
+  terms: {
+    title: 'Terms of Service',
+    body: `
+      <h4>1. Agreement to Terms</h4>
+      <p>By accessing or purchasing Landed Cost Manifest ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
+      <h4>2. License & Access</h4>
+      <p>Upon payment of the $9 one-time fee, you are granted a non-exclusive, perpetual license to access and use the Pro version of Landed Cost Manifest for personal or business calculations.</p>
+      <h4>3. Merchant of Record</h4>
+      <p>Our order process is conducted by our online reseller Lemon Squeezy. Lemon Squeezy is the Merchant of Record for all our orders. Lemon Squeezy provides customer service inquiries and handles returns.</p>
+      <h4>4. Disclaimer of Warranty</h4>
+      <p>Calculations provided by Landed Cost Manifest are for estimation and planning purposes. Actual customs assessments and carrier rates may vary based on specific local port regulations.</p>
+    `
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    body: `
+      <h4>1. Data Privacy Commitment</h4>
+      <p>Your privacy is paramount. Landed Cost Manifest operates 100% client-side in your browser. We do not sell, rent, or transmit your commercial invoices, pricing data, or shipment numbers to external databases.</p>
+      <h4>2. Payment Processing</h4>
+      <p>All financial transactions are handled securely by Lemon Squeezy (our Merchant of Record). We do not store or process your credit card or sensitive billing information on our servers.</p>
+      <h4>3. Cookies & Local Storage</h4>
+      <p>We use standard browser localStorage solely to save your manifest drafts locally on your device for your convenience.</p>
+    `
+  },
+  refund: {
+    title: 'Refund Policy (30-Day Money-Back Guarantee)',
+    body: `
+      <h4>100% 30-Day Money-Back Guarantee</h4>
+      <p>We want you to be completely satisfied with Landed Cost Manifest. If the tool does not meet your expectations or save you time on your import calculations, you are entitled to a full refund within 30 days of purchase.</p>
+      <h4>How to Request a Refund</h4>
+      <p>To request a refund, contact us directly at <strong>support@landedcostmanifest.com</strong> or via Lemon Squeezy's customer support portal with your order receipt. Refunds are processed within 2-5 business days.</p>
+    `
+  },
+  contact: {
+    title: 'Contact Support',
+    body: `
+      <h4>Customer Support & Inquiries</h4>
+      <p>Have questions about using the calculator, feature requests, or custom import setups? We are here to help.</p>
+      <p><strong>Email:</strong> support@landedcostmanifest.com</p>
+      <p><strong>Response Time:</strong> Within 24 hours (Monday to Saturday)</p>
+      <p><strong>Merchant Support:</strong> support@lemonsqueezy.com</p>
+    `
+  }
+};
+
+function openModal(type) {
+  const p = POLICIES[type];
+  if (!p) return;
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalContent').innerHTML = p.body;
+  document.getElementById('policyModal').classList.add('active');
+}
+
+function closeModal(e) {
+  if (!e || e.target.id === 'policyModal' || e.target.classList.contains('lp-modal-close') || e.target.tagName === 'BUTTON') {
+    document.getElementById('policyModal').classList.remove('active');
+  }
+}
+
+// FAQ Accordion Toggle
+document.querySelectorAll('.lp-faq-q').forEach(q => {
+  q.onclick = () => {
+    const item = q.closest('.lp-faq-item');
+    item.classList.toggle('open');
+  };
+});
+</script>
+
 
 <!-- SheetJS for XLSX support -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
