@@ -1182,35 +1182,37 @@ html { scroll-behavior: smooth; }
 
 /* Pricing Grid */
 .lp-pricing-grid {
-  display: grid; grid-template-columns: 1fr 1.1fr; gap: 18px; max-width: 780px; margin: 0 auto; align-items: stretch;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 760px; margin: 0 auto; align-items: stretch;
 }
 .lp-price-card {
-  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 28px 24px;
-  display: flex; flex-direction: column; position: relative;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 28px 24px;
+  display: flex; flex-direction: column; position: relative; height: 100%; box-sizing: border-box;
 }
 .lp-price-card.featured {
-  border: 2px solid #0F172A;
+  border: 2px solid #0F172A; box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.08);
 }
 .lp-price-ribbon {
-  position: absolute; top: -10px; right: 20px; background: #E04D2D; color: #fff;
-  font-size: 10px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; padding: 2px 8px; border-radius: 10px;
+  position: absolute; top: -11px; right: 20px; background: #E04D2D; color: #fff;
+  font-size: 10px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; padding: 2px 9px; border-radius: 10px;
 }
 .lp-price-title { font-size: 17px; font-weight: 800; color: #0F172A; margin-bottom: 2px; }
-.lp-price-sub { font-size: 13px; color: #64748B; margin-bottom: 14px; }
+.lp-price-sub { font-size: 13px; color: #64748B; margin-bottom: 14px; height: 18px; }
 .lp-price-num { font-size: 36px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: #0F172A; margin-bottom: 4px; }
 .lp-price-num span { font-size: 13px; font-weight: 500; color: #64748B; font-family: 'Inter', sans-serif; }
-.lp-price-note { font-size: 12px; font-weight: 600; color: #059669; margin-bottom: 18px; }
-.lp-price-list { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
-.lp-price-list li { font-size: 13.5px; color: #334155; padding: 5px 0; display: flex; align-items: center; gap: 8px; }
+.lp-price-note { font-size: 12px; font-weight: 600; color: #059669; margin-bottom: 18px; height: 16px; }
+.lp-price-list { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.lp-price-list li { font-size: 13px; color: #334155; line-height: 1.4; display: flex; align-items: center; gap: 8px; }
 .lp-price-list li.off { color: #94A3B8; text-decoration: line-through; }
-.lp-price-list li .chk { color: #059669; font-weight: 800; }
+.lp-price-list li .chk { color: #059669; font-weight: 800; font-size: 13px; }
 .lp-btn-price {
-  width: 100%; padding: 11px; border-radius: 6px; font-size: 14px; font-weight: 700;
+  width: 100%; padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 700;
   text-align: center; text-decoration: none; display: block; border: 1px solid transparent;
+  margin-top: auto; box-sizing: border-box; transition: all 0.2s ease;
 }
 .lp-btn-price.free { background: #F1F5F9; color: #0F172A; border-color: #CBD5E1; }
-.lp-btn-price.pro { background: #E04D2D; color: #fff; box-shadow: 0 2px 8px rgba(224, 77, 45, 0.25); }
-.lp-price-trust { text-align: center; font-size: 11.5px; color: #64748B; margin-top: 12px; }
+.lp-btn-price.free:hover { background: #E2E8F0; }
+.lp-btn-price.pro { background: #E04D2D; color: #fff; box-shadow: 0 4px 12px rgba(224, 77, 45, 0.25); }
+.lp-btn-price.pro:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
 
 /* FAQ Accordion */
 .lp-faq-wrap { max-width: 680px; margin: 0 auto; }
@@ -1905,9 +1907,9 @@ html { scroll-behavior: smooth; }
             <li><span class="chk">✓</span> Ocean Freight Calculation (CBM)</li>
             <li><span class="chk">✓</span> Customs Duty & VAT Breakdown</li>
             <li><span class="chk">✓</span> Auto-saved in your browser</li>
-            <li class="off">14 Global Currencies (AED, INR, EUR...)</li>
-            <li class="off">Air Cargo with Kg Rounding</li>
-            <li class="off">1-Click WhatsApp & PDF Sharing</li>
+            <li class="off"><span style="color:#94A3B8;">✕</span> 14 Global Currencies (AED, INR, EUR...)</li>
+            <li class="off"><span style="color:#94A3B8;">✕</span> Air Cargo with Kg Rounding</li>
+            <li class="off"><span style="color:#94A3B8;">✕</span> 1-Click WhatsApp & PDF Sharing</li>
           </ul>
           <a href="#free-tool" class="lp-btn-price free">Use Free Calculator Above</a>
         </div>
@@ -1917,7 +1919,7 @@ html { scroll-behavior: smooth; }
           <div class="lp-price-ribbon">ONE-TIME $9</div>
           <div class="lp-price-title">Pro Lifetime</div>
           <div class="lp-price-sub">For anyone importing from anywhere.</div>
-          <div class="lp-price-num">$9 <span>/ pay once, keep forever</span></div>
+          <div class="lp-price-num">$9 <span>/ one-time payment</span></div>
           <div class="lp-price-note">✓ No monthly subscription</div>
           <ul class="lp-price-list">
             <li><span class="chk">✓</span> <strong>Everything in Free</strong></li>
@@ -1929,7 +1931,6 @@ html { scroll-behavior: smooth; }
             <li><span class="chk">✓</span> <strong>14-Day Money-Back Guarantee</strong></li>
           </ul>
           <a href="pro.html" class="lp-btn-price pro">⚡ Get Pro Access ($9)</a>
-          <div class="lp-price-trust">🔒 Secure payment processed by Lemon Squeezy</div>
         </div>
       </div>
     </div>
