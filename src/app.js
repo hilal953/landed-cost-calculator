@@ -779,6 +779,9 @@
 
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
+  const fileInputPhoto = document.getElementById('fileInputPhoto');
+  const fileInputPdf = document.getElementById('fileInputPdf');
+  const fileInputExcel = document.getElementById('fileInputExcel');
   const parseStatusText = document.getElementById('parseStatusText');
   const parseStatusDiv = document.getElementById('parseStatus');
   const parseSpinner = document.getElementById('parseSpinner');
@@ -787,48 +790,50 @@
   let currentRows = [];
   let currentHeaderRowIdx = 0;
 
-  if (dropzone && fileInput) {
+  function bindInputHandler(el) {
+    if (!el) return;
+    el.onchange = (e) => {
+      const f = e.target.files?.[0];
+      if (f) {
+        handleFile(f);
+        el.value = '';
+      }
+    };
+  }
+
+  [fileInput, fileInputPhoto, fileInputPdf, fileInputExcel].forEach(bindInputHandler);
+
+  if (dropzone) {
     const btnPhoto = document.getElementById('btnUploadPhoto');
     const btnPdf = document.getElementById('btnUploadPdf');
     const btnExcel = document.getElementById('btnUploadExcel');
 
-    if (btnPhoto) {
+    if (btnPhoto && fileInputPhoto) {
       btnPhoto.onclick = (e) => {
         e.stopPropagation();
-        fileInput.accept = 'image/*,.jpg,.jpeg,.png,.webp';
-        fileInput.click();
+        fileInputPhoto.click();
       };
     }
-    if (btnPdf) {
+    if (btnPdf && fileInputPdf) {
       btnPdf.onclick = (e) => {
         e.stopPropagation();
-        fileInput.accept = 'application/pdf,.pdf';
-        fileInput.click();
+        fileInputPdf.click();
       };
     }
-    if (btnExcel) {
+    if (btnExcel && fileInputExcel) {
       btnExcel.onclick = (e) => {
         e.stopPropagation();
-        fileInput.accept = '.xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,*/*';
-        fileInput.click();
+        fileInputExcel.click();
       };
     }
 
-    dropzone.onclick = () => {
-      fileInput.accept = '*/*,.xlsx,.xls,.csv,.pdf,image/*,application/pdf';
-      fileInput.click();
+    dropzone.onclick = (e) => {
+      if (fileInput) fileInput.click();
     };
 
     ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
     ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
     dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if(f) handleFile(f); });
-    fileInput.onchange = e => { 
-      const f = e.target.files?.[0]; 
-      if (f) {
-        handleFile(f);
-        fileInput.value = ''; 
-      }
-    };
   }
 
   // ==== IN-BROWSER DOCUMENT & OCR ENGINE ====

@@ -121,7 +121,10 @@ html_body = r"""
                 </div>
               </button>
             </div>
-            <input type="file" id="fileInput" accept="*/*,.xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" style="display:none;">
+            <input type="file" id="fileInputPhoto" accept="image/*,.jpg,.jpeg,.png,.webp" style="display:none;">
+            <input type="file" id="fileInputPdf" accept="application/pdf,.pdf" style="display:none;">
+            <input type="file" id="fileInputExcel" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/comma-separated-values,application/csv" style="display:none;">
+            <input type="file" id="fileInput" style="display:none;">
           </div>
 
           <div id="parseStatus" class="hidden mt-4" style="text-align:center;">
