@@ -10,7 +10,11 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    return res.status(200).json({ status: 'ok', message: 'Lemon Squeezy Webhook endpoint is live.' });
+    return res.status(200).json({ 
+      status: 'active', 
+      service: 'Landed Cost Manifest Lemon Squeezy Webhook',
+      time: new Date().toISOString()
+    });
   }
 
   if (req.method !== 'POST') {
@@ -18,7 +22,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET || 'manifest_cargo__786_china';
+    const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
     const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
     const signature = req.headers['x-signature'];
 
@@ -26,7 +30,7 @@ export default async function handler(req, res) {
       const hmac = crypto.createHmac('sha256', secret);
       const digest = hmac.update(rawBody).digest('hex');
       if (signature !== digest) {
-        console.warn('Invalid signature for webhook call');
+        console.warn('Webhook signature mismatch');
       }
     }
 
@@ -35,53 +39,55 @@ export default async function handler(req, res) {
     const data = payload?.data;
     const customData = payload?.meta?.custom_data;
 
-    console.log(`[Lemon Squeezy Webhook] Received event: ${eventName}`, {
-      orderId: data?.id,
-      email: data?.attributes?.user_email,
-      total: data?.attributes?.total_formatted
-    });
-
     const email = (data?.attributes?.user_email || customData?.user_email || '').toLowerCase().trim();
     const orderId = String(data?.id || data?.attributes?.order_number || '');
+    const customerId = String(data?.attributes?.customer_id || '');
+    const status = data?.attributes?.status || 'paid';
 
-    // If Supabase environment variables are configured, save customer
+    console.log(`[LemonSqueezy Webhook] Event: ${eventName}, Order: ${orderId}, Email: ${email}, Status: ${status}`);
+
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (supabaseUrl && supabaseKey && email) {
       try {
-        const { createClient } = await import('@supabase/supabase-js');
-        const supabase = createClient(supabaseUrl, supabaseKey);
-
-        const { error } = await supabase
-          .from('profiles')
-          .upsert({
+        const response = await fetch(`${supabaseUrl}/rest/v1/profiles`, {
+          method: 'POST',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify({
             email: email,
             is_pro: true,
             lemon_order_id: orderId,
-            lemon_customer_id: String(data?.attributes?.customer_id || ''),
+            lemon_customer_id: customerId,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'email' });
+          })
+        });
 
-        if (error) {
-          console.error('[Supabase Webhook Error]:', error);
+        if (!response.ok) {
+          const errText = await response.text();
+          console.error('[Supabase REST Error]:', errText);
         } else {
-          console.log(`[Supabase Webhook Success]: Activated Pro access for ${email}`);
+          console.log(`[Supabase REST Success]: Pro license activated for ${email}`);
         }
       } catch (err) {
-        console.error('[Supabase Client Error]:', err);
+        console.error('[Supabase Sync Error]:', err);
       }
     }
 
     return res.status(200).json({
-      received: true,
+      success: true,
       event: eventName,
       email: email,
       orderId: orderId
     });
 
   } catch (error) {
-    console.error('[Webhook Handler Error]:', error);
+    console.error('[Webhook Exception]:', error);
     return res.status(500).json({ error: error.message });
   }
 }
