@@ -2063,40 +2063,28 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <!-- Clean Minimal Footer -->
-  <footer class="lp-footer">
+    <!-- Clean Minimal Footer -->
+  <footer class="lp-footer" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 40px 0 30px;">
     <div class="lp-container">
-      <div class="lp-footer-top">
-        <div class="lp-footer-brand">
-          <h4>🚢 Landed Cost Manifest</h4>
-          <p>The high-precision landed cost engine for modern importers, e-commerce sellers, and logistics operators worldwide.</p>
-          <div class="lp-lemon-badge">
-            <span>🍋</span>
-            <span>Payments securely processed by Lemon Squeezy, our Merchant of Record.</span>
-          </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid #F1F5F9;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">🚢</span>
+          <span style="font-weight: 800; font-size: 15px; color: #0F172A;">Landed Cost Manifest</span>
+          <span style="color: #94A3B8; font-size: 13px; margin-left: 8px;">— Payments processed by Lemon Squeezy</span>
         </div>
-        <div class="lp-footer-col">
-          <h5>Product</h5>
-          <ul>
-            <li><a href="#free-tool">Free Calculator</a></li>
-            <li><a href="pro.html">Pro Edition ($9)</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-          </ul>
-        </div>
-        <div class="lp-footer-col">
-          <h5>Legal & Support</h5>
-          <ul>
-            <li><a onclick="openModal('terms')">Terms of Service</a></li>
-            <li><a onclick="openModal('privacy')">Privacy Policy</a></li>
-            <li><a onclick="openModal('refund')">Refund Policy (14 Days)</a></li>
-            <li><a onclick="openModal('contact')">Contact Support</a></li>
-          </ul>
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 13px;">
+          <a href="#free-tool" style="color: #64748B; text-decoration: none;">Free Tool</a>
+          <a href="pro.html" style="color: #E04D2D; font-weight: 700; text-decoration: none;">Pro ($9)</a>
+          <a href="#pricing" style="color: #64748B; text-decoration: none;">Pricing</a>
+          <a onclick="openModal('terms')" style="color: #64748B; cursor: pointer;">Terms</a>
+          <a onclick="openModal('privacy')" style="color: #64748B; cursor: pointer;">Privacy</a>
+          <a onclick="openModal('refund')" style="color: #64748B; cursor: pointer;">Refunds (14 Days)</a>
+          <a onclick="openModal('contact')" style="color: #0F172A; font-weight: 600; cursor: pointer;">Contact</a>
         </div>
       </div>
-      <div class="lp-footer-bottom">
+      <div style="padding-top: 18px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #94A3B8; flex-wrap: wrap; gap: 10px;">
         <div>© 2026 Landed Cost Manifest. All rights reserved.</div>
-        <div>Secure payment processing by Lemon Squeezy</div>
+        <div>Support: <a href="mailto:aadil.mohomed786@gmail.com" style="color: #64748B; text-decoration: none;">aadil.mohomed786@gmail.com</a></div>
       </div>
     </div>
   </footer>
@@ -2122,44 +2110,39 @@ const POLICIES = {
   terms: {
     title: 'Terms of Service',
     body: `
-      <h4>1. Agreement to Terms</h4>
-      <p>By accessing or purchasing Landed Cost Manifest ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
-      <h4>2. License & Access</h4>
-      <p>Upon payment of the $9 one-time fee, you are granted a non-exclusive, perpetual license to access and use the Pro version of Landed Cost Manifest for personal or business calculations.</p>
-      <h4>3. Merchant of Record</h4>
-      <p>Our order process is conducted by our online reseller Lemon Squeezy. Lemon Squeezy is the Merchant of Record for all our orders. Lemon Squeezy provides customer service inquiries and handles returns.</p>
-      <h4>4. Disclaimer of Warranty</h4>
-      <p>Calculations provided by Landed Cost Manifest are for estimation and planning purposes. Actual customs assessments and carrier rates may vary based on specific local port regulations.</p>
+      <h4>1. Terms of Use</h4>
+      <p>By purchasing or using Landed Cost Manifest, you receive a lifetime personal or commercial license to use the Pro calculator.</p>
+      <h4>2. Merchant of Record</h4>
+      <p>Our orders are securely processed by Lemon Squeezy, our Merchant of Record.</p>
+      <h4>3. Disclaimer</h4>
+      <p>Estimates are calculated based on user input rates and standard tariff rules. Verify official clearances with your local customs broker.</p>
     `
   },
   privacy: {
     title: 'Privacy Policy',
     body: `
-      <h4>1. Data Privacy Commitment</h4>
-      <p>Your privacy is paramount. Landed Cost Manifest operates 100% client-side in your browser. We do not sell, rent, or transmit your commercial invoices, pricing data, or shipment numbers to external databases.</p>
-      <h4>2. Payment Processing</h4>
-      <p>All financial transactions are handled securely by Lemon Squeezy (our Merchant of Record). We do not store or process your credit card or sensitive billing information on our servers.</p>
-      <h4>3. Cookies & Local Storage</h4>
-      <p>We use standard browser localStorage solely to save your manifest drafts locally on your device for your convenience.</p>
+      <h4>1. Private on Device</h4>
+      <p>Your prices, supplier invoices, and product data remain 100% inside your browser localStorage. We do not store or transmit your data to any external server.</p>
+      <h4>2. Payments</h4>
+      <p>All payments are securely handled by Lemon Squeezy. We do not store credit cards.</p>
     `
   },
   refund: {
-    title: 'Refund Policy (14-Day Money-Back Guarantee)',
+    title: 'Refund Policy (14 Days)',
     body: `
       <h4>14-Day Money-Back Guarantee</h4>
-      <p>We want you to be completely satisfied with Landed Cost Manifest. If the tool does not meet your expectations or save you time on your import calculations, you are entitled to a full refund within 14 days of purchase.</p>
-      <h4>How to Request a Refund</h4>
-      <p>To request a refund, contact us directly at <strong>support@landedcostmanifest.com</strong> or via Lemon Squeezy's customer support portal with your order receipt. Refunds are processed within 2-5 business days.</p>
+      <p>If you are not satisfied with the Pro calculator within 14 days of purchase, email us for a full refund:</p>
+      <p style="margin: 12px 0;"><a href="mailto:aadil.mohomed786@gmail.com" style="color: #E04D2D; font-weight: 700; font-size: 15px;">aadil.mohomed786@gmail.com</a></p>
+      <p>Refunds are processed within 2-3 business days via Lemon Squeezy.</p>
     `
   },
   contact: {
     title: 'Contact Support',
     body: `
-      <h4>Customer Support & Inquiries</h4>
-      <p>Have questions about using the calculator, feature requests, or custom import setups? We are here to help.</p>
-      <p><strong>Email:</strong> support@landedcostmanifest.com</p>
-      <p><strong>Response Time:</strong> Within 24 hours (Monday to Saturday)</p>
-      <p><strong>Merchant Support:</strong> support@lemonsqueezy.com</p>
+      <h4>Support & Inquiries</h4>
+      <p>For any questions, feedback, or assistance, reach us directly at:</p>
+      <p style="margin: 14px 0;"><a href="mailto:aadil.mohomed786@gmail.com" style="color: #E04D2D; font-weight: 700; font-size: 16px; font-family: 'IBM Plex Mono', monospace;">aadil.mohomed786@gmail.com</a></p>
+      <p style="font-size: 13px; color: #64748B;">We reply promptly to all customer inquiries.</p>
     `
   }
 };
