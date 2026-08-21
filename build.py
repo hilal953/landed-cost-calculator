@@ -223,10 +223,21 @@ html_body = r"""
 
           <div class="rate-card">
             <div class="rate-card-title">🚢 Ocean Freight Rate</div>
-            <div class="input-field" style="margin:0;">
-              <span class="input-prefix">LKR</span>
-              <input type="number" id="cbmRate" step="1" placeholder="e.g. 35000" class="mono">
-              <span class="input-suffix">per CBM</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <div class="input-field" style="margin:0; flex:1;">
+                <span class="input-prefix" id="cbmPrefix">LKR</span>
+                <input type="number" id="cbmRate" step="any" placeholder="35000" class="mono">
+                <span class="input-suffix">/ CBM</span>
+              </div>
+              <div class="input-field" style="margin:0; width:95px;">
+                <select id="freightCurrency" style="padding:8px 4px; font-weight:700; font-size:12px;">
+                  <option value="LKR">LKR</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
+            </div>
+            <div id="freightUsdNote" class="text-muted hidden" style="font-size:11px; margin-top:4px;">
+              Converted at $1 = 305 LKR
             </div>
           </div>
 
@@ -241,9 +252,14 @@ html_body = r"""
           <div class="step-num">3</div>
           <h2 class="step-title" style="margin:0;">Other Charges</h2>
         </div>
-        <button class="btn-primary btn-sm" id="addFeeBtn" style="font-size:12px; padding:6px 14px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
-          + Add Custom Charge
-        </button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary btn-sm" id="applySlTaxBundleBtn" style="font-size:11.5px; padding:6px 12px; display:inline-flex; align-items:center; gap:5px; cursor:pointer;">
+            🇱🇰 Apply SL Tax Bundle
+          </button>
+          <button class="btn-primary btn-sm" id="addFeeBtn" style="font-size:11.5px; padding:6px 12px; display:inline-flex; align-items:center; gap:5px; cursor:pointer;">
+            + Add Charge
+          </button>
+        </div>
       </div>
       <div class="card">
         <div class="fee-header">
@@ -265,6 +281,9 @@ html_body = r"""
 
     <!-- WIZARD STEP 4 -->
     <section class="step-section" id="step4">
+      <div id="step2AlertBanner" class="hidden" style="margin-bottom:16px; padding:12px 16px; background:#fffbeb; border:1px solid #fde68a; border-radius:var(--radius); color:#92400e; font-size:13px; font-weight:600; display:flex; align-items:center; gap:8px;">
+        <span>⚠️ Step 2 incomplete: Please enter an Exchange Rate (e.g. 45.00) to calculate Landed Costs.</span>
+      </div>
       <div class="step-header">
         <div class="step-num" style="background:var(--success);">4</div>
         <h2 class="step-title">Landed Cost Results</h2>

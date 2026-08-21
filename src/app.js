@@ -10,16 +10,20 @@
     name: name,
     route: { origin: 'GUANGZHOU', port: 'COLOMBO', dest: 'MATARA' },
     baseCurrency: 'RMB', // RMB or USD
-    exRate: '',
-    cbmRate: '',
+    exRate: 45.00, // Sensible pre-populated default so calculations run immediately
+    freightCurrency: 'LKR', // LKR or USD
+    cbmRate: 35000, // Sensible default freight rate
+    usdToLkr: 305.00, // Standard conversion rate for USD freight
     items: [],
     fees: [
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
-      { id: 'fe2', name: 'Colombo-Matara Transport', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
-      { id: 'fe3', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
+      { id: 'fe2', name: 'PAL (Port & Airport Levy)', type: 'percent', amount: 10, method: 'cbm', base: 'cif' },
+      { id: 'fe3', name: 'VAT', type: 'percent', amount: 18, method: 'cbm', base: 'running' },
+      { id: 'fe4', name: 'Colombo-Matara Transport', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
+      { id: 'fe5', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
     ],
     itemSeq: 1,
-    feeSeq: 4,
+    feeSeq: 6,
     lastSaved: Date.now()
   });
 
@@ -104,6 +108,7 @@
     current.route.dest = document.getElementById('routeDest').value;
     current.baseCurrency = document.getElementById('baseCurrency').value;
     current.exRate = parseFloat(document.getElementById('exRate').value) || 0;
+    current.freightCurrency = document.getElementById('freightCurrency')?.value || 'LKR';
     current.cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
     
     state.history[state.currentId] = current;
@@ -207,8 +212,11 @@
     document.getElementById('routePort').value = current.route.port || '';
     document.getElementById('routeDest').value = current.route.dest || '';
     document.getElementById('baseCurrency').value = current.baseCurrency || 'RMB';
-    document.getElementById('exRate').value = current.exRate || '';
-    document.getElementById('cbmRate').value = current.cbmRate || '';
+    document.getElementById('exRate').value = current.exRate !== undefined ? current.exRate : 45.00;
+    document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 35000;
+    if (document.getElementById('freightCurrency')) {
+      document.getElementById('freightCurrency').value = current.freightCurrency || 'LKR';
+    }
     
     updateCurrencyLabels();
     renderItems();
@@ -219,6 +227,22 @@
     const curr = document.getElementById('baseCurrency').value;
     const sym = curr === 'USD' ? '$' : '¥';
     document.getElementById('ratePrefix').textContent = `${sym}1 = `;
+
+    // Freight Currency prefix and note
+    const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
+    const cbmPrefix = document.getElementById('cbmPrefix');
+    const freightUsdNote = document.getElementById('freightUsdNote');
+    if (cbmPrefix) cbmPrefix.textContent = fCurr === 'USD' ? '$' : 'LKR';
+    if (freightUsdNote) {
+      if (fCurr === 'USD') {
+        const rate = curr === 'USD' ? (parseFloat(document.getElementById('exRate').value) || 305) : (current.usdToLkr || 305);
+        freightUsdNote.textContent = `Converted at $1 = ${rate} LKR`;
+        freightUsdNote.classList.remove('hidden');
+      } else {
+        freightUsdNote.classList.add('hidden');
+      }
+    }
+
     // Update table headers
     const ths = document.querySelectorAll('#itemsTable th');
     if(ths.length > 5) ths[3].textContent = `Unit Price (${curr})`;
@@ -227,13 +251,41 @@
 
   document.getElementById('baseCurrency').onchange = (e) => {
     current.baseCurrency = e.target.value;
+    if (current.baseCurrency === 'USD' && (!current.exRate || current.exRate === 45)) {
+      current.exRate = 305.00;
+      document.getElementById('exRate').value = 305.00;
+    } else if (current.baseCurrency === 'RMB' && current.exRate === 305) {
+      current.exRate = 45.00;
+      document.getElementById('exRate').value = 45.00;
+    }
     updateCurrencyLabels();
     calculate();
     debouncedSave();
   };
 
+  const freightCurrEl = document.getElementById('freightCurrency');
+  if (freightCurrEl) {
+    freightCurrEl.onchange = (e) => {
+      current.freightCurrency = e.target.value;
+      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 35000)) {
+        current.cbmRate = 115;
+        document.getElementById('cbmRate').value = 115;
+      } else if (current.freightCurrency === 'LKR' && current.cbmRate === 115) {
+        current.cbmRate = 35000;
+        document.getElementById('cbmRate').value = 35000;
+      }
+      updateCurrencyLabels();
+      calculate();
+      debouncedSave();
+    };
+  }
+
   ['shipmentName', 'routeOrigin', 'routePort', 'routeDest', 'exRate', 'cbmRate'].forEach(id => {
-    document.getElementById(id).addEventListener('input', () => { calculate(); debouncedSave(); });
+    document.getElementById(id).addEventListener('input', () => { 
+      updateCurrencyLabels();
+      calculate(); 
+      debouncedSave(); 
+    });
   });
 
   document.getElementById('newShipmentBtn').onclick = newShipment;
@@ -345,7 +397,8 @@
   const COMMON_PRESETS = [
     { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT', 'percent', 18, 'cbm', 'running') },
     { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy)', 'percent', 10, 'cbm', 'cif') },
-    { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty', 'percent', 15, 'cbm', 'cif') },
+    { key: 'duty15', name: 'Customs Duty (15%)', check: '15%', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
+    { key: 'duty30', name: 'Customs Duty (30% Auto Parts)', check: '30%', make: () => newFee('Customs Duty (30%)', 'percent', 30, 'cbm', 'cif') },
     { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
     { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent', 'flat', 15000, 'value', 'cif') },
     { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance', 'percent', 1, 'cbm', 'cif') },
@@ -489,6 +542,29 @@
     };
   }
 
+  const applySlBtn = document.getElementById('applySlTaxBundleBtn');
+  if (applySlBtn) {
+    applySlBtn.onclick = () => {
+      const names = (current?.fees || []).map(f => (f.name || '').toLowerCase());
+      let added = 0;
+      if (!names.some(n => n.includes('duty'))) {
+        current.fees.push(newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif'));
+        added++;
+      }
+      if (!names.some(n => n.includes('pal'))) {
+        current.fees.push(newFee('PAL (Port & Airport Levy)', 'percent', 10, 'cbm', 'cif'));
+        added++;
+      }
+      if (!names.some(n => n.includes('vat'))) {
+        current.fees.push(newFee('VAT', 'percent', 18, 'cbm', 'running'));
+        added++;
+      }
+      renderFees();
+      debouncedSave();
+      showToast(added > 0 ? `Applied Sri Lanka Tax Bundle (+${added} taxes)` : "Sri Lanka Tax Bundle already active");
+    };
+  }
+
   // ==== CALCULATIONS ====
   // State for animations
   let lastTotals = { cbm: 0, value: 0, freight: 0, fees: 0, total: 0 };
@@ -498,12 +574,30 @@
     
     const exRate = parseFloat(document.getElementById('exRate').value) || 0;
     const cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+    const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
     const markupPct = parseFloat(document.getElementById('markupPercent').value) || 0;
     
+    // Incomplete Step 2 warning alert
+    const alertBanner = document.getElementById('step2AlertBanner');
+    if (alertBanner) {
+      if (exRate <= 0) {
+        alertBanner.classList.remove('hidden');
+      } else {
+        alertBanner.classList.add('hidden');
+      }
+    }
+
     const totalCBM = current.items.reduce((s,i) => s + (parseFloat(i.cbm)||0), 0);
     const totalValueBase = current.items.reduce((s,i) => s + (i.qty * i.price), 0);
     const totalValueLKR = totalValueBase * exRate;
-    const freightTotal = totalCBM * cbmRate;
+
+    // Convert freight if quoted in USD
+    let effFreightLkrPerCbm = cbmRate;
+    if (fCurr === 'USD') {
+      const convRate = current.baseCurrency === 'USD' ? (exRate || 305) : (current.usdToLkr || 305);
+      effFreightLkrPerCbm = cbmRate * convRate;
+    }
+    const freightTotal = totalCBM * effFreightLkrPerCbm;
 
     const perItem = current.items.map(it => {
       const valueLKR = it.qty * it.price * exRate;
