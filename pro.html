@@ -150,11 +150,17 @@ body {
   gap: 4px;
   background: var(--surface);
   border: 1px solid var(--border-strong);
-  padding: 3px 6px;
+  padding: 4px 8px;
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  flex-wrap: wrap;
-  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.manifest-route-ribbon::-webkit-scrollbar {
+  display: none;
 }
 
 .route-station {
@@ -165,6 +171,7 @@ body {
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .station-flag {
@@ -927,18 +934,20 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   
   .topbar-actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     width: 100%;
   }
   .topbar-actions button {
-    padding: 10px 12px;
+    padding: 8px 6px;
     font-size: 12px;
     font-weight: 600;
-    min-height: 42px;
+    min-height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
   }
   
   .manifest-route-bar {
@@ -1044,39 +1053,182 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .summary-stamp { border-color: #000; color: #000; }
 }
 
+/* === AESTHETIC PRO SUITE NAVIGATION HEADER === */
+.pro-nav-header {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #E2E8F0;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.pro-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pro-nav-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pro-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #0F172A;
+}
+.pro-nav-logo { font-size: 20px; }
+.pro-nav-title { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: #0F172A; }
+.pro-nav-badge {
+  background: #FEF2F2;
+  color: #E04D2D;
+  border: 1px solid rgba(224, 77, 45, 0.2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pro-nav-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748B;
+  padding-left: 10px;
+  border-left: 1px solid #CBD5E1;
+}
+.pro-status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+}
+.pro-status-title { font-weight: 600; color: #334155; }
+.pro-status-sep { color: #94A3B8; }
+.pro-status-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: #64748B;
+}
+.pro-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pro-nav-license {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.license-chk { color: #16A34A; font-size: 11px; font-weight: 800; }
+.license-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #15803D;
+}
+.pro-nav-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #334155;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  transition: all 0.2s;
+}
+.pro-nav-back-btn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+@media (max-width: 768px) {
+  .pro-nav-header {
+    padding: 0 14px;
+    height: 48px;
+  }
+  .pro-nav-inner {
+    height: 48px;
+    gap: 8px;
+  }
+  .pro-nav-status {
+    display: none !important;
+  }
+  .pro-nav-title {
+    font-size: 13.5px;
+  }
+  .pro-nav-license {
+    padding: 3px 6px;
+  }
+  .pro-nav-license .license-text {
+    font-size: 10px;
+  }
+  .pro-nav-back-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+}
+@media (max-width: 400px) {
+  .pro-nav-license {
+    display: none !important;
+  }
+}
+
 </style>
 </head>
 <body>
 
 
-<!-- AESTHETIC PRO SUITE TOPBAR (Light Executive Edition) -->
-<header style="background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid #E2E8F0; padding: 0 24px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
-  <div style="max-width: 1400px; margin: 0 auto; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+<!-- AESTHETIC PRO SUITE TOPBAR -->
+<header class="pro-nav-header">
+  <div class="pro-nav-inner">
     
     <!-- Left: Pro Brand & Global Status -->
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="/" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #0F172A;">
-        <span style="font-size: 20px;">🚢</span>
-        <span style="font-weight: 800; font-size: 15px; letter-spacing: -0.02em;">Landed Cost Manifest</span>
+    <div class="pro-nav-brand-group">
+      <a href="/" class="pro-nav-brand">
+        <span class="pro-nav-logo">🚢</span>
+        <span class="pro-nav-title">Landed Cost</span>
       </a>
-      <span style="background: #FEF2F2; color: #E04D2D; border: 1px solid rgba(224, 77, 45, 0.2); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase;">PRO SUITE</span>
-      <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748B; padding-left: 6px; border-left: 1px solid #CBD5E1;">
-        <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981;"></span>
-        <span style="font-weight: 600; color: #334155;">Global Engine Active</span>
-        <span style="color: #94A3B8;">•</span>
-        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #64748B;">14 Currencies & Air/Sea Freight</span>
+      <span class="pro-nav-badge">PRO</span>
+      <div class="pro-nav-status">
+        <span class="pro-status-dot"></span>
+        <span class="pro-status-title">Global Engine Active</span>
+        <span class="pro-status-sep">•</span>
+        <span class="pro-status-sub">14 Currencies & Air/Sea Freight</span>
       </div>
     </div>
 
     <!-- Right: License Verified & Home Link -->
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="display: flex; align-items: center; gap: 5px; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 4px 10px; border-radius: 6px;">
-        <span style="color: #16A34A; font-size: 11px;">✓</span>
-        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; color: #15803D;">$9 LIFETIME LICENSE</span>
+    <div class="pro-nav-actions">
+      <div class="pro-nav-license">
+        <span class="license-chk">✓</span>
+        <span class="license-text">$9 LIFETIME LICENSE</span>
       </div>
-      <a href="/" style="display: inline-flex; align-items: center; gap: 6px; color: #334155; text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #F8FAFC; border: 1px solid #CBD5E1; transition: all 0.2s;" onmouseover="this.style.background='#F1F5F9'; this.style.borderColor='#94A3B8'" onmouseout="this.style.background='#F8FAFC'; this.style.borderColor='#CBD5E1'">
+      <a href="/" class="pro-nav-back-btn">
         <span>←</span>
-        <span>Back to Home / Free Tool</span>
+        <span>Back to Home</span>
       </a>
     </div>
 

@@ -139,11 +139,17 @@ body {
   gap: 4px;
   background: var(--surface);
   border: 1px solid var(--border-strong);
-  padding: 3px 6px;
+  padding: 4px 8px;
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  flex-wrap: wrap;
-  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.manifest-route-ribbon::-webkit-scrollbar {
+  display: none;
 }
 
 .route-station {
@@ -154,6 +160,7 @@ body {
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .station-flag {
@@ -916,18 +923,20 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   
   .topbar-actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     width: 100%;
   }
   .topbar-actions button {
-    padding: 10px 12px;
+    padding: 8px 6px;
     font-size: 12px;
     font-weight: 600;
-    min-height: 42px;
+    min-height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
   }
   
   .manifest-route-bar {
