@@ -1229,16 +1229,82 @@ html { scroll-behavior: smooth; }
 .lp-faq-item.open .lp-faq-a { display: block; }
 .lp-faq-item.open .lp-faq-icon { transform: rotate(45deg); color: #E04D2D; }
 
-/* Simple Footer */
-.lp-footer { background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 32px 0 24px; font-size: 13px; color: #64748B; }
-.lp-footer-row1 { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid #F1F5F9; }
-.lp-footer-row2 { padding-top: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 12px; color: #94A3B8; }
 
-@media (max-width: 768px) {
-  .lp-example-grid { grid-template-columns: repeat(2, 1fr); }
-  .lp-pricing-grid { grid-template-columns: 1fr; }
-  .lp-nav-links { display: none; }
+/* Modal Dialog (Hidden by default) */
+.lp-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  z-index: 9999; display: none;
+  align-items: center; justify-content: center;
+  padding: 16px;
 }
+.lp-modal-overlay.active { display: flex !important; }
+.lp-modal {
+  background: #FFFFFF; border-radius: 12px; width: 100%; max-width: 520px;
+  max-height: 85vh; display: flex; flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  border: 1px solid #E2E8F0; overflow: hidden;
+  animation: modalFadeIn 0.2s ease forwards;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.lp-modal-header {
+  padding: 16px 20px; border-bottom: 1px solid #F1F5F9; display: flex;
+  align-items: center; justify-content: space-between; background: #F8FAFC;
+}
+.lp-modal-title { font-size: 16px; font-weight: 800; color: #0F172A; }
+.lp-modal-close {
+  background: transparent; border: none; font-size: 16px; color: #64748B;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; line-height: 1;
+}
+.lp-modal-close:hover { background: #E2E8F0; color: #0F172A; }
+.lp-modal-body {
+  padding: 20px; overflow-y: auto; font-size: 13.5px; color: #475569; line-height: 1.6;
+}
+.lp-modal-body h4 { color: #0F172A; font-size: 14px; font-weight: 700; margin: 12px 0 4px; }
+.lp-modal-body h4:first-child { margin-top: 0; }
+.lp-modal-footer {
+  padding: 12px 20px; border-top: 1px solid #F1F5F9; text-align: right; background: #F8FAFC;
+}
+.lp-modal-btn {
+  background: #0F172A; color: #FFF; border: none; padding: 8px 16px;
+  border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.lp-modal-btn:hover { background: #1E293B; }
+
+/* Refined Minimal Footer */
+.lp-footer {
+  background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 40px 0 28px;
+  font-size: 13px; color: #64748B;
+}
+.lp-footer-row1 {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid #F1F5F9;
+}
+.lp-footer-brand {
+  display: flex; align-items: center; gap: 8px; color: #0F172A; font-weight: 800; font-size: 15px;
+}
+.lp-footer-brand span.tag {
+  color: #94A3B8; font-weight: 400; font-size: 12.5px; margin-left: 6px;
+}
+.lp-footer-links {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font-size: 13px;
+}
+.lp-footer-links a, .lp-footer-links button {
+  color: #64748B; text-decoration: none; background: transparent; border: none;
+  font-family: inherit; font-size: 13px; cursor: pointer; padding: 0; transition: color 0.15s ease;
+}
+.lp-footer-links a:hover, .lp-footer-links button:hover { color: #0F172A; }
+.lp-footer-links a.pro-link { color: #E04D2D; font-weight: 700; }
+.lp-footer-row2 {
+  padding-top: 18px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; font-size: 12px; color: #94A3B8;
+}
+.lp-footer-row2 a { color: #64748B; text-decoration: none; font-weight: 500; }
+.lp-footer-row2 a:hover { color: #0F172A; }
 
 </style>
 </head>
@@ -1902,43 +1968,43 @@ html { scroll-behavior: smooth; }
     </div>
   </section>
 
-  <!-- Simple Clean Footer -->
+    <!-- Simple Clean Footer -->
   <footer class="lp-footer">
     <div class="lp-container">
       <div class="lp-footer-row1">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:18px;">🚢</span>
-          <strong style="color:#0F172A;">Landed Cost Manifest</strong>
-          <span style="color:#94A3B8; font-size:12px;">— Payments by Lemon Squeezy</span>
+        <div class="lp-footer-brand">
+          <span>🚢</span>
+          <span>Landed Cost Manifest</span>
+          <span class="tag">— Payments by Lemon Squeezy</span>
         </div>
-        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:13px;">
-          <a href="#free-tool" style="color:#64748B; text-decoration:none;">Free Tool</a>
-          <a href="pro.html" style="color:#E04D2D; font-weight:700; text-decoration:none;">Pro ($9)</a>
-          <a href="#pricing" style="color:#64748B; text-decoration:none;">Pricing</a>
-          <a onclick="openModal('terms')" style="color:#64748B; cursor:pointer;">Terms</a>
-          <a onclick="openModal('privacy')" style="color:#64748B; cursor:pointer;">Privacy</a>
-          <a onclick="openModal('refund')" style="color:#64748B; cursor:pointer;">Refunds (14 Days)</a>
-          <a onclick="openModal('contact')" style="color:#0F172A; font-weight:600; cursor:pointer;">Contact</a>
+        <div class="lp-footer-links">
+          <a href="#free-tool">Free Tool</a>
+          <a href="pro.html" class="pro-link">Pro ($9)</a>
+          <a href="#pricing">Pricing</a>
+          <button type="button" onclick="openModal('terms')">Terms</button>
+          <button type="button" onclick="openModal('privacy')">Privacy</button>
+          <button type="button" onclick="openModal('refund')">Refunds (14 Days)</button>
+          <button type="button" onclick="openModal('contact')" style="color:#0F172A; font-weight:700;">Contact</button>
         </div>
       </div>
       <div class="lp-footer-row2">
         <div>© 2026 Landed Cost Manifest. All rights reserved.</div>
-        <div>Support: <a href="mailto:aadil.mohomed786@gmail.com" style="color:#64748B; text-decoration:none;">aadil.mohomed786@gmail.com</a></div>
+        <div>Support: <a href="mailto:aadil.mohomed786@gmail.com">aadil.mohomed786@gmail.com</a></div>
       </div>
     </div>
   </footer>
 </div>
 
-<!-- Legal Modals -->
+<!-- Legal Modal (Pop-up) -->
 <div class="lp-modal-overlay" id="policyModal" onclick="closeModal(event)">
   <div class="lp-modal" onclick="event.stopPropagation()">
     <div class="lp-modal-header">
       <div class="lp-modal-title" id="modalTitle">Policy Details</div>
-      <button class="lp-modal-close" onclick="closeModal()">✕</button>
+      <button class="lp-modal-close" onclick="closeModal()" aria-label="Close">✕</button>
     </div>
     <div class="lp-modal-body" id="modalContent"></div>
     <div class="lp-modal-footer">
-      <button class="btn-secondary" onclick="closeModal()">Close</button>
+      <button class="lp-modal-btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 </div>
