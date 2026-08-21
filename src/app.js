@@ -341,16 +341,68 @@
     }
   };
 
-  // ==== FEES MANAGEMENT ====
+  // ==== STEP 3: OTHER CHARGES ====
+  const COMMON_PRESETS = [
+    { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT', 'percent', 18, 'cbm', 'running') },
+    { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy)', 'percent', 10, 'cbm', 'cif') },
+    { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty', 'percent', 15, 'cbm', 'cif') },
+    { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
+    { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent', 'flat', 15000, 'value', 'cif') },
+    { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance', 'percent', 1, 'cbm', 'cif') },
+    { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage', 'flat', 10000, 'cbm', 'cif') }
+  ];
+
+  function renderPresetChips() {
+    const container = document.getElementById('presetChipsContainer');
+    const wrap = document.getElementById('feeSuggestionsWrap');
+    if (!container || !wrap) return;
+
+    const existingNames = (current?.fees || []).map(f => (f.name || '').toLowerCase());
+    const available = COMMON_PRESETS.filter(p => !existingNames.some(n => n.includes(p.check)));
+
+    if (available.length === 0) {
+      wrap.classList.add('hidden');
+      return;
+    }
+
+    wrap.classList.remove('hidden');
+    container.innerHTML = '';
+    available.forEach(p => {
+      const chip = document.createElement('button');
+      chip.className = 'preset-chip';
+      chip.textContent = `+ ${p.name}`;
+      chip.onclick = () => {
+        current.fees.push(p.make());
+        renderFees();
+        debouncedSave();
+        showToast(`Added ${p.name}`);
+      };
+      container.appendChild(chip);
+    });
+  }
+
   function renderFees() {
     const body = document.getElementById('feesBody');
     body.innerHTML = '';
     
-    current.fees.forEach((fe) => {
+    if (!current || !current.fees || current.fees.length === 0) {
+      body.innerHTML = `
+        <div style="text-align:center; padding:24px 12px; color:var(--ink-soft); font-size:13px;">
+          No additional charges added. Freight and base goods cost will be calculated directly.
+        </div>
+      `;
+      renderPresetChips();
+      calculate();
+      return;
+    }
+
+    current.fees.forEach(fe => {
       const row = document.createElement('div');
       row.className = 'fee-item';
       row.innerHTML = `
-        <div class="input-field" style="margin:0;"><input type="text" data-field="name" data-id="${fe.id}" value="${escapeAttr(fe.name)}" placeholder="Fee name"></div>
+        <div class="input-field" style="margin:0;">
+          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeHtml(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
+        </div>
         <div class="input-field" style="margin:0;">
           <select data-field="type" data-id="${fe.id}">
             <option value="flat" ${fe.type==='flat'?'selected':''}>Flat LKR</option>
@@ -362,7 +414,7 @@
         </div>
         <div class="fee-basis" data-basis-for="${fe.id}"></div>
         <div class="text-right">
-          <button class="btn-ghost btn-icon" data-remove-fee="${fe.id}" title="Remove">✕</button>
+          <button class="btn-ghost btn-icon" data-remove-fee="${fe.id}" title="Remove charge" style="color:var(--danger); cursor:pointer;">✕</button>
         </div>
       `;
       body.appendChild(row);
@@ -388,7 +440,9 @@
           </div>`;
       }
     });
+    
     bindFeeInputs();
+    renderPresetChips();
     calculate();
   }
 
@@ -400,7 +454,7 @@
         const fe = current.fees.find(f => f.id === id);
         if (!fe) return;
         
-        if (field === 'name') fe.name = e.target.value;
+        if (field === 'name') { fe.name = e.target.value; renderPresetChips(); }
         else if (field === 'type') { fe.type = e.target.value; renderFees(); debouncedSave(); return; }
         else if (field === 'amount') fe.amount = parseFloat(e.target.value) || 0;
         else if (field === 'method') fe.method = e.target.value;
@@ -417,6 +471,7 @@
         current.fees = current.fees.filter(f => f.id !== id);
         renderFees();
         debouncedSave();
+        showToast("Charge removed");
       };
     });
   }
@@ -425,24 +480,14 @@
     return { id: 'fe'+(current.feeSeq++), name: name||'', type: type||'flat', amount: amount||0, method: method||'cbm', base: base||'cif' };
   }
 
-  document.getElementById('addFeeBtn').onclick = () => {
-    current.fees.push(newFee('', 'flat', 0, 'cbm', 'cif'));
-    renderFees();
-    debouncedSave();
-  };
-
-  document.querySelectorAll('[data-preset]').forEach(btn => {
-    btn.onclick = () => {
-      const p = btn.getAttribute('data-preset');
-      if (p === 'duty') current.fees.push(newFee('Customs Duty', 'percent', 15, 'cbm', 'cif'));
-      if (p === 'vat') current.fees.push(newFee('VAT', 'percent', 18, 'cbm', 'running'));
-      if (p === 'transport') current.fees.push(newFee('Local Transport', 'flat', 35000, 'cbm', 'cif'));
-      if (p === 'agent') current.fees.push(newFee('Clearing Agent', 'flat', 15000, 'value', 'cif'));
+  const addFeeBtn = document.getElementById('addFeeBtn');
+  if (addFeeBtn) {
+    addFeeBtn.onclick = () => {
+      current.fees.push(newFee('', 'flat', 0, 'cbm', 'cif'));
       renderFees();
       debouncedSave();
-      showToast("Fee added");
     };
-  });
+  }
 
   // ==== CALCULATIONS ====
   // State for animations

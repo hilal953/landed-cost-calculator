@@ -236,9 +236,14 @@ html_body = r"""
 
     <!-- WIZARD STEP 3 -->
     <section class="step-section" id="step3">
-      <div class="step-header">
-        <div class="step-num">3</div>
-        <h2 class="step-title">Other Charges</h2>
+      <div class="step-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="step-num">3</div>
+          <h2 class="step-title" style="margin:0;">Other Charges</h2>
+        </div>
+        <button class="btn-primary btn-sm" id="addFeeBtn" style="font-size:12px; padding:6px 14px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+          + Add Custom Charge
+        </button>
       </div>
       <div class="card">
         <div class="fee-header">
@@ -246,15 +251,14 @@ html_body = r"""
           <div>Type</div>
           <div>Amount</div>
           <div>Spread By</div>
-          <div></div>
+          <div style="text-align:right;">Action</div>
         </div>
         <div id="feesBody"></div>
-        <div class="preset-chips">
-          <button class="preset-chip" id="addFeeBtn">+ Add custom charge</button>
-          <button class="preset-chip" data-preset="duty">+ Customs duty (15%)</button>
-          <button class="preset-chip" data-preset="vat">+ VAT (18%)</button>
-          <button class="preset-chip" data-preset="transport">+ Local transport (35k)</button>
-          <button class="preset-chip" data-preset="agent">+ Clearing agent (15k)</button>
+        <div id="feeSuggestionsWrap" style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);">
+          <div style="font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">
+            💡 Quick Add Import Charges
+          </div>
+          <div class="preset-chips" id="presetChipsContainer"></div>
         </div>
       </div>
     </section>
