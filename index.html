@@ -120,39 +120,70 @@ body {
 .lp-mobile-menu { display: none; }
 .lp-mobile-backdrop { display: none; }
 
-/* Hero Section */
-.lp-hero { padding: 80px 0 60px; text-align: center; }
+/* Hero Section with Image 2 Atmospheric Background */
+.lp-hero {
+  position: relative;
+  padding: 95px 0 80px;
+  text-align: center;
+  overflow: hidden;
+  background-color: #0B1120;
+  border-bottom: 1px solid #1E293B;
+}
+.lp-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.28;
+  pointer-events: none;
+}
+.lp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 35%, rgba(11, 17, 32, 0.35) 0%, rgba(11, 17, 32, 0.82) 65%, #0B1120 100%);
+  pointer-events: none;
+}
+.lp-hero .lp-container {
+  position: relative;
+  z-index: 2;
+}
 .lp-hero-pill {
-  display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF;
-  border: 1px solid #E2E8F0; padding: 6px 14px; border-radius: 20px;
-  font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 22px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 700; color: #F1F5F9; margin-bottom: 22px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 .lp-hero-pill .stars { color: #F59E0B; font-size: 11px; }
 .lp-hero h1 {
   font-size: clamp(32px, 4.5vw, 50px); font-weight: 800; line-height: 1.18;
-  letter-spacing: -0.03em; color: #0F172A; max-width: 820px; margin: 0 auto 18px;
+  letter-spacing: -0.03em; color: #FFFFFF; max-width: 820px; margin: 0 auto 18px;
 }
-.lp-hero h1 .highlight { color: #E04D2D; }
+.lp-hero h1 .highlight { color: #FF6B4A; }
 .lp-hero-sub {
-  font-size: clamp(15.5px, 2vw, 18px); color: #64748B; max-width: 620px;
-  margin: 0 auto 32px; line-height: 1.6; font-weight: 400;
+  font-size: clamp(15.5px, 2vw, 18px); color: #CBD5E1; max-width: 620px;
+  margin: 0 auto 34px; line-height: 1.6; font-weight: 400;
 }
-.lp-cta-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+.lp-cta-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 0; }
 .lp-btn-main {
   background: #E04D2D; color: #fff; font-size: 15.5px; font-weight: 700;
   padding: 13px 26px; border-radius: 8px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(224, 77, 45, 0.28);
+  display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(224, 77, 45, 0.4);
   transition: all 0.2s;
 }
-.lp-btn-main:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; box-shadow: 0 6px 18px rgba(224, 77, 45, 0.35); }
+.lp-btn-main:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; box-shadow: 0 6px 20px rgba(224, 77, 45, 0.5); }
 .lp-btn-secondary {
-  background: #FFFFFF; color: #0F172A; font-size: 15.5px; font-weight: 600;
+  background: rgba(255, 255, 255, 0.12); color: #FFFFFF; font-size: 15.5px; font-weight: 600;
   padding: 12px 22px; border-radius: 8px; text-decoration: none;
-  border: 1px solid #CBD5E1; display: inline-flex; align-items: center; gap: 6px;
-  transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  border: 1px solid rgba(255, 255, 255, 0.25); display: inline-flex; align-items: center; gap: 6px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
-.lp-btn-secondary:hover { background: #F8FAFC; border-color: #94A3B8; transform: translateY(-1px); }
+.lp-btn-secondary:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.4); color: #FFFFFF; transform: translateY(-1px); }
 
 /* Visual Simple Example Section (Dedicated) */
 .lp-example-section {
@@ -195,91 +226,18 @@ body {
 .lp-section-title { font-size: clamp(24px, 3.2vw, 32px); font-weight: 800; color: #0F172A; margin-bottom: 12px; line-height: 1.25; letter-spacing: -0.02em; }
 .lp-section-sub { font-size: 15.5px; color: #64748B; line-height: 1.55; }
 
-/* Traps Layout & Inception Art Feature */
-.lp-traps-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-.lp-art-trap-feature {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #E2E8F0;
-  background: #0F172A;
-  color: #FFFFFF;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 24px;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
-  min-height: 340px;
-}
-.lp-art-trap-feature img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
-  opacity: 0.6;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-.lp-art-trap-feature:hover img {
-  transform: scale(1.04);
-  opacity: 0.72;
-}
-.lp-art-trap-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0.65) 45%, rgba(15, 23, 42, 0.94) 100%);
-  z-index: 1;
-}
-.lp-art-trap-content {
-  position: relative;
-  z-index: 2;
-}
-.lp-art-trap-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(224, 77, 45, 0.3);
-  border: 1px solid rgba(224, 77, 45, 0.6);
-  color: #FFA38F;
-  font-size: 10.5px;
-  font-weight: 800;
-  font-family: 'IBM Plex Mono', monospace;
-  padding: 3px 8px;
-  border-radius: 20px;
-  margin-bottom: 8px;
-  backdrop-filter: blur(8px);
-}
-.lp-art-trap-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 6px;
-  line-height: 1.3;
-}
-.lp-art-trap-quote {
-  font-size: 12px;
-  color: #CBD5E1;
-  line-height: 1.5;
-}
-
 /* 4 Simple Mistakes / Traps Grid */
-.lp-mistakes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.lp-mistakes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
 .lp-mistake-card {
   background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02); display: flex; flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-.lp-mistake-icon { font-size: 22px; margin-bottom: 8px; }
+.lp-mistake-icon { font-size: 22px; margin-bottom: 10px; }
 .lp-mistake-title { font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 6px; }
-.lp-mistake-desc { font-size: 13px; color: #64748B; line-height: 1.5; }
+.lp-mistake-desc { font-size: 13.5px; color: #64748B; line-height: 1.5; }
 
 /* 6 Core Features Grid */
-.lp-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.lp-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .lp-feat-card {
   background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 22px;
 }
@@ -290,204 +248,6 @@ body {
 .lp-feat-pill.free { background: #F1F5F9; color: #475569; }
 .lp-feat-title { font-size: 15.5px; font-weight: 700; color: #0F172A; margin-bottom: 6px; }
 .lp-feat-desc { font-size: 13.5px; color: #64748B; line-height: 1.5; }
-
-/* Blade Runner 2049 Logistics Banner */
-.lp-logistics-banner {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid #334155;
-  background: #0F172A;
-  padding: 32px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.22);
-}
-.lp-logistics-banner-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 40%;
-  opacity: 0.38;
-  transition: transform 0.6s ease;
-}
-.lp-logistics-banner:hover .lp-logistics-banner-bg {
-  transform: scale(1.02);
-}
-.lp-logistics-banner-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 55%, rgba(15, 23, 42, 0.4) 100%);
-  z-index: 1;
-}
-.lp-logistics-banner-content {
-  position: relative;
-  z-index: 2;
-  max-width: 620px;
-}
-.lp-logistics-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #CBD5E1;
-  font-size: 11px;
-  font-weight: 800;
-  font-family: 'IBM Plex Mono', monospace;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-  backdrop-filter: blur(8px);
-}
-.lp-logistics-title {
-  font-size: clamp(19px, 2.4vw, 24px);
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 8px;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-}
-.lp-logistics-desc {
-  font-size: 13.5px;
-  color: #94A3B8;
-  line-height: 1.55;
-  margin-bottom: 14px;
-}
-.lp-logistics-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.lp-logistics-tag-item {
-  font-size: 11px;
-  font-weight: 600;
-  color: #F1F5F9;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 4px 10px;
-  border-radius: 6px;
-  backdrop-filter: blur(4px);
-}
-
-/* SpaceX Grand Takeoff Banner */
-.lp-takeoff-section {
-  padding: 30px 0 70px;
-}
-.lp-takeoff-card {
-  position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #0B0F19;
-  border: 1px solid rgba(224, 77, 45, 0.35);
-  box-shadow: 0 20px 50px -10px rgba(224, 77, 45, 0.2), 0 0 0 1px rgba(224, 77, 45, 0.15);
-  padding: 48px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-}
-.lp-takeoff-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: right 30%;
-  opacity: 0.65;
-  transition: transform 0.6s ease;
-}
-.lp-takeoff-card:hover .lp-takeoff-img {
-  transform: scale(1.02);
-}
-.lp-takeoff-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(11, 15, 25, 0.96) 0%, rgba(11, 15, 25, 0.85) 50%, rgba(11, 15, 25, 0.3) 100%);
-  z-index: 1;
-}
-.lp-takeoff-content {
-  position: relative;
-  z-index: 2;
-  max-width: 580px;
-}
-.lp-takeoff-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(224, 77, 45, 0.2);
-  border: 1px solid rgba(224, 77, 45, 0.45);
-  color: #FFA38F;
-  font-size: 11px;
-  font-weight: 800;
-  font-family: 'IBM Plex Mono', monospace;
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 14px;
-  letter-spacing: 0.04em;
-  backdrop-filter: blur(8px);
-}
-.lp-takeoff-title {
-  font-size: clamp(24px, 3.2vw, 34px);
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 10px;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-.lp-takeoff-sub {
-  font-size: clamp(14px, 1.6vw, 15.5px);
-  color: #CBD5E1;
-  line-height: 1.55;
-  margin-bottom: 24px;
-}
-.lp-takeoff-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.lp-btn-takeoff-pro {
-  background: #E04D2D;
-  color: #FFFFFF;
-  font-size: 14.5px;
-  font-weight: 700;
-  padding: 12px 22px;
-  border-radius: 8px;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 6px 18px rgba(224, 77, 45, 0.4);
-  transition: all 0.2s ease;
-}
-.lp-btn-takeoff-pro:hover {
-  background: #C83C1E;
-  transform: translateY(-1px);
-  color: #FFFFFF;
-  box-shadow: 0 8px 22px rgba(224, 77, 45, 0.5);
-}
-.lp-btn-takeoff-free {
-  background: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  font-size: 14.5px;
-  font-weight: 600;
-  padding: 11px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
-}
-.lp-btn-takeoff-free:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  color: #FFFFFF;
-}
 
 /* Free Tool Dedicated Showcase Card */
 .lp-freetool-section {
@@ -962,58 +722,6 @@ body {
   }
   .lp-price-list li {
     font-size: 13.5px !important;
-    line-height: 1.45 !important;
-  }
-  /* Traps & Art Feature on Mobile */
-  .lp-traps-layout {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-  .lp-art-trap-feature {
-    min-height: 240px !important;
-    padding: 20px 18px !important;
-  }
-  .lp-mistakes-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  /* Features Grid & Logistics Banner on Mobile */
-  .lp-features-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    margin-bottom: 20px !important;
-  }
-  .lp-logistics-banner {
-    padding: 24px 18px !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 16px !important;
-  }
-
-  /* SpaceX Takeoff Banner on Mobile */
-  .lp-takeoff-section {
-    padding: 20px 0 50px !important;
-  }
-  .lp-takeoff-card {
-    padding: 32px 20px !important;
-    border-radius: 14px !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    text-align: left !important;
-    gap: 20px !important;
-  }
-  .lp-takeoff-actions {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 10px !important;
-  }
-  .lp-btn-takeoff-pro, .lp-btn-takeoff-free {
-    width: 100% !important;
-    justify-content: center !important;
-    padding: 13px 18px !important;
-  }
-
   .lp-section {
     padding: 44px 0;
   }
@@ -1112,6 +820,8 @@ body {
 
   <!-- Hero Section -->
   <section class="lp-hero">
+    <img src="images/2.jpeg" alt="Logistics Background" class="lp-hero-bg" loading="eager">
+    <div class="lp-hero-overlay"></div>
     <div class="lp-container">
       <div class="lp-hero-pill">
         <span class="stars">★★★★★</span>
@@ -1177,45 +887,32 @@ body {
       <div class="lp-section-header">
         <span class="lp-section-tag">Common Traps</span>
         <h2 class="lp-section-title">Where Importers Lose Money</h2>
-        <p class="lp-section-sub">Simple mistakes in manual spreadsheets cost hundreds of dollars per shipment.</p>
+        <p class="lp-section-sub">Simple mistakes in manual spreadsheets cost hundreds of dollars per order.</p>
       </div>
 
-      <div class="lp-traps-layout">
-        <!-- Inception Chiaroscuro Art Card -->
-        <div class="lp-art-trap-feature">
-          <img src="images/1.jpeg" alt="The Inception Wake-Up Call" loading="lazy">
-          <div class="lp-art-trap-overlay"></div>
-          <div class="lp-art-trap-content">
-            <div class="lp-art-trap-pill">🎬 THE REALITY CHECK</div>
-            <h3 class="lp-art-trap-title">Waking Up Before You Pay</h3>
-            <p class="lp-art-trap-quote">"Supplier invoices only show 60% of your true costs. The moment your cargo lands, uncalculated duties and freight fees eat your profit."</p>
-          </div>
+      <div class="lp-mistakes-grid">
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">✈️</div>
+          <h3 class="lp-mistake-title">Air Cargo Rounds Up</h3>
+          <p class="lp-mistake-desc">If your box weighs 2.1 kg, airlines bill you for 3.0 kg. If you miss this, you undercharge your customers.</p>
         </div>
 
-        <div class="lp-mistakes-grid">
-          <div class="lp-mistake-card">
-            <div class="lp-mistake-icon">✈️</div>
-            <h3 class="lp-mistake-title">Air Cargo Rounds Up</h3>
-            <p class="lp-mistake-desc">If your box weighs 2.1 kg, airlines bill you for 3.0 kg. If you miss this, you undercharge your customers.</p>
-          </div>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">🏛️</div>
+          <h3 class="lp-mistake-title">Taxes Stack on Shipping</h3>
+          <p class="lp-mistake-desc">Customs taxes apply to the product AND the shipping fee, not just the product. Missing this causes port fee surprises.</p>
+        </div>
 
-          <div class="lp-mistake-card">
-            <div class="lp-mistake-icon">🏛️</div>
-            <h3 class="lp-mistake-title">Taxes Stack on Shipping</h3>
-            <p class="lp-mistake-desc">Customs taxes apply to the product AND the shipping fee, not just the product. Missing this causes port fee surprises.</p>
-          </div>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">💱</div>
+          <h3 class="lp-mistake-title">Currency Changes</h3>
+          <p class="lp-mistake-desc">You pay suppliers in foreign money like RMB, USD, or AED. If exchange rates move, your profit disappears.</p>
+        </div>
 
-          <div class="lp-mistake-card">
-            <div class="lp-mistake-icon">💱</div>
-            <h3 class="lp-mistake-title">Currency Volatility</h3>
-            <p class="lp-mistake-desc">You pay suppliers in foreign money like RMB, USD, or AED. If exchange rates move, your profit disappears.</p>
-          </div>
-
-          <div class="lp-mistake-card">
-            <div class="lp-mistake-icon">📄</div>
-            <h3 class="lp-mistake-title">Typing Errors in Excel</h3>
-            <p class="lp-mistake-desc">Typing 30 items by hand into spreadsheets is slow and error-prone. One wrong formula ruins your pricing.</p>
-          </div>
+        <div class="lp-mistake-card">
+          <div class="lp-mistake-icon">📄</div>
+          <h3 class="lp-mistake-title">Typing Errors in Excel</h3>
+          <p class="lp-mistake-desc">Typing 30 items by hand into spreadsheets is slow and error-prone. One wrong number ruins your pricing.</p>
         </div>
       </div>
     </div>
@@ -1227,7 +924,7 @@ body {
       <div class="lp-section-header">
         <span class="lp-section-tag">Features</span>
         <h2 class="lp-section-title">Built for Simple, Accurate Pricing</h2>
-        <p class="lp-section-sub">Everything you need to price products with absolute confidence.</p>
+        <p class="lp-section-sub">Everything you need to price products with confidence.</p>
       </div>
 
       <div class="lp-features-grid">
@@ -1283,22 +980,6 @@ body {
           </div>
           <h3 class="lp-feat-title">100% Private on Your Device</h3>
           <p class="lp-feat-desc">Your prices and supplier details stay in your browser. Nothing is uploaded to any outside server.</p>
-        </div>
-      </div>
-
-      <!-- Blade Runner 2049 Logistics Showcase Banner -->
-      <div class="lp-logistics-banner">
-        <img src="images/2.jpeg" alt="Modern Global Logistics Transport" class="lp-logistics-banner-bg" loading="lazy">
-        <div class="lp-logistics-banner-overlay"></div>
-        <div class="lp-logistics-banner-content">
-          <div class="lp-logistics-pill">🚢 + ✈️ MULTIMODAL LOGISTICS ENGINE</div>
-          <h3 class="lp-logistics-title">Precision Freight From Factory Floor to Port</h3>
-          <p class="lp-logistics-desc">Whether shipping 40-foot ocean containers (CBM) from Ningbo or express air cargo (Kg) from Dubai, calculate exact landed costs across 14 currencies with zero spreadsheet errors.</p>
-          <div class="lp-logistics-tags">
-            <span class="lp-logistics-tag-item">✓ Air Cargo Whole-Kg Rounding</span>
-            <span class="lp-logistics-tag-item">✓ Ocean Container CBM Proration</span>
-            <span class="lp-logistics-tag-item">✓ Live SL & Global Duty Bundles</span>
-          </div>
         </div>
       </div>
     </div>
@@ -1403,25 +1084,6 @@ body {
             <li><span class="chk">✓</span> <strong>14-Day Money-Back Guarantee</strong></li>
           </ul>
           <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-price pro">⚡ Get Pro Access ($9)</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SpaceX Grand Takeoff Banner -->
-  <section class="lp-takeoff-section" id="takeoff">
-    <div class="lp-container">
-      <div class="lp-takeoff-card">
-        <img src="images/5.jpeg" alt="Launch With Certainty" class="lp-takeoff-img" loading="lazy">
-        <div class="lp-takeoff-overlay"></div>
-        <div class="lp-takeoff-content">
-          <div class="lp-takeoff-pill">🚀 LAUNCH WITH CERTAINTY</div>
-          <h2 class="lp-takeoff-title">Never Guess Your Net Profit Margin Again.</h2>
-          <p class="lp-takeoff-sub">Calculate exact landed costs, duties, and freight in 30 seconds before committing money to overseas suppliers. Pay once for lifetime peace of mind.</p>
-          <div class="lp-takeoff-actions">
-            <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-takeoff-pro">🚀 Get Pro Lifetime Access ($9)</a>
-            <a href="free.html" class="lp-btn-takeoff-free">⚡ Launch Free Calculator</a>
-          </div>
         </div>
       </div>
     </div>
