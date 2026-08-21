@@ -1048,16 +1048,39 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 </head>
 <body>
 
-<div style="background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid #E2E8F0; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; position: sticky; top: 0; z-index: 1000; flex-wrap: wrap; gap: 10px;">
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <span style="background: #FEF2F2; color: #E04D2D; font-size: 10.5px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; padding: 3px 9px; border-radius: 14px; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(224, 77, 45, 0.2);">✨ PRO EDITION ACTIVE</span>
-    <span style="color: #0F172A; font-weight: 600;">14 Global Currencies & Air Cargo (Kg Rounding) Enabled</span>
+
+<!-- EXECUTIVE PRO SUITE TOPBAR -->
+<header style="background: #0B0F19; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 24px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
+  <div style="max-width: 1400px; margin: 0 auto; height: 52px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    
+    <!-- Left Brand & Status -->
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="display: flex; align-items: center; gap: 7px; background: linear-gradient(135deg, rgba(224, 77, 45, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%); border: 1px solid rgba(224, 77, 45, 0.35); padding: 4px 10px; border-radius: 20px;">
+        <span style="color: #F59E0B; font-size: 11px;">✦</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; background: linear-gradient(90deg, #F97316 0%, #FBBF24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase;">PRO EDITION</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #94A3B8; font-size: 12.5px; font-weight: 500;">
+        <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px #10B981;"></span>
+        <span style="color: #F1F5F9; font-weight: 600;">Global Calculation Engine</span>
+        <span style="color: #475569;">•</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #CBD5E1;">14 Currencies + Air & Sea Freight</span>
+      </div>
+    </div>
+
+    <!-- Right Actions & Verified Badge -->
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 4px 10px; border-radius: 6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; color: #34D399; letter-spacing: 0.04em;">$9 LIFETIME LICENSE</span>
+      </div>
+      <a href="/" style="display: inline-flex; align-items: center; gap: 6px; color: #94A3B8; text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s;" onmouseover="this.style.color='#FFF'; this.style.borderColor='rgba(255,255,255,0.25)'" onmouseout="this.style.color='#94A3B8'; this.style.borderColor='rgba(255,255,255,0.1)'">
+        <span>←</span>
+        <span>Home</span>
+      </a>
+    </div>
+
   </div>
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <span style="color: #059669; font-weight: 700; font-size: 12px; font-family: 'IBM Plex Mono', monospace;">✓ $9 LIFETIME LICENSE</span>
-    <a href="/" style="color: #0F172A; text-decoration: none; background: #F1F5F9; border: 1px solid #CBD5E1; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; transition: all 0.2s ease;">← Back to Home / Free Tool</a>
-  </div>
-</div>
+</header>
 <div class="app-container">
   <aside class="sidebar">
     <div class="history-header">
@@ -1087,25 +1110,25 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
         </div>
         <input type="text" id="shipmentName" class="topbar-title" value="Shipment 1" placeholder="Name this shipment...">
         <div class="manifest-route-ribbon">
-          <div class="route-station">
-            <span class="station-flag">CN</span>
-            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City">
+          <div class="route-station" title="Origin Country & Port">
+            <span class="station-flag" id="originFlag">🇨🇳 CN</span>
+            <input type="text" id="routeOrigin" value="GUANGZHOU" class="station-input" title="Origin City / Port" style="width:95px;">
           </div>
-          <div class="route-transit">
+          <div class="route-transit" title="Transit Mode">
             <span class="transit-line"></span>
-            <span class="transit-badge">🚢 SEA</span>
+            <span class="transit-badge" id="routeTransitBadge">🚢 SEA</span>
             <span class="transit-line"></span>
           </div>
-          <div class="route-station">
+          <div class="route-station" title="Destination Customs Port">
             <span class="station-flag">LK</span>
             <input type="text" id="routePort" value="COLOMBO" class="station-input" title="Customs Port">
           </div>
-          <div class="route-transit">
+          <div class="route-transit" title="Local Inland Transport">
             <span class="transit-line"></span>
             <span class="transit-badge">🚛 INLAND</span>
             <span class="transit-line"></span>
           </div>
-          <div class="route-station">
+          <div class="route-station" title="Final Delivery Location">
             <span class="station-flag dest">📍</span>
             <input type="text" id="routeDest" value="MATARA" class="station-input" title="Final Destination">
           </div>
@@ -1711,6 +1734,13 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     return symbols[code] || code;
   }
 
+  const COUNTRY_FLAGS = {
+    RMB: '🇨🇳 CN', USD: '🇺🇸 US', EUR: '🇪🇺 EU', GBP: '🇬🇧 UK',
+    INR: '🇮🇳 IN', AED: '🇦🇪 AE', JPY: '🇯🇵 JP', AUD: '🇦🇺 AU',
+    CAD: '🇨🇦 CA', SGD: '🇸🇬 SG', CHF: '🇨🇭 CH', HKD: '🇭🇰 HK',
+    MYR: '🇲🇾 MY', THB: '🇹🇭 TH'
+  };
+
   function updateCurrencyLabels() {
     const curr = document.getElementById('baseCurrency').value;
     const sym = getCurrencySymbol(curr);
@@ -1718,6 +1748,15 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
     const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
     const measureName = cargoMode === 'air' ? 'Kg' : 'CBM';
+
+    // Update dynamic Route Ribbon
+    const originFlag = document.getElementById('originFlag');
+    if (originFlag) originFlag.textContent = COUNTRY_FLAGS[curr] || '🌐 GLOBAL';
+
+    const routeTransitBadge = document.getElementById('routeTransitBadge');
+    if (routeTransitBadge) {
+      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR' : '🚢 SEA';
+    }
 
     const thMeasure = document.getElementById('thMeasure');
     if (thMeasure) thMeasure.textContent = `Total ${measureName}`;
