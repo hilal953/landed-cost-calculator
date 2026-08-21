@@ -1167,16 +1167,23 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .pro-nav-header {
     padding: 0 14px;
     height: 48px;
+@media (max-width: 768px) {
+  .pro-nav-header {
+    padding: 0 12px;
+    height: 48px;
   }
   .pro-nav-inner {
     height: 48px;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   .pro-nav-status {
     display: none !important;
   }
   .pro-nav-title {
     font-size: 13.5px;
+    white-space: nowrap;
   }
   .pro-nav-license {
     padding: 3px 6px;
@@ -1184,15 +1191,35 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   .pro-nav-license .license-text {
     font-size: 10px;
   }
+  .pro-nav-actions {
+    gap: 6px;
+  }
   .pro-nav-back-btn {
     padding: 5px 8px;
     font-size: 11px;
     gap: 4px;
+    white-space: nowrap;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .pro-nav-license {
     display: none !important;
+  }
+  .pro-nav-badge {
+    display: none !important;
+  }
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .summary-card {
+    padding: 10px 12px !important;
+  }
+  .summary-label {
+    font-size: 10.5px !important;
+  }
+  .summary-value {
+    font-size: 16px !important;
   }
 }
 

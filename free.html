@@ -1169,32 +1169,53 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 @media (max-width: 768px) {
   .free-nav-header {
-    padding: 0 14px;
+    padding: 0 12px;
     height: 48px;
   }
   .free-nav-inner {
     height: 48px;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   .free-nav-status {
     display: none !important;
   }
   .free-nav-title {
     font-size: 13.5px;
+    white-space: nowrap;
+  }
+  .free-nav-actions {
+    gap: 6px;
   }
   .free-nav-pro-btn {
-    padding: 5px 10px;
+    padding: 5px 9px;
     font-size: 11px;
+    white-space: nowrap;
   }
   .free-nav-back-btn {
     padding: 5px 8px;
     font-size: 11px;
     gap: 4px;
+    white-space: nowrap;
   }
 }
-@media (max-width: 400px) {
-  .free-nav-status {
+@media (max-width: 480px) {
+  .free-nav-badge {
     display: none !important;
+  }
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .summary-card {
+    padding: 10px 12px !important;
+  }
+  .summary-label {
+    font-size: 10.5px !important;
+  }
+  .summary-value {
+    font-size: 16px !important;
   }
 }
 
