@@ -393,22 +393,71 @@ textarea:focus {
 }
 .dz-title { font-size: 15px; font-weight: 700; color: var(--ink); }
 .dz-sub { font-size: 13px; color: var(--ink-soft); }
-.dz-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 4px;
+
+/* DROPZONE ACTION GRID */
+.dz-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 540px;
+  margin-top: 14px;
 }
-.dz-badge {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--bg-color);
-  border: 1px solid var(--border);
+.dz-action-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+}
+.dz-action-btn:hover {
+  border-color: var(--accent);
+  background: rgba(13, 148, 136, 0.04);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.dz-action-btn:active {
+  transform: scale(0.97);
+}
+.dz-action-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.dz-action-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.dz-action-ext {
+  display: block;
+  font-size: 10px;
   color: var(--ink-soft);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 2px;
+}
+
+@media (max-width: 540px) {
+  .dz-action-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .dz-action-btn {
+    flex-direction: row;
+    padding: 10px 14px;
+    text-align: left;
+    gap: 12px;
+  }
+  .dz-action-ext {
+    margin-top: 0;
+  }
 }
 
 /* TABS */

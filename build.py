@@ -93,17 +93,33 @@ html_body = r"""
             <div class="dz-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
             </div>
-            <div class="dz-title">Drop your packing list, invoice, or Excel here</div>
-            <div class="dz-sub">Drag & drop files or tap to choose from your device</div>
-            <div class="dz-badges">
-              <span class="dz-badge">📊 Excel (.xlsx, .xls, .csv)</span>
-              <span class="dz-badge">📄 PDF Invoice (.pdf)</span>
-              <span class="dz-badge">📷 WhatsApp Photo / Scans (.jpg, .png)</span>
-            </div>
-            <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:14px;">
-              <button type="button" class="btn-secondary btn-sm" id="btnUploadPhoto" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📷 Photo / Scan</button>
-              <button type="button" class="btn-secondary btn-sm" id="btnUploadPdf" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📄 PDF Document</button>
-              <button type="button" class="btn-secondary btn-sm" id="btnUploadExcel" style="font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer;">📊 Excel Sheet</button>
+            <div class="dz-title">Upload Packing List, Invoice, or Excel</div>
+            <div class="dz-sub">Drag & drop files or tap a format below</div>
+
+            <div class="dz-action-grid">
+              <button type="button" class="dz-action-btn" id="btnUploadPhoto">
+                <span class="dz-action-icon">📷</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">Photo / Scan</span>
+                  <span class="dz-action-ext">JPG, PNG, WhatsApp</span>
+                </div>
+              </button>
+              
+              <button type="button" class="dz-action-btn" id="btnUploadPdf">
+                <span class="dz-action-icon">📄</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">PDF Document</span>
+                  <span class="dz-action-ext">Commercial Invoice</span>
+                </div>
+              </button>
+              
+              <button type="button" class="dz-action-btn" id="btnUploadExcel">
+                <span class="dz-action-icon">📊</span>
+                <div class="dz-action-text">
+                  <span class="dz-action-title">Excel Sheet</span>
+                  <span class="dz-action-ext">XLSX, XLS, CSV</span>
+                </div>
+              </button>
             </div>
             <input type="file" id="fileInput" accept="*/*,.xls,.xlsx,.csv,.pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" style="display:none;">
           </div>
