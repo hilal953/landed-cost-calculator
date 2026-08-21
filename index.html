@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Landed Cost Manifest — Know Your True Import Product Cost</title>
+<title>Landed Cost Manifest | Know Your True Import Product Cost</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -211,19 +211,20 @@ body {
 
 /* Free Tool Dedicated Showcase Card */
 .lp-freetool-section {
-  background: #F1F5F9;
+  background: #F8FAFC;
   border-top: 1px solid #E2E8F0;
   border-bottom: 1px solid #E2E8F0;
+  padding: 60px 0;
 }
 .lp-freetool-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   border-radius: 16px;
-  padding: 44px 36px;
+  padding: 38px 32px;
   text-align: center;
-  max-width: 860px;
+  max-width: 820px;
   margin: 0 auto;
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
 }
 .lp-freetool-badge {
   display: inline-flex;
@@ -237,64 +238,84 @@ body {
   font-family: 'IBM Plex Mono', monospace;
   padding: 4px 12px;
   border-radius: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   letter-spacing: 0.04em;
 }
 .lp-freetool-title {
-  font-size: clamp(24px, 3.2vw, 34px);
+  font-size: clamp(22px, 3.2vw, 30px);
   font-weight: 800;
   color: #0F172A;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 .lp-freetool-sub {
-  font-size: 15.5px;
+  font-size: 15px;
   color: #64748B;
-  max-width: 640px;
-  margin: 0 auto 32px;
-  line-height: 1.6;
+  max-width: 580px;
+  margin: 0 auto 28px;
+  line-height: 1.55;
 }
 .lp-freetool-features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 12px;
   text-align: left;
-  margin-bottom: 36px;
+  margin-bottom: 28px;
 }
 .lp-freetool-feat-item {
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 10px;
-  padding: 16px 18px;
+  padding: 14px 16px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
-.lp-freetool-feat-item .feat-icon {
-  font-size: 24px;
-  line-height: 1;
+.feat-icon-wrap {
+  width: 34px;
+  height: 34px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
 }
-.lp-freetool-feat-item strong {
+.feat-text-wrap {
+  flex: 1;
+}
+.feat-text-wrap strong {
   display: block;
-  font-size: 14.5px;
+  font-size: 14px;
   color: #0F172A;
   margin-bottom: 2px;
+  font-weight: 700;
 }
-.lp-freetool-feat-item p {
+.feat-text-wrap p {
   font-size: 12.5px;
   color: #64748B;
   margin: 0;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 .lp-freetool-action-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+}
+.lp-freetool-cta {
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
 }
 .lp-freetool-pro-note {
   font-size: 13px;
   color: #64748B;
+  margin: 0;
 }
 .lp-freetool-pro-note a {
   color: #E04D2D;
@@ -909,50 +930,51 @@ body {
   <section class="lp-section lp-freetool-section" id="free-tool">
     <div class="lp-container">
       <div class="lp-freetool-card">
-        <div class="lp-freetool-badge">🟢 100% FREE CALCULATOR</div>
+        <div class="lp-freetool-badge">🟢 FREE CALCULATOR</div>
         <h2 class="lp-freetool-title">China Sea Imports Calculator</h2>
         <p class="lp-freetool-sub">
-          Calculate ocean freight (CBM), customs duty, PAL, and VAT with automatic per-item unit landed cost. Runs entirely in your browser — zero sign up required.
+          Calculate your exact shipping, customs duty, and true cost for each item. Free to use with no account or sign up needed.
         </p>
 
         <div class="lp-freetool-features">
           <div class="lp-freetool-feat-item">
-            <span class="feat-icon">🇨🇳</span>
-            <div>
-              <strong>China Sea Imports</strong>
-              <p>Supports RMB (¥) and USD ($) supplier prices with live rate conversions</p>
+            <div class="feat-icon-wrap">🇨🇳</div>
+            <div class="feat-text-wrap">
+              <strong>China Suppliers</strong>
+              <p>Enter prices in Chinese Yuan (¥) or US Dollars ($).</p>
             </div>
           </div>
           <div class="lp-freetool-feat-item">
-            <span class="feat-icon">📦</span>
-            <div>
-              <strong>CBM Freight Math</strong>
-              <p>Accurate volume-based shipping distribution across every item</p>
+            <div class="feat-icon-wrap">🚢</div>
+            <div class="feat-text-wrap">
+              <strong>Sea Freight (CBM)</strong>
+              <p>Splits container shipping costs fairly across all your products.</p>
             </div>
           </div>
           <div class="lp-freetool-feat-item">
-            <span class="feat-icon">🏛️</span>
-            <div>
-              <strong>Customs Duty & VAT Breakdown</strong>
-              <p>Duty, PAL, and VAT formulas spread fairly across every unit</p>
+            <div class="feat-icon-wrap">🧾</div>
+            <div class="feat-text-wrap">
+              <strong>Customs & Taxes</strong>
+              <p>Adds Duty, PAL, and VAT tax automatically to each item.</p>
             </div>
           </div>
           <div class="lp-freetool-feat-item">
-            <span class="feat-icon">🔒</span>
-            <div>
-              <strong>100% Private & Instant</strong>
-              <p>No login needed, runs locally in your browser, auto-saved safely</p>
+            <div class="feat-icon-wrap">⚡</div>
+            <div class="feat-text-wrap">
+              <strong>Instant & Private</strong>
+              <p>Works right now on your phone or laptop. No login needed.</p>
             </div>
           </div>
         </div>
 
         <div class="lp-freetool-action-wrap">
-          <a href="free.html" class="lp-btn-main" style="padding: 14px 28px; font-size: 15.5px;">
-            ⚡ Launch Free Calculator (Instant Access) →
+          <a href="free.html" class="lp-btn-main lp-freetool-cta">
+            <span>⚡ Use Free Calculator Now</span>
+            <span class="cta-arrow">→</span>
           </a>
-          <span class="lp-freetool-pro-note">
-            Need 14 Currencies (AED, INR, EUR...) or Air Cargo (Kg)? <a href="pro.html">Unlock Pro ($9 One-Time) →</a>
-          </span>
+          <p class="lp-freetool-pro-note">
+            Importing by Air Cargo or from Dubai and India? <a href="pro.html">See Pro ($9 One-Time) →</a>
+          </p>
         </div>
       </div>
     </div>
@@ -1048,7 +1070,7 @@ body {
         <div class="lp-footer-brand">
           <span>🚢</span>
           <span>Landed Cost Manifest</span>
-          <span class="tag">— Payments by Lemon Squeezy</span>
+          <span class="tag">Payments by Lemon Squeezy</span>
         </div>
         <div class="lp-footer-links">
           <a href="free.html">Free Tool</a>
