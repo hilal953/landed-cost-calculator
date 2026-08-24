@@ -991,6 +991,116 @@ body {
   }
 }
 
+
+/* ==========================================================================
+   PERFECT MOBILE HEADER (Zero Clutter, Zero Wrapping, Pure Luxury)
+   ========================================================================== */
+.lp-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid #E2E8F0;
+}
+.lp-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #0F172A;
+  flex-shrink: 0;
+}
+.lp-brand-logo { font-size: 20px; }
+.lp-brand-text { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: #0F172A; }
+
+.lp-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-btn-nav-login {
+  background: #FFFFFF;
+  color: #0F172A;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #CBD5E1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+.lp-btn-nav-login:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+.lp-btn-nav-pro {
+  background: #E04D2D;
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(224, 77, 45, 0.2);
+  transition: all 0.2s ease;
+}
+.lp-btn-nav-pro:hover {
+  background: #C83C1E;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .lp-nav-inner {
+    height: 56px;
+    padding: 0 16px;
+  }
+  .lp-brand-text {
+    font-size: 14.5px;
+  }
+  .lp-nav-links {
+    display: none !important;
+  }
+  /* On mobile header: Hide Pro button from header bar, keep only clean Log In and Hamburger */
+  .lp-nav-right .lp-btn-nav-pro {
+    display: none !important;
+  }
+  .lp-nav-right .lp-btn-nav-login {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+  }
+  .lp-menu-toggle {
+    display: flex !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1024,8 +1134,6 @@ body {
   <div class="lp-mobile-backdrop" id="lpMobileBackdrop"></div>
   <nav class="lp-mobile-menu" id="lpMobileMenu" aria-label="Mobile Navigation">
     <ul class="lp-mobile-nav-links">
-      <li><a href="free.html"><span class="nav-icon">🚢</span> Free Import Tool</a></li>
-      <li><a href="javascript:void(0)" onclick="openLoginModal(); closeMobileMenu();"><span class="nav-icon">🔑</span> Pro User Login (Paid)</a></li>
       <li><a href="#how-it-works"><span class="nav-icon">💡</span> How It Works</a></li>
       <li><a href="#pricing"><span class="nav-icon">🏷️</span> Pricing ($9 One-Time)</a></li>
       <li><a href="#faq"><span class="nav-icon">❓</span> Common Questions</a></li>
