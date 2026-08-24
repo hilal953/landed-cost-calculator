@@ -809,6 +809,54 @@ body {
     font-size: 15px;
   }
 }
+
+/* Clean Nav Buttons */
+.lp-btn-nav-login {
+  background: #FFFFFF;
+  color: #0F172A;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #CBD5E1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.lp-btn-nav-login:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  transform: translateY(-1px);
+}
+.lp-btn-nav-login-mobile {
+  display: none;
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #CBD5E1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .lp-nav-desktop-cta {
+    display: none !important;
+  }
+  .lp-btn-nav-login-mobile {
+    display: inline-flex !important;
+  }
+  .lp-btn-nav-pro-mobile {
+    display: inline-flex !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -827,10 +875,9 @@ body {
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="lp-nav-right">
-        <a href="free.html" class="lp-btn-nav-free lp-nav-desktop-cta">Free Tool</a>
-        <button type="button" class="lp-btn-nav-login lp-nav-desktop-cta" onclick="openLoginModal()" style="background:#FFFFFF; color:#0F172A; text-decoration:none; padding:7px 14px; border-radius:6px; font-size:13px; font-weight:700; border:1px solid #CBD5E1; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.2s;">🔑 Log In</button>
+        <button type="button" class="lp-btn-nav-login lp-nav-desktop-cta" onclick="openLoginModal()">🔑 Log In</button>
         <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro lp-nav-desktop-cta">Unlock Pro ($9)</a>
-        <button type="button" class="lp-btn-nav-login-mobile" onclick="openLoginModal()" style="background:#FFFFFF; color:#0F172A; border:1px solid #CBD5E1; padding:5px 9px; border-radius:6px; font-size:11.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:3px;">🔑 Log In</button>
+        <button type="button" class="lp-btn-nav-login-mobile" onclick="openLoginModal()">🔑 Log In</button>
         <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro-mobile">⚡ Pro ($9)</a>
         <button class="lp-menu-toggle" id="lpMenuToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
           <span class="bar"></span>
