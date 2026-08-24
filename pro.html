@@ -1223,6 +1223,451 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   }
 }
 
+
+/* Step 4 God-Mode Mobile Results Styling */
+.results-view-toggle-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #F8FAFC;
+  border-bottom: 1px solid var(--border);
+}
+.results-view-toggle {
+  display: inline-flex;
+  background: #E2E8F0;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+.btn-toggle-view {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748B;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+.btn-toggle-view.active {
+  background: #FFFFFF;
+  color: #0F172A;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.results-mobile-hint {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.results-mobile-cards {
+  display: none;
+  padding: 12px;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-color);
+}
+
+.result-mobile-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rmc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rmc-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+}
+.rmc-badge {
+  background: #F1F5F9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.rmc-desc {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.rmc-qty-pill {
+  background: #EEF2F6;
+  color: #334155;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace;
+  flex-shrink: 0;
+}
+
+.rmc-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.rmc-hero-box {
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rmc-cost-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
+.rmc-sell-box {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+}
+.rmc-hero-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rmc-sell-box .rmc-hero-label {
+  color: #047857;
+}
+.rmc-hero-label .profit-tag {
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+.rmc-hero-val {
+  font-size: 15.5px;
+  font-weight: 800;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #0F172A;
+}
+.rmc-sell-box .rmc-hero-val {
+  color: #059669;
+}
+.rmc-hero-val .curr {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.rmc-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  padding: 8px 10px;
+  border: 1px dashed #E2E8F0;
+}
+.rmc-b-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.rmc-b-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.rmc-b-val {
+  font-size: 11.5px;
+  color: #1E293B;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .results-view-toggle-bar {
+    display: flex !important;
+  }
+  .results-mobile-cards {
+    display: flex !important;
+  }
+  #resultsTableContainer {
+    display: none;
+  }
+  #resultsTableContainer.show-table {
+    display: block !important;
+  }
+  .results-mobile-cards.hide-cards {
+    display: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   GOD-MODE MOBILE OPTIMIZATIONS (99.999% Mobile-First Precision)
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 100px;
+  }
+  
+  .app-container {
+    padding: 0;
+  }
+  
+  .main-content {
+    padding: 0 12px 40px !important;
+  }
+
+  /* Topbar & Manifest Route Ribbon */
+  .topbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 14px 0 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .topbar-title {
+    font-size: 19px !important;
+    font-weight: 800 !important;
+  }
+  
+  .manifest-route-ribbon {
+    width: 100% !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    padding: 4px 6px !important;
+    gap: 3px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .manifest-route-ribbon::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .route-station {
+    padding: 3px 6px !important;
+    gap: 4px !important;
+  }
+  .station-input {
+    width: 65px !important;
+    font-size: 11px !important;
+  }
+  .transit-badge {
+    font-size: 8.5px !important;
+  }
+  
+  .topbar-actions {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .topbar-actions .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 8px 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+  }
+  .topbar-actions .btn-secondary svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Wizard Section Cards */
+  .card {
+    padding: 14px !important;
+    border-radius: 12px !important;
+    margin-bottom: 14px !important;
+  }
+  
+  .step-header {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+  }
+  .step-num {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+  .step-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Dropzone in Step 1 */
+  .dropzone {
+    padding: 16px 12px !important;
+  }
+  .dz-title {
+    font-size: 13.5px !important;
+    margin-bottom: 2px !important;
+  }
+  .dz-sub {
+    font-size: 11.5px !important;
+    margin-bottom: 12px !important;
+  }
+  .dz-action-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .dz-action-btn {
+    padding: 12px 14px !important;
+    min-height: 50px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Step 2 Rates Grid */
+  .rate-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .rate-card {
+    padding: 12px !important;
+  }
+  .rate-card-title {
+    font-size: 10.5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Step 3 Other Charges Mobile Cards */
+  .fee-header {
+    display: none !important;
+  }
+  .fee-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    background: #F8FAFC !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    margin-bottom: 10px !important;
+    position: relative !important;
+  }
+  .fee-item .text-right {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+  }
+  .fee-item .text-right button {
+    padding: 6px 10px !important;
+    font-size: 14px !important;
+    background: #FEE2E2 !important;
+    border-radius: 6px !important;
+  }
+
+  /* Preset Chips Scroll */
+  .preset-chips {
+    display: flex !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px !important;
+    gap: 6px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .preset-chips::-webkit-scrollbar {
+    display: none !important;
+  }
+  .preset-chip {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 6px 11px !important;
+    font-size: 11.5px !important;
+  }
+
+  /* Step 4 KPI Summary Cards (2x2 Grid) */
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
+  }
+  .summary-card {
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+  }
+  .summary-label {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+  }
+  .summary-value {
+    font-size: 17px !important;
+  }
+  .summary-currency {
+    font-size: 10px !important;
+  }
+
+  /* Step 4 Toggle & Cards */
+  .results-view-toggle-bar {
+    display: flex !important;
+  }
+  .results-mobile-cards {
+    display: flex !important;
+  }
+  #resultsTableContainer {
+    display: none;
+  }
+  #resultsTableContainer.show-table {
+    display: block !important;
+  }
+  .results-mobile-cards.hide-cards {
+    display: none !important;
+  }
+
+  /* Cost composition bar */
+  #costBarSection {
+    padding: 14px !important;
+  }
+  .cost-legend {
+    flex-direction: column !important;
+    gap: 6px !important;
+    align-items: flex-start !important;
+  }
+  .legend-item {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-actions .btn-secondary span {
+    font-size: 11px !important;
+  }
+  .rmc-hero-val {
+    font-size: 14.5px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1618,7 +2063,26 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       </div>
 
       <div class="card" style="padding:0; overflow:hidden;">
-        <div class="table-container" style="border:none; border-radius:0;">
+        <!-- Mobile View Toggle (Visible only on mobile screens) -->
+        <div class="results-view-toggle-bar" id="resultsViewToggleBar">
+          <div class="results-view-toggle">
+            <button type="button" class="btn-toggle-view active" id="btnViewCards" title="Card View">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
+              <span>Card View</span>
+            </button>
+            <button type="button" class="btn-toggle-view" id="btnViewTable" title="Table View">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+              <span>Table</span>
+            </button>
+          </div>
+          <span class="results-mobile-hint">⚡ Full visibility</span>
+        </div>
+
+        <!-- Adaptive Mobile Cards View (God Mode for Mobile) -->
+        <div class="results-mobile-cards" id="resultsMobileCards"></div>
+
+        <!-- Desktop & Scrollable Table View -->
+        <div class="table-container" id="resultsTableContainer" style="border:none; border-radius:0;">
           <table id="resultsTable">
             <thead style="background:var(--primary); color:#fff;">
               <tr>
@@ -1702,7 +2166,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
       { id: 'fe2', name: 'PAL (Port & Airport Levy)', type: 'percent', amount: 10, method: 'cbm', base: 'cif' },
       { id: 'fe3', name: 'VAT', type: 'percent', amount: 18, method: 'cbm', base: 'running' },
-      { id: 'fe4', name: 'Colombo-Matara Transport', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
+      { id: 'fe4', name: 'Transport cost', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
       { id: 'fe5', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
     ],
     itemSeq: 1,
@@ -1714,8 +2178,9 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   let undoStack = []; // For items clear undo
 
   // ==== UTILITIES ====
-  const fmt = n => isFinite(n) ? Math.round(n).toLocaleString('en-LK') : '0';
-  const fmt2 = n => isFinite(n) ? n.toFixed(2) : '0.00';
+  const fmt = n => isFinite(n) ? Math.round(n).toLocaleString('en-US') : '0';
+  const fmt2 = n => isFinite(n) ? Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00';
+  const fmtCbm = n => isFinite(n) ? Number(n).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : '0.000';
   const escapeAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   
@@ -1918,13 +2383,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   }
 
   const COUNTRY_FLAGS = {
-    RMB: '🇨🇳 CN', USD: '🇺🇸 US', EUR: '🇪🇺 EU', GBP: '🇬🇧 UK',
-    INR: '🇮🇳 IN', AED: '🇦🇪 AE', JPY: '🇯🇵 JP', AUD: '🇦🇺 AU',
-    CAD: '🇨🇦 CA', SGD: '🇸🇬 SG', CHF: '🇨🇭 CH', HKD: '🇭🇰 HK',
-    MYR: '🇲🇾 MY', THB: '🇹🇭 TH'
-  };
-
-  const COUNTRY_FLAGS = {
     USD: '🇺🇸 US', RMB: '🇨🇳 CN', AED: '🇦🇪 AE', INR: '🇮🇳 IN',
     EUR: '🇪🇺 EU', GBP: '🇬🇧 UK', JPY: '🇯🇵 JP', AUD: '🇦🇺 AU',
     CAD: '🇨🇦 CA', SGD: '🇸🇬 SG', CHF: '🇨🇭 CH', HKD: '🇭🇰 HK',
@@ -1941,20 +2399,11 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
     // Update dynamic Route Ribbon Origin Flag & Transit Badge
     const originFlag = document.getElementById('originFlag');
-    if (originFlag) originFlag.textContent = COUNTRY_FLAGS[curr] || '🌐 WORLD';
-
-    const routeTransitBadge = document.getElementById('routeTransitBadge');
-    if (routeTransitBadge) {
-      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR CARGO' : '🚢 SEA CARGO';
-    }
-
-    // Update dynamic Route Ribbon
-    const originFlag = document.getElementById('originFlag');
     if (originFlag) originFlag.textContent = COUNTRY_FLAGS[curr] || '🌐 GLOBAL';
 
     const routeTransitBadge = document.getElementById('routeTransitBadge');
     if (routeTransitBadge) {
-      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR' : '🚢 SEA';
+      routeTransitBadge.textContent = cargoMode === 'air' ? '✈️ AIR CARGO' : '🚢 SEA CARGO';
     }
 
     const thMeasure = document.getElementById('thMeasure');
@@ -2160,7 +2609,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT (18%)', 'percent', 18, 'cbm', 'running') },
     { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy 10%)', 'percent', 10, 'cbm', 'cif') },
     { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
-    { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
+    { key: 'transport', name: 'Transport cost (35k)', check: 'transport', make: () => newFee('Transport cost', 'flat', 35000, 'cbm', 'cif') },
     { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent Fee', 'flat', 15000, 'value', 'cif') },
     { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance (1%)', 'percent', 1, 'cbm', 'cif') },
     { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage & Storage', 'flat', 10000, 'cbm', 'cif') }
@@ -2448,47 +2897,106 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     const body = document.getElementById('resultsBody');
     const foot = document.getElementById('resultsFoot');
     const costBar = document.getElementById('costBarSection');
-    body.innerHTML = '';
+    const mobileCards = document.getElementById('resultsMobileCards');
+    
+    if (body) body.innerHTML = '';
+    if (mobileCards) mobileCards.innerHTML = '';
     
     if (perItem.length === 0) {
       if (foot) foot.style.display = 'none';
       if (costBar) costBar.style.display = 'none';
       
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td colspan="7" style="text-align:center; padding: 44px 16px;">
-          <div style="display:inline-flex; flex-direction:column; align-items:center; gap:8px;">
-            <div style="width:38px; height:38px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:18px;">📦</div>
-            <div style="font-weight:600; font-size:13.5px; color:var(--ink);">Awaiting Line Items</div>
-            <div style="font-size:12px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
-          </div>
-        </td>
+      const emptyHtml = `
+        <div style="text-align:center; padding: 36px 16px; background:#fff; border-radius:12px; border:1px dashed var(--border);">
+          <div style="font-size:24px; margin-bottom:6px;">📦</div>
+          <div style="font-weight:700; font-size:14px; color:var(--ink); margin-bottom:2px;">Awaiting Line Items</div>
+          <div style="font-size:12px; color:var(--ink-soft); max-width:300px; margin:0 auto;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+        </div>
       `;
-      body.appendChild(tr);
+      if (mobileCards) mobileCards.innerHTML = emptyHtml;
+      
+      if (body) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td colspan="7" style="text-align:center; padding: 44px 16px;">
+            <div style="display:inline-flex; flex-direction:column; align-items:center; gap:8px;">
+              <div style="width:38px; height:38px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:18px;">📦</div>
+              <div style="font-weight:600; font-size:13.5px; color:var(--ink);">Awaiting Line Items</div>
+              <div style="font-size:12px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+            </div>
+          </td>
+        `;
+        body.appendChild(tr);
+      }
       return;
     }
 
     if (foot) foot.style.display = '';
     if (costBar) costBar.style.display = '';
 
-    perItem.forEach(row => {
+    perItem.forEach((row, idx) => {
       const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;
       const targetSell = unitCost * (1 + markupPct/100);
       
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="font-weight:600;">${escapeHtml(row.it.desc || '(untitled)')}</td>
-        <td class="num">${row.it.qty}</td>
-        <td class="num mono text-muted">${fmt(row.valueLKR)}</td>
-        <td class="num mono text-muted">${fmt(row.freightShare)}</td>
-        <td class="num mono text-muted">${fmt(row.feesShare)}</td>
-        <td class="num mono" style="font-weight:700; font-size:14px;">${fmt(unitCost)}</td>
-        <td class="num mono" style="font-weight:700; color:var(--success); font-size:14px;">${fmt(targetSell)}</td>
-      `;
-      body.appendChild(tr);
+      // 1. Desktop Table Row
+      if (body) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:600;">${escapeHtml(row.it.desc || '(untitled)')}</td>
+          <td class="num">${fmt(row.it.qty)}</td>
+          <td class="num mono text-muted">${fmt(row.valueLKR)}</td>
+          <td class="num mono text-muted">${fmt(row.freightShare)}</td>
+          <td class="num mono text-muted">${fmt(row.feesShare)}</td>
+          <td class="num mono" style="font-weight:700; font-size:14px;">${fmt(unitCost)}</td>
+          <td class="num mono" style="font-weight:700; color:var(--success); font-size:14px;">${fmt(targetSell)}</td>
+        `;
+        body.appendChild(tr);
+      }
+
+      // 2. Mobile God-Mode Card
+      if (mobileCards) {
+        const card = document.createElement('div');
+        card.className = 'result-mobile-card';
+        card.innerHTML = `
+          <div class="rmc-header">
+            <div class="rmc-title-row">
+              <span class="rmc-badge">#${idx + 1}</span>
+              <span class="rmc-desc">${escapeHtml(row.it.desc || '(untitled item)')}</span>
+            </div>
+            <div class="rmc-qty-pill">${fmt(row.it.qty)} units</div>
+          </div>
+          
+          <div class="rmc-hero-grid">
+            <div class="rmc-hero-box rmc-cost-box">
+              <div class="rmc-hero-label">Unit Landed Cost</div>
+              <div class="rmc-hero-val"><span class="curr">LKR</span> ${fmt(unitCost)}</div>
+            </div>
+            <div class="rmc-hero-box rmc-sell-box">
+              <div class="rmc-hero-label">Target Selling Price <span class="profit-tag">+${markupPct}%</span></div>
+              <div class="rmc-hero-val"><span class="curr">LKR</span> ${fmt(targetSell)}</div>
+            </div>
+          </div>
+
+          <div class="rmc-breakdown">
+            <div class="rmc-b-item">
+              <span class="rmc-b-lbl">Goods Value</span>
+              <span class="rmc-b-val">LKR ${fmt(row.valueLKR)}</span>
+            </div>
+            <div class="rmc-b-item">
+              <span class="rmc-b-lbl">Freight</span>
+              <span class="rmc-b-val">LKR ${fmt(row.freightShare)}</span>
+            </div>
+            <div class="rmc-b-item">
+              <span class="rmc-b-lbl">Charges</span>
+              <span class="rmc-b-val">LKR ${fmt(row.feesShare)}</span>
+            </div>
+          </div>
+        `;
+        mobileCards.appendChild(card);
+      }
     });
 
-    document.getElementById('footQty').textContent = tQty;
+    document.getElementById('footQty').textContent = fmt(tQty);
     document.getElementById('footValue').textContent = fmt(tVal);
     document.getElementById('footFreight').textContent = fmt(tFr);
     document.getElementById('footCharges').textContent = fmt(tFee);

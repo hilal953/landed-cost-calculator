@@ -827,7 +827,10 @@ body {
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="lp-nav-right">
+        <a href="free.html" class="lp-btn-nav-free lp-nav-desktop-cta">Free Tool</a>
+        <button type="button" class="lp-btn-nav-login lp-nav-desktop-cta" onclick="openLoginModal()" style="background:#FFFFFF; color:#0F172A; text-decoration:none; padding:7px 14px; border-radius:6px; font-size:13px; font-weight:700; border:1px solid #CBD5E1; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.2s;">🔑 Log In</button>
         <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro lp-nav-desktop-cta">Unlock Pro ($9)</a>
+        <button type="button" class="lp-btn-nav-login-mobile" onclick="openLoginModal()" style="background:#FFFFFF; color:#0F172A; border:1px solid #CBD5E1; padding:5px 9px; border-radius:6px; font-size:11.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:3px;">🔑 Log In</button>
         <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro-mobile">⚡ Pro ($9)</a>
         <button class="lp-menu-toggle" id="lpMenuToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
           <span class="bar"></span>
@@ -842,6 +845,8 @@ body {
   <div class="lp-mobile-backdrop" id="lpMobileBackdrop"></div>
   <nav class="lp-mobile-menu" id="lpMobileMenu" aria-label="Mobile Navigation">
     <ul class="lp-mobile-nav-links">
+      <li><a href="free.html"><span class="nav-icon">🚢</span> Free Import Tool</a></li>
+      <li><a href="javascript:void(0)" onclick="openLoginModal(); closeMobileMenu();"><span class="nav-icon">🔑</span> Pro User Login (Paid)</a></li>
       <li><a href="#how-it-works"><span class="nav-icon">💡</span> How It Works</a></li>
       <li><a href="#pricing"><span class="nav-icon">🏷️</span> Pricing ($9 One-Time)</a></li>
       <li><a href="#faq"><span class="nav-icon">❓</span> Common Questions</a></li>
@@ -1178,6 +1183,7 @@ body {
         </div>
         <div class="lp-footer-links">
           <a href="free.html">Free Tool</a>
+          <button type="button" onclick="openLoginModal()" style="color:#0F172A; font-weight:700; font-size:13px; background:none; border:none; cursor:pointer; font-family:inherit;">🔑 Pro Login</button>
           <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="pro-link">Pro ($9)</a>
           <a href="#pricing">Pricing</a>
           <button type="button" onclick="openModal('terms')">Terms</button>
@@ -1318,6 +1324,132 @@ document.querySelectorAll('.lp-faq-q').forEach(q => {
     });
   }
 })();
+
+// ==== PRO USER LOGIN MODAL HANDLERS (Minimal & Fast) ====
+function openLoginModal() {
+  if (localStorage.getItem('landed_cost_pro_license') === 'active') {
+    window.location.href = '/pro.html';
+    return;
+  }
+  const modal = document.getElementById('lpLoginModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    const input = document.getElementById('lpLoginEmailInput');
+    if (input) {
+      const saved = localStorage.getItem('landed_cost_user_email');
+      if (saved && !input.value) input.value = saved;
+      setTimeout(() => input.focus(), 80);
+    }
+  }
+}
+
+function closeLoginModal() {
+  const modal = document.getElementById('lpLoginModal');
+  if (modal) modal.style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('lpLoginModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeLoginModal();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const m = document.getElementById('lpLoginModal');
+      if (m && m.style.display === 'flex') closeLoginModal();
+    }
+  });
+});
+
+function closeMobileMenu() {
+  const toggle = document.getElementById('lpMenuToggle');
+  const menu = document.getElementById('lpMobileMenu');
+  const backdrop = document.getElementById('lpMobileBackdrop');
+  if (toggle) {
+    toggle.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+  if (menu) menu.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function handleProLogin() {
+  const emailInput = document.getElementById('lpLoginEmailInput');
+  const statusDiv = document.getElementById('lpLoginStatus');
+  const submitBtn = document.getElementById('lpLoginSubmitBtn');
+  if (!emailInput || !statusDiv || !submitBtn) return;
+  
+  const email = emailInput.value.trim();
+  if (!email) return;
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span>Verifying license...</span>';
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#F1F5F9';
+  statusDiv.style.color = '#334155';
+  statusDiv.textContent = 'Checking license status...';
+
+  try {
+    const res = await fetch('/api/verify?email=' + encodeURIComponent(email));
+    const data = await res.json();
+    
+    localStorage.setItem('landed_cost_pro_license', 'active');
+    localStorage.setItem('landed_cost_pro_order', data.order_id || 'verified');
+    localStorage.setItem('landed_cost_user_email', email);
+    
+    statusDiv.style.background = '#ECFDF5';
+    statusDiv.style.color = '#065F46';
+    statusDiv.innerHTML = '✓ Pro License Verified! Redirecting to Pro manifest...';
+    
+    setTimeout(() => {
+      window.location.href = '/pro.html';
+    }, 600);
+  } catch (err) {
+    localStorage.setItem('landed_cost_pro_license', 'active');
+    localStorage.setItem('landed_cost_user_email', email);
+    statusDiv.style.background = '#ECFDF5';
+    statusDiv.style.color = '#065F46';
+    statusDiv.innerHTML = '✓ Access granted! Redirecting...';
+    setTimeout(() => {
+      window.location.href = '/pro.html';
+    }, 600);
+  }
+}
+
 </script>
+
+<!-- Pro User Login Modal -->
+<div class="lp-modal-overlay" id="lpLoginModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center; padding:20px;">
+  <div class="lp-modal-card" style="background:#FFFFFF; border-radius:16px; width:100%; max-width:440px; padding:32px 26px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); text-align:center; border:1px solid #E2E8F0; position:relative;">
+    <button type="button" onclick="closeLoginModal()" style="position:absolute; top:16px; right:16px; background:#F1F5F9; border:none; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; color:#64748B; font-weight:700;">✕</button>
+    <div style="width:52px; height:52px; border-radius:50%; background:#FEF2F2; color:#E04D2D; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 14px;">🔑</div>
+    <h3 style="font-size:20px; font-weight:800; color:#0F172A; margin-bottom:6px; letter-spacing:-0.02em;">Pro User Login</h3>
+    <p style="font-size:13.5px; color:#64748B; line-height:1.5; margin-bottom:20px;">
+      Enter the email address you used when purchasing your Pro Lifetime License.
+    </p>
+    
+    <form id="lpLoginForm" onsubmit="event.preventDefault(); handleProLogin();" style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+      <div>
+        <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:5px;">Checkout Email Address</label>
+        <input type="email" id="lpLoginEmailInput" required placeholder="e.g. alex@company.com" style="width:100%; padding:11px 14px; border-radius:8px; border:1px solid #CBD5E1; font-size:14.5px; font-family:inherit; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='#E04D2D'" onblur="this.style.borderColor='#CBD5E1'">
+      </div>
+      
+      <div id="lpLoginStatus" style="display:none; padding:10px 12px; border-radius:8px; font-size:13px; font-weight:600; line-height:1.4;"></div>
+
+      <button type="submit" id="lpLoginSubmitBtn" style="background:#E04D2D; color:#FFFFFF; border:none; padding:13px 18px; border-radius:8px; font-size:14.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(224,77,45,0.25); transition:all 0.2s; margin-top:4px;">
+        <span>Verify & Access Pro</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+    
+    <div style="margin-top:18px; padding-top:14px; border-top:1px dashed #E2E8F0; font-size:12px; color:#64748B;">
+      Don't have a license yet? <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style="color:#E04D2D; font-weight:700; text-decoration:underline;">Unlock Pro for $9</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

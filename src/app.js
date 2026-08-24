@@ -19,7 +19,7 @@
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
       { id: 'fe2', name: 'PAL (Port & Airport Levy)', type: 'percent', amount: 10, method: 'cbm', base: 'cif' },
       { id: 'fe3', name: 'VAT', type: 'percent', amount: 18, method: 'cbm', base: 'running' },
-      { id: 'fe4', name: 'Colombo-Matara Transport', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
+      { id: 'fe4', name: 'Transport cost', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
       { id: 'fe5', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
     ],
     itemSeq: 1,
@@ -31,8 +31,9 @@
   let undoStack = []; // For items clear undo
 
   // ==== UTILITIES ====
-  const fmt = n => isFinite(n) ? Math.round(n).toLocaleString('en-LK') : '0';
-  const fmt2 = n => isFinite(n) ? n.toFixed(2) : '0.00';
+  const fmt = n => isFinite(n) ? Math.round(n).toLocaleString('en-US') : '0';
+  const fmt2 = n => isFinite(n) ? Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00';
+  const fmtCbm = n => isFinite(n) ? Number(n).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : '0.000';
   const escapeAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   
@@ -398,7 +399,7 @@
     { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT (18%)', 'percent', 18, 'cbm', 'running') },
     { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy 10%)', 'percent', 10, 'cbm', 'cif') },
     { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
-    { key: 'transport', name: 'Local Transport (35k)', check: 'transport', make: () => newFee('Colombo-Matara Transport', 'flat', 35000, 'cbm', 'cif') },
+    { key: 'transport', name: 'Transport cost (35k)', check: 'transport', make: () => newFee('Transport cost', 'flat', 35000, 'cbm', 'cif') },
     { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent Fee', 'flat', 15000, 'value', 'cif') },
     { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance (1%)', 'percent', 1, 'cbm', 'cif') },
     { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage & Storage', 'flat', 10000, 'cbm', 'cif') }
