@@ -1292,6 +1292,188 @@ body {
   }
 }
 
+
+/* ==========================================================================
+   GOD-MODE FINANCIAL AUDIT MATRIX (Apple / Wise / Stripe Aesthetic)
+   ========================================================================== */
+.lp-audit-section {
+  padding: 80px 0;
+}
+.lp-audit-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 12px 36px -6px rgba(15, 23, 42, 0.07);
+  overflow: hidden;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+.lp-audit-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.lp-audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 680px;
+}
+.lp-audit-table th {
+  padding: 18px 22px;
+  background: #F8FAFC;
+  border-bottom: 2px solid #E2E8F0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+.th-param { width: 34%; }
+.th-trap {
+  width: 33%;
+  background: #FFF5F5 !important;
+  border-bottom-color: #FECACA !important;
+}
+.th-solution {
+  width: 33%;
+  background: #F0FDF4 !important;
+  border-bottom-color: #A7F3D0 !important;
+}
+.th-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.trap-badge { background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; }
+.solution-badge { background: #D1FAE5; color: #059669; border: 1px solid #A7F3D0; }
+
+.lp-audit-table td {
+  padding: 15px 22px;
+  border-bottom: 1px solid #F1F5F9;
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+.td-lbl {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #0F172A;
+}
+.row-icon { margin-right: 4px; font-size: 14px; }
+.row-sub { font-size: 11px; color: #64748B; font-weight: 500; }
+
+.td-val {
+  color: #334155;
+  font-size: 14px;
+}
+.tag-hint {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.hint-bad { color: #DC2626; }
+.hint-good { color: #059669; }
+
+.text-danger { color: #DC2626 !important; }
+.text-emerald { color: #059669 !important; }
+.text-dark { color: #0F172A !important; }
+.text-lg { font-size: 16px !important; }
+
+.tr-highlight {
+  background: #FAFAFA;
+}
+.tr-highlight td {
+  border-top: 1.5px solid #E2E8F0;
+  border-bottom: 1.5px solid #E2E8F0;
+  padding: 18px 22px;
+}
+.tag-alert {
+  display: inline-block;
+  background: #FEE2E2;
+  color: #DC2626;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.tag-verified {
+  display: inline-block;
+  background: #D1FAE5;
+  color: #059669;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.tr-bottom-outcome {
+  background: #F8FAFC;
+}
+.tr-bottom-outcome td {
+  padding: 20px 22px;
+  border-bottom: none;
+}
+.outcome-pill-box {
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.box-loss {
+  background: #FEF2F2;
+  border: 1.5px solid #FCA5A5;
+  color: #991B1B;
+}
+.box-profit {
+  background: #ECFDF5;
+  border: 1.5px solid #6EE7B7;
+  color: #065F46;
+}
+.pill-title {
+  font-size: 14px;
+  font-weight: 800;
+}
+.pill-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .lp-audit-section {
+    padding: 44px 0;
+  }
+  .lp-audit-card {
+    border-radius: 14px;
+    margin: 0 -4px;
+  }
+  .lp-audit-table th {
+    padding: 14px 14px;
+    font-size: 12px;
+  }
+  .lp-audit-table td {
+    padding: 12px 14px;
+    font-size: 12.5px;
+  }
+  .th-badge {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .pill-title {
+    font-size: 12.5px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1353,82 +1535,117 @@ body {
     </div>
   </section>
 
-        <!-- Masterpiece Problem vs Solution Section -->
-  <section class="lp-section lp-matrix-section" id="how-it-works">
+          <!-- God-Mode Visual Comparison Table Grid -->
+  <section class="lp-section lp-audit-section" id="how-it-works">
     <div class="lp-container">
       <div class="lp-section-header">
-        <span class="lp-section-tag">The Import Reality</span>
-        <h2 class="lp-section-title">Stop Guessing Your Landed Cost</h2>
-        <p class="lp-section-sub">A ¥50 factory quote looks cheap until shipping and taxes hit at port. Here is why spreadsheets fail and how Landed Cost Manifest protects your profit.</p>
+        <span class="lp-section-tag">Real Import Financial Audit</span>
+        <h2 class="lp-section-title">The Real Cost of 100 Imported Items</h2>
+        <p class="lp-section-sub">Supplier Quote: ¥50 ($7.50) / unit. See how manual guessing wipes out your profit vs how automated precision locks it in.</p>
       </div>
 
-      <div class="lp-matrix-grid">
-        <!-- CARD 1: THE TRAP -->
-        <div class="lp-matrix-card lp-card-trap-master">
-          <div class="lp-m-top">
-            <span class="lp-m-pill trap-badge">❌ Without This Tool</span>
-            <h3 class="lp-m-title">The Spreadsheets Guesswork</h3>
-            <p class="lp-m-desc">You estimate shipping loosely and set a price based on supplier cost.</p>
-          </div>
-
-          <div class="lp-m-hero-box trap-bg">
-            <div class="lp-m-hero-label">Initial Supplier Quote</div>
-            <div class="lp-m-hero-val mono">LKR 2,250 <span class="lp-m-sub-val">(¥50)</span></div>
-            <div class="lp-m-hero-tag trap-tag">Sold at LKR 3,500 (Expecting Profit)</div>
-          </div>
-
-          <div class="lp-m-flow">
-            <div class="lp-m-flow-title">Hidden Port Costs:</div>
-            <div class="lp-m-chips">
-              <span class="lp-m-chip">+ LKR 480 CBM Freight</span>
-              <span class="lp-m-chip">+ LKR 1,296 Customs, PAL & VAT</span>
-              <span class="lp-m-chip">+ LKR 180 Wharf & Transport</span>
-            </div>
-          </div>
-
-          <div class="lp-m-bottom trap-bottom">
-            <div class="lp-m-bottom-head">
-              <span>Actual Landed Cost:</span>
-              <span class="mono font-bold">LKR 4,206</span>
-            </div>
-            <div class="lp-m-bottom-stat">
-              🛑 <strong>Loss: -LKR 706 per item</strong> (-LKR 70,600 on 100 units)
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 2: THE SOLUTION -->
-        <div class="lp-matrix-card lp-card-solution-master">
-          <div class="lp-m-top">
-            <span class="lp-m-pill solution-badge">✅ With Landed Cost Manifest</span>
-            <h3 class="lp-m-title">Instant Precision Pricing</h3>
-            <p class="lp-m-desc">Drop your packing list and get exact unit landed costs in 30 seconds.</p>
-          </div>
-
-          <div class="lp-m-hero-box solution-bg">
-            <div class="lp-m-hero-label">True Landed Cost (All-Inclusive)</div>
-            <div class="lp-m-hero-val mono text-dark">LKR 4,206 <span class="lp-m-sub-val" style="color:var(--success); font-weight:700;">100% Accurate</span></div>
-            <div class="lp-m-hero-tag solution-tag">Target Selling Price: LKR 5,680 (+35% Margin)</div>
-          </div>
-
-          <div class="lp-m-flow">
-            <div class="lp-m-flow-title" style="color:var(--success);">Automated in 30 Seconds:</div>
-            <div class="lp-m-chips">
-              <span class="lp-m-chip sol-chip">⚡ Invoices Auto-Parsed</span>
-              <span class="lp-m-chip sol-chip">⚓ CBM & Kg Freight Divided</span>
-              <span class="lp-m-chip sol-chip">🇱🇰 Exact SL Taxes Compounded</span>
-            </div>
-          </div>
-
-          <div class="lp-m-bottom solution-bottom">
-            <div class="lp-m-bottom-head">
-              <span style="color:#065F46;">Guaranteed Net Profit:</span>
-              <span class="mono font-bold" style="color:#047857;">+LKR 1,472 / item</span>
-            </div>
-            <div class="lp-m-bottom-stat" style="color:#065F46;">
-              💰 <strong>Locked Profit: +LKR 147,200</strong> secured before payment
-            </div>
-          </div>
+      <div class="lp-audit-card">
+        <div class="lp-audit-table-wrap">
+          <table class="lp-audit-table">
+            <thead>
+              <tr>
+                <th class="th-param">Cost Component</th>
+                <th class="th-trap">
+                  <div class="th-badge trap-badge">❌ Spreadsheets (Blind Guess)</div>
+                </th>
+                <th class="th-solution">
+                  <div class="th-badge solution-badge">✅ Landed Cost Manifest</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">🏷️</span>
+                  <strong>Supplier Factory Price</strong>
+                  <span class="row-sub">50 RMB @ 45.00</span>
+                </td>
+                <td class="td-val mono">LKR 2,250</td>
+                <td class="td-val mono font-bold">LKR 2,250</td>
+              </tr>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">⚓</span>
+                  <strong>Freight Allocation</strong>
+                  <span class="row-sub">Ocean CBM / Air Kg share</span>
+                </td>
+                <td class="td-val mono text-muted">~LKR 350 <span class="tag-hint hint-bad">Rough Guess</span></td>
+                <td class="td-val mono font-bold">LKR 480 <span class="tag-hint hint-good">Exact CBM Share</span></td>
+              </tr>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">🏛️</span>
+                  <strong>Customs Duty & PAL</strong>
+                  <span class="row-sub">15% Duty + 10% Port Levy</span>
+                </td>
+                <td class="td-val mono text-danger">LKR 0 <span class="tag-hint hint-bad">Overlooked</span></td>
+                <td class="td-val mono font-bold">LKR 682 <span class="tag-hint hint-good">Exact SL Customs</span></td>
+              </tr>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">📈</span>
+                  <strong>Compounded VAT (18%)</strong>
+                  <span class="row-sub">Applied on CIF + Duty + PAL</span>
+                </td>
+                <td class="td-val mono text-danger">LKR 0 <span class="tag-hint hint-bad">Missed Formula</span></td>
+                <td class="td-val mono font-bold">LKR 614 <span class="tag-hint hint-good">Compounded on CIF</span></td>
+              </tr>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">🚚</span>
+                  <strong>Port Clearance & Transport</strong>
+                  <span class="row-sub">Wharf agent + inland transport</span>
+                </td>
+                <td class="td-val mono text-danger">LKR 0 <span class="tag-hint hint-bad">Port Surprise</span></td>
+                <td class="td-val mono font-bold">LKR 180 <span class="tag-hint hint-good">Calculated</span></td>
+              </tr>
+              <tr class="tr-highlight">
+                <td class="td-lbl">
+                  <span class="row-icon">💎</span>
+                  <strong>True Landed Cost / Unit</strong>
+                  <span class="row-sub">Cost to your warehouse</span>
+                </td>
+                <td class="td-val mono text-danger font-bold text-lg">
+                  LKR 2,600 <span class="tag-alert">Assumed</span>
+                </td>
+                <td class="td-val mono text-dark font-bold text-lg">
+                  LKR 4,206 <span class="tag-verified">100% True Cost</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-lbl">
+                  <span class="row-icon">🎯</span>
+                  <strong>Selling Price Set</strong>
+                  <span class="row-sub">Price listed to customer</span>
+                </td>
+                <td class="td-val mono">LKR 3,500 / unit</td>
+                <td class="td-val mono font-bold text-emerald">LKR 5,680 / unit <span class="tag-hint hint-good">+35% Margin</span></td>
+              </tr>
+              <tr class="tr-bottom-outcome">
+                <td class="td-lbl">
+                  <strong>Final Financial Outcome</strong>
+                  <span class="row-sub">On a standard 100-item batch</span>
+                </td>
+                <td class="td-outcome-cell trap-cell">
+                  <div class="outcome-pill-box box-loss">
+                    <div class="pill-title">🛑 -LKR 706 Loss / Item</div>
+                    <div class="pill-sub">Total Loss: -LKR 70,600 on batch</div>
+                  </div>
+                </td>
+                <td class="td-outcome-cell solution-cell">
+                  <div class="outcome-pill-box box-profit">
+                    <div class="pill-title">💰 +LKR 1,472 Profit / Item</div>
+                    <div class="pill-sub">Guaranteed Net: +LKR 147,200</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
