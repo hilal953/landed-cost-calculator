@@ -1101,6 +1101,197 @@ body {
   }
 }
 
+
+/* ==========================================================================
+   MASTERPIECE MATRIX CARDS (Leonardo Da Vinci / Stripe Aesthetic)
+   ========================================================================== */
+.lp-matrix-section {
+  padding: 80px 0;
+}
+.lp-matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.lp-matrix-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
+  border: 1px solid #E2E8F0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lp-matrix-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.08);
+}
+.lp-card-trap-master {
+  border-top: 4px solid #EF4444;
+  background: linear-gradient(180deg, #FFFBFB 0%, #FFFFFF 100%);
+}
+.lp-card-solution-master {
+  border-top: 4px solid #10B981;
+  background: linear-gradient(180deg, #F6FEF9 0%, #FFFFFF 100%);
+  border-color: #A7F3D0;
+}
+
+.lp-m-top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lp-m-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 20px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.trap-badge { background: #FEE2E2; color: #DC2626; }
+.solution-badge { background: #D1FAE5; color: #059669; }
+
+.lp-m-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+}
+.lp-m-desc {
+  font-size: 13.5px;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+.lp-m-hero-box {
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.trap-bg { background: #FEF2F2; border: 1px solid #FECACA; }
+.solution-bg { background: #ECFDF5; border: 1px solid #A7F3D0; }
+
+.lp-m-hero-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.lp-m-hero-val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0F172A;
+}
+.lp-m-sub-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-left: 4px;
+}
+.lp-m-hero-tag {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.trap-tag { color: #DC2626; }
+.solution-tag { color: #059669; }
+
+.lp-m-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lp-m-flow-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748B;
+  letter-spacing: 0.04em;
+}
+.lp-m-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lp-m-chip {
+  background: #F1F5F9;
+  color: #334155;
+  padding: 6px 11px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.sol-chip {
+  background: #E6FDF0;
+  color: #065F46;
+  font-family: 'Inter', sans-serif;
+}
+
+.lp-m-bottom {
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.trap-bottom {
+  background: #FFF1F2;
+  border: 1px solid #FDA4AF;
+}
+.solution-bottom {
+  background: #E6FBF0;
+  border: 1px solid #6EE7B7;
+}
+.lp-m-bottom-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+.lp-m-bottom-stat {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: #9F1239;
+}
+
+@media (max-width: 768px) {
+  .lp-matrix-section {
+    padding: 48px 0;
+  }
+  .lp-matrix-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .lp-matrix-card {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+  .lp-m-title {
+    font-size: 18px;
+  }
+  .lp-m-hero-val {
+    font-size: 20px;
+  }
+  .lp-m-chip {
+    font-size: 11.5px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1162,95 +1353,80 @@ body {
     </div>
   </section>
 
-      <!-- Real Pain Point vs Solution Breakdown Section -->
-  <section class="lp-section lp-example-section" id="how-it-works">
+        <!-- Masterpiece Problem vs Solution Section -->
+  <section class="lp-section lp-matrix-section" id="how-it-works">
     <div class="lp-container">
       <div class="lp-section-header">
         <span class="lp-section-tag">The Import Reality</span>
-        <h2 class="lp-section-title">Why Most Importers Lose Money (And How We Fix It)</h2>
-        <p class="lp-section-sub">A factory price of ¥50 or $7.50 looks cheap until shipping and customs hit. Here is what happens when you guess vs when you know your true landed cost.</p>
+        <h2 class="lp-section-title">Stop Guessing Your Landed Cost</h2>
+        <p class="lp-section-sub">A ¥50 factory quote looks cheap until shipping and taxes hit at port. Here is why spreadsheets fail and how Landed Cost Manifest protects your profit.</p>
       </div>
 
-      <div class="lp-comparison-grid">
-        <!-- TRAP CARD -->
-        <div class="lp-compare-card lp-card-trap">
-          <div class="lp-compare-header">
-            <div class="lp-compare-pill trap-pill">❌ The Blind Guessing Trap</div>
-            <div class="lp-compare-title">What happens on spreadsheets</div>
+      <div class="lp-matrix-grid">
+        <!-- CARD 1: THE TRAP -->
+        <div class="lp-matrix-card lp-card-trap-master">
+          <div class="lp-m-top">
+            <span class="lp-m-pill trap-badge">❌ Without This Tool</span>
+            <h3 class="lp-m-title">The Spreadsheets Guesswork</h3>
+            <p class="lp-m-desc">You estimate shipping loosely and set a price based on supplier cost.</p>
           </div>
-          <div class="lp-compare-body">
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Supplier Factory Price (¥50)</span>
-              <span class="lp-row-val mono">LKR 2,250</span>
-            </div>
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Guessed Freight & Port Fees</span>
-              <span class="lp-row-val mono text-muted">~LKR 350 (Guessed)</span>
-            </div>
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Assumed Cost & Selling Price Set</span>
-              <span class="lp-row-val mono">Sold at <strong>LKR 3,500</strong></span>
-            </div>
-            
-            <div class="lp-divider-dashed"></div>
-            
-            <div class="lp-hidden-costs-box">
-              <div class="lp-hidden-title">⚠️ The Port Shock Reality:</div>
-              <div class="lp-hidden-row"><span>• Actual CBM Freight share:</span> <span class="mono">+LKR 480</span></div>
-              <div class="lp-hidden-row"><span>• Customs Duty (15%) + PAL (10%):</span> <span class="mono">+LKR 682</span></div>
-              <div class="lp-hidden-row"><span>• Compounded VAT (18% on CIF):</span> <span class="mono">+LKR 614</span></div>
-              <div class="lp-hidden-row"><span>• Clearing agent & transport:</span> <span class="mono">+LKR 180</span></div>
-            </div>
 
-            <div class="lp-outcome-box outcome-loss">
-              <div class="lp-outcome-header">
-                <span class="lp-outcome-lbl">Actual True Landed Cost:</span>
-                <span class="lp-outcome-cost mono">LKR 4,206 / item</span>
-              </div>
-              <div class="lp-outcome-stat">
-                <span>🛑 Result:</span> <strong>Losing -LKR 706 per sale</strong> (-LKR 70,600 on a 100-item order)
-              </div>
+          <div class="lp-m-hero-box trap-bg">
+            <div class="lp-m-hero-label">Initial Supplier Quote</div>
+            <div class="lp-m-hero-val mono">LKR 2,250 <span class="lp-m-sub-val">(¥50)</span></div>
+            <div class="lp-m-hero-tag trap-tag">Sold at LKR 3,500 (Expecting Profit)</div>
+          </div>
+
+          <div class="lp-m-flow">
+            <div class="lp-m-flow-title">Hidden Port Costs:</div>
+            <div class="lp-m-chips">
+              <span class="lp-m-chip">+ LKR 480 CBM Freight</span>
+              <span class="lp-m-chip">+ LKR 1,296 Customs, PAL & VAT</span>
+              <span class="lp-m-chip">+ LKR 180 Wharf & Transport</span>
+            </div>
+          </div>
+
+          <div class="lp-m-bottom trap-bottom">
+            <div class="lp-m-bottom-head">
+              <span>Actual Landed Cost:</span>
+              <span class="mono font-bold">LKR 4,206</span>
+            </div>
+            <div class="lp-m-bottom-stat">
+              🛑 <strong>Loss: -LKR 706 per item</strong> (-LKR 70,600 on 100 units)
             </div>
           </div>
         </div>
 
-        <!-- SOLUTION CARD -->
-        <div class="lp-compare-card lp-card-solution">
-          <div class="lp-compare-header">
-            <div class="lp-compare-pill solution-pill">✅ Landed Cost Manifest</div>
-            <div class="lp-compare-title">Precision in 30 seconds</div>
+        <!-- CARD 2: THE SOLUTION -->
+        <div class="lp-matrix-card lp-card-solution-master">
+          <div class="lp-m-top">
+            <span class="lp-m-pill solution-badge">✅ With Landed Cost Manifest</span>
+            <h3 class="lp-m-title">Instant Precision Pricing</h3>
+            <p class="lp-m-desc">Drop your packing list and get exact unit landed costs in 30 seconds.</p>
           </div>
-          <div class="lp-compare-body">
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Step 1: Drop Invoice or Packing List</span>
-              <span class="lp-row-val mono">Auto-Extracted</span>
-            </div>
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Step 2: Ocean / Air Freight Allocated</span>
-              <span class="lp-row-val mono">Exact by CBM/Kg</span>
-            </div>
-            <div class="lp-row-item">
-              <span class="lp-row-lbl">Step 3: SL Tax Bundle Applied</span>
-              <span class="lp-row-val mono">Duty + PAL + Compounded VAT</span>
-            </div>
-            
-            <div class="lp-divider-dashed"></div>
-            
-            <div class="lp-hidden-costs-box solution-box">
-              <div class="lp-hidden-title" style="color:#047857;">💎 What the Tool Reveals Instantly:</div>
-              <div class="lp-hidden-row"><span>• Exact True Unit Cost:</span> <span class="mono font-bold" style="color:#0F172A;">LKR 4,206</span></div>
-              <div class="lp-hidden-row"><span>• Target Profit Margin (+35%):</span> <span class="mono font-bold" style="color:#059669;">+LKR 1,472</span></div>
-              <div class="lp-hidden-row"><span>• Recommended Selling Price:</span> <span class="mono font-bold" style="color:#059669;">LKR 5,680</span></div>
-            </div>
 
-            <div class="lp-outcome-box outcome-profit">
-              <div class="lp-outcome-header">
-                <span class="lp-outcome-lbl">Total Landed Cost Manifest:</span>
-                <span class="lp-outcome-cost mono" style="color:#047857;">100% Verified</span>
-              </div>
-              <div class="lp-outcome-stat" style="color:#065F46;">
-                <span>💰 Result:</span> <strong>Guaranteed +LKR 147,200 Net Profit</strong> locked in before ordering
-              </div>
+          <div class="lp-m-hero-box solution-bg">
+            <div class="lp-m-hero-label">True Landed Cost (All-Inclusive)</div>
+            <div class="lp-m-hero-val mono text-dark">LKR 4,206 <span class="lp-m-sub-val" style="color:var(--success); font-weight:700;">100% Accurate</span></div>
+            <div class="lp-m-hero-tag solution-tag">Target Selling Price: LKR 5,680 (+35% Margin)</div>
+          </div>
+
+          <div class="lp-m-flow">
+            <div class="lp-m-flow-title" style="color:var(--success);">Automated in 30 Seconds:</div>
+            <div class="lp-m-chips">
+              <span class="lp-m-chip sol-chip">⚡ Invoices Auto-Parsed</span>
+              <span class="lp-m-chip sol-chip">⚓ CBM & Kg Freight Divided</span>
+              <span class="lp-m-chip sol-chip">🇱🇰 Exact SL Taxes Compounded</span>
+            </div>
+          </div>
+
+          <div class="lp-m-bottom solution-bottom">
+            <div class="lp-m-bottom-head">
+              <span style="color:#065F46;">Guaranteed Net Profit:</span>
+              <span class="mono font-bold" style="color:#047857;">+LKR 1,472 / item</span>
+            </div>
+            <div class="lp-m-bottom-stat" style="color:#065F46;">
+              💰 <strong>Locked Profit: +LKR 147,200</strong> secured before payment
             </div>
           </div>
         </div>
