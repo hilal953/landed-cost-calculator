@@ -512,7 +512,7 @@ textarea:focus {
 /* RATE CARDS */
 .rate-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 16px;
 }
 .rate-card {
@@ -645,7 +645,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 /* RESULTS SUMMARY */
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -2120,7 +2120,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
               <div class="input-field"><select id="sheetSelect"></select></div>
             </div>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:16px;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:16px; margin-bottom:16px;">
               <div class="input-group mb-0">
                 <label>Description</label>
                 <div id="descChecks" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px; background:var(--bg-color);"></div>
