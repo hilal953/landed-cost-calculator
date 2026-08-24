@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     return res.status(200).json({ 
       status: 'active', 
-      service: 'Landed Cost Manifest Lemon Squeezy Webhook',
+      service: 'TrueLanded Lemon Squeezy Webhook',
       time: new Date().toISOString()
     });
   }
