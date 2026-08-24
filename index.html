@@ -78,7 +78,7 @@ body {
 }
 .lp-btn-nav-pro:hover { background: #C83C1E; transform: translateY(-1px); color: #fff; }
 
-.lp-btn-nav-pro-mobile { display: none; }
+
 .lp-menu-toggle {
   display: none;
   background: #FFFFFF;
@@ -546,19 +546,7 @@ body {
   .lp-menu-toggle {
     display: flex;
   }
-  .lp-btn-nav-pro-mobile {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 4px;
-    background: #E04D2D;
-    color: #fff;
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(224, 77, 45, 0.25);
-  }
+  
   
   /* Mobile Dropdown Menu Drawer */
   .lp-mobile-menu {
@@ -786,10 +774,7 @@ body {
   .lp-brand-text {
     font-size: 13.5px;
   }
-  .lp-btn-nav-pro-mobile {
-    padding: 5px 9px;
-    font-size: 11px;
-  }
+  
   .lp-hero h1 {
     font-size: 24px;
   }
@@ -831,30 +816,14 @@ body {
   border-color: #94A3B8;
   transform: translateY(-1px);
 }
-.lp-btn-nav-login-mobile {
-  display: none;
-  background: #FFFFFF;
-  color: #0F172A;
-  border: 1px solid #CBD5E1;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  align-items: center;
-  gap: 4px;
-}
+
 
 @media (max-width: 768px) {
   .lp-nav-desktop-cta {
     display: none !important;
   }
-  .lp-btn-nav-login-mobile {
-    display: inline-flex !important;
-  }
-  .lp-btn-nav-pro-mobile {
-    display: inline-flex !important;
-  }
+  
+  
 }
 
 </style>
@@ -875,10 +844,8 @@ body {
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="lp-nav-right">
-        <button type="button" class="lp-btn-nav-login lp-nav-desktop-cta" onclick="openLoginModal()">🔑 Log In</button>
-        <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro lp-nav-desktop-cta">Unlock Pro ($9)</a>
-        <button type="button" class="lp-btn-nav-login-mobile" onclick="openLoginModal()">🔑 Log In</button>
-        <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro-mobile">⚡ Pro ($9)</a>
+        <button type="button" class="lp-btn-nav-login" onclick="openLoginModal()">🔑 Log In</button>
+        <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" class="lp-btn-nav-pro">Unlock Pro ($9)</a>
         <button class="lp-menu-toggle" id="lpMenuToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
           <span class="bar"></span>
           <span class="bar"></span>
