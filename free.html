@@ -1664,6 +1664,65 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   }
 }
 
+
+/* Mobile Results Toggle Precision Rules */
+@media (max-width: 768px) {
+  .results-view-toggle-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 12px !important;
+    background: #F8FAFC !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  .results-view-toggle {
+    display: inline-flex !important;
+    background: #E2E8F0 !important;
+    border-radius: 6px !important;
+    padding: 2px !important;
+    gap: 2px !important;
+  }
+  .btn-toggle-view {
+    border: none !important;
+    background: transparent !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #64748B !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    transition: all 0.15s ease !important;
+    touch-action: manipulation !important;
+  }
+  .btn-toggle-view.active {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+  }
+  .results-mobile-cards {
+    display: flex !important;
+  }
+  .results-mobile-cards.hide-cards {
+    display: none !important;
+  }
+  div.table-container#resultsTableContainer {
+    display: none;
+  }
+  div.table-container#resultsTableContainer.show-table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  div.table-container#resultsTableContainer.show-table table#resultsTable {
+    width: 100% !important;
+    min-width: 600px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2912,6 +2971,51 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
+
+  
+  
+  // ==== STEP 4 MOBILE VIEW TOGGLE HANDLERS ====
+  function setupMobileViewToggle() {
+    const btnCards = document.getElementById('btnViewCards');
+    const btnTable = document.getElementById('btnViewTable');
+    const mobileCards = document.getElementById('resultsMobileCards');
+    const tableContainer = document.getElementById('resultsTableContainer');
+
+    if (btnCards && btnTable) {
+      btnCards.onclick = (e) => {
+        if (e) e.preventDefault();
+        btnCards.classList.add('active');
+        btnTable.classList.remove('active');
+        if (mobileCards) {
+          mobileCards.classList.remove('hide-cards');
+          mobileCards.style.display = 'flex';
+        }
+        if (tableContainer) {
+          tableContainer.classList.remove('show-table');
+          tableContainer.style.display = 'none';
+        }
+      };
+      btnTable.onclick = (e) => {
+        if (e) e.preventDefault();
+        btnTable.classList.add('active');
+        btnCards.classList.remove('active');
+        if (mobileCards) {
+          mobileCards.classList.add('hide-cards');
+          mobileCards.style.display = 'none';
+        }
+        if (tableContainer) {
+          tableContainer.classList.add('show-table');
+          tableContainer.style.display = 'block';
+        }
+      };
+    }
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMobileViewToggle);
+  } else {
+    setupMobileViewToggle();
+  }
 
   document.getElementById('copyTableBtn').onclick = async () => {
     const table = document.getElementById('resultsTable');
