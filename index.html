@@ -826,6 +826,171 @@ body {
   
 }
 
+
+/* Pain-Point vs Solution Comparison Grid */
+.lp-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.lp-compare-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.lp-card-trap {
+  border-top: 4px solid #EF4444;
+  background: linear-gradient(180deg, rgba(254, 242, 242, 0.4) 0%, #FFFFFF 100%);
+}
+.lp-card-solution {
+  border-top: 4px solid #10B981;
+  background: linear-gradient(180deg, rgba(236, 253, 245, 0.5) 0%, #FFFFFF 100%);
+  border-color: #A7F3D0;
+}
+.lp-compare-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lp-compare-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.trap-pill {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+.solution-pill {
+  background: #D1FAE5;
+  color: #059669;
+}
+.lp-compare-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0F172A;
+}
+.lp-compare-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.lp-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #334155;
+}
+.lp-row-lbl {
+  color: #64748B;
+  font-weight: 500;
+}
+.lp-row-val {
+  font-weight: 700;
+  color: #0F172A;
+}
+.lp-divider-dashed {
+  height: 1px;
+  border-top: 1px dashed #E2E8F0;
+  margin: 4px 0;
+}
+.lp-hidden-costs-box {
+  background: #FFF5F5;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.lp-hidden-costs-box.solution-box {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+}
+.lp-hidden-title {
+  font-weight: 800;
+  color: #B91C1C;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.lp-hidden-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #475569;
+}
+.lp-outcome-box {
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+.outcome-loss {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+}
+.outcome-profit {
+  background: #ECFDF5;
+  border: 1px solid #6EE7B7;
+}
+.lp-outcome-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.lp-outcome-lbl {
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+.lp-outcome-cost {
+  font-size: 15px;
+  font-weight: 800;
+  color: #DC2626;
+}
+.lp-outcome-stat {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #991B1B;
+}
+
+@media (max-width: 768px) {
+  .lp-comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .lp-compare-card {
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+  .lp-row-item {
+    font-size: 12.5px;
+  }
+  .lp-outcome-stat {
+    font-size: 12px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -889,41 +1054,97 @@ body {
     </div>
   </section>
 
-  <!-- Real Example Breakdown Section (Separate Div / Section) -->
-  <section class="lp-section lp-example-section" id="example">
+    <!-- Real Pain Point vs Solution Breakdown Section -->
+  <section class="lp-section lp-example-section" id="how-it-works">
     <div class="lp-container">
       <div class="lp-section-header">
-        <span class="lp-section-tag">Instant Profit Breakdown</span>
-        <h2 class="lp-section-title">See How Accurate Pricing Works</h2>
-        <p class="lp-section-sub">Here is an actual breakdown for a 100-watch shipment via Air Cargo. See your exact profit margin before paying.</p>
+        <span class="lp-section-tag">The Import Reality</span>
+        <h2 class="lp-section-title">Why Most Importers Lose Money (And How We Fix It)</h2>
+        <p class="lp-section-sub">A factory price of ¥50 / $7.50 looks cheap until shipping and customs hit. Here is what happens when you guess vs when you know your true landed cost.</p>
       </div>
 
-      <div class="lp-example-box">
-        <div class="lp-example-header">
-          <div class="lp-example-title">Example: 100 Watches (Air Cargo)</div>
-          <div class="lp-example-badge">Instant Cost Breakdown</div>
+      <div class="lp-comparison-grid">
+        <!-- TRAP CARD -->
+        <div class="lp-compare-card lp-card-trap">
+          <div class="lp-compare-header">
+            <div class="lp-compare-pill trap-pill">❌ The Blind Guessing Trap</div>
+            <div class="lp-compare-title">What happens on spreadsheets</div>
+          </div>
+          <div class="lp-compare-body">
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Supplier Factory Price (¥50)</span>
+              <span class="lp-row-val mono">LKR 2,250</span>
+            </div>
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Guessed Freight & Port Fee</span>
+              <span class="lp-row-val mono text-muted">~LKR 350 (Guessed)</span>
+            </div>
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Assumed Cost & Selling Price Set</span>
+              <span class="lp-row-val mono">Sold at <strong>LKR 3,500</strong></span>
+            </div>
+            
+            <div class="lp-divider-dashed"></div>
+            
+            <div class="lp-hidden-costs-box">
+              <div class="lp-hidden-title">⚠️ The Port Shock Reality:</div>
+              <div class="lp-hidden-row"><span>• Actual CBM Freight share:</span> <span class="mono">+LKR 480</span></div>
+              <div class="lp-hidden-row"><span>• Customs Duty (15%) + PAL (10%):</span> <span class="mono">+LKR 682</span></div>
+              <div class="lp-hidden-row"><span>• Compounded VAT (18% on CIF):</span> <span class="mono">+LKR 614</span></div>
+              <div class="lp-hidden-row"><span>• Clearing agent & transport:</span> <span class="mono">+LKR 180</span></div>
+            </div>
+
+            <div class="lp-outcome-box outcome-loss">
+              <div class="lp-outcome-header">
+                <span class="lp-outcome-lbl">Actual True Landed Cost:</span>
+                <span class="lp-outcome-cost mono">LKR 4,206 / item</span>
+              </div>
+              <div class="lp-outcome-stat">
+                <span>🛑 Result:</span> <strong>Losing -LKR 706 per sale</strong> (-LKR 70,600 on a 100-item order)
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="lp-example-grid">
-          <div class="lp-example-card">
-            <div class="lp-example-label">Supplier Price</div>
-            <div class="lp-example-val">$500.00</div>
+
+        <!-- SOLUTION CARD -->
+        <div class="lp-compare-card lp-card-solution">
+          <div class="lp-compare-header">
+            <div class="lp-compare-pill solution-pill">✅ Landed Cost Manifest</div>
+            <div class="lp-compare-title">Precision in 30 seconds</div>
           </div>
-          <div class="lp-example-card">
-            <div class="lp-example-label">Air Shipping (3kg)</div>
-            <div class="lp-example-val">$45.00</div>
+          <div class="lp-compare-body">
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Step 1: Drop Invoice / Packing List</span>
+              <span class="lp-row-val mono">Auto-Extracted</span>
+            </div>
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Step 2: Ocean Freight Allocated</span>
+              <span class="lp-row-val mono">Exact by CBM</span>
+            </div>
+            <div class="lp-row-item">
+              <span class="lp-row-lbl">Step 3: SL Tax Bundle Applied</span>
+              <span class="lp-row-val mono">Duty + PAL + Compounded VAT</span>
+            </div>
+            
+            <div class="lp-divider-dashed"></div>
+            
+            <div class="lp-hidden-costs-box solution-box">
+              <div class="lp-hidden-title" style="color:#047857;">💎 What the Tool Reveals Instantly:</div>
+              <div class="lp-hidden-row"><span>• Exact True Unit Cost:</span> <span class="mono font-bold" style="color:#0F172A;">LKR 4,206</span></div>
+              <div class="lp-hidden-row"><span>• Target Profit Margin (+35%):</span> <span class="mono font-bold" style="color:#059669;">+LKR 1,472</span></div>
+              <div class="lp-hidden-row"><span>• Recommended Selling Price:</span> <span class="mono font-bold" style="color:#059669;">LKR 5,680</span></div>
+            </div>
+
+            <div class="lp-outcome-box outcome-profit">
+              <div class="lp-outcome-header">
+                <span class="lp-outcome-lbl">Total Landed Cost Manifest:</span>
+                <span class="lp-outcome-cost mono" style="color:#047857;">100% Verified</span>
+              </div>
+              <div class="lp-outcome-stat" style="color:#065F46;">
+                <span>💰 Result:</span> <strong>Guaranteed +LKR 147,200 Net Profit</strong> locked in before ordering
+              </div>
+            </div>
           </div>
-          <div class="lp-example-card">
-            <div class="lp-example-label">Customs & VAT</div>
-            <div class="lp-example-val">$85.00</div>
-          </div>
-          <div class="lp-example-card">
-            <div class="lp-example-label">Real Cost / Watch</div>
-            <div class="lp-example-val accent">$6.30</div>
-          </div>
-        </div>
-        <div class="lp-example-footer">
-          <div>💡 <strong>Result:</strong> If you sell each watch for <strong>$15.00</strong>, your clear net profit is <strong>$8.70 per watch</strong>.</div>
-          <div class="footer-tag">Zero guesswork.</div>
         </div>
       </div>
     </div>
