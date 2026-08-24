@@ -1541,68 +1541,128 @@ body {
       <div class="lp-section-header" style="margin-bottom: 56px;">
         <span class="lp-section-tag" style="background: #E0E7FF; color: #4338CA; border: 1px solid #C7D2FE;">The Import Reality</span>
         <h2 class="lp-section-title" style="font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -0.03em;">Why Importers Lose Money (And How We Fix It)</h2>
-        <p class="lp-section-sub" style="font-size: 16px; color: #64748B;">A factory price of ¥50 looks cheap—until hidden port fees and compounded VAT hit.</p>
+        <p class="lp-section-sub" style="font-size: 16px; color: #64748B;">A factory price of ¥50 looks cheap—until hidden port fees and compounded VAT hit. See the exact breakdown.</p>
       </div>
 
       <div class="lp-matrix-grid">
         <!-- The Blind Guessing Trap -->
-        <div class="lp-matrix-card lp-card-trap-master">
-          <div class="lp-m-top">
-            <div class="lp-m-pill trap-badge">❌ Blind Guessing</div>
-            <h3 class="lp-m-title">Spreadsheet Assumptions</h3>
-            <p class="lp-m-desc">Guessing shipping costs and forgetting compounded customs duties leads to selling at a loss.</p>
+        <div class="lp-matrix-card lp-card-trap-master" style="padding: 0; overflow: hidden;">
+          <div style="padding: 32px 28px 24px; border-bottom: 1px solid #F1F5F9; background: #FFFFFF;">
+            <div class="lp-m-pill trap-badge" style="margin-bottom: 16px;">❌ Spreadsheets & Guessing</div>
+            <h3 class="lp-m-title" style="font-size: 22px;">The Illusion of Profit</h3>
+            <p class="lp-m-desc" style="margin-top: 8px;">Guessing shipping costs and ignoring compounded customs taxes leads to a fatal pricing mistake.</p>
           </div>
           
-          <div class="lp-m-hero-box trap-bg">
-            <div class="lp-m-hero-label">Selling Price</div>
-            <div class="lp-m-hero-val">LKR 3,500 <span class="lp-m-sub-val">/ item</span></div>
-            <div class="lp-m-hero-tag trap-tag">Actual Cost: LKR 4,206 ⚠️</div>
-          </div>
-          
-          <div class="lp-m-flow">
-            <div class="lp-m-flow-title">Missed Hidden Costs</div>
-            <div class="lp-m-chips">
-              <span class="lp-m-chip">+ Exact CBM Freight</span>
-              <span class="lp-m-chip">+ Compounded VAT</span>
-              <span class="lp-m-chip">+ 10% Port Levy</span>
+          <div style="padding: 24px 28px; background: #FAFAFA;">
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #475569;">
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span>Supplier Price</span>
+                <span style="color: #0F172A; font-weight: 600;">LKR 2,250</span>
+              </div>
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span>Freight (Guessed)</span>
+                <span style="color: #0F172A; font-weight: 600;">LKR 350</span>
+              </div>
+              <!-- Ledger Row (Bad) -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #DC2626;">
+                <span>Duty, PAL & VAT</span>
+                <span style="font-weight: 700;">LKR 0 (Missed)</span>
+              </div>
+              
+              <!-- Divider -->
+              <div style="height: 1px; border-top: 1px dashed #CBD5E1; margin: 16px 0;"></div>
+              
+              <!-- Subtotal -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span style="font-weight: 700; color: #0F172A;">Assumed Cost</span>
+                <span style="font-weight: 700; color: #0F172A;">LKR 2,600</span>
+              </div>
+              
+              <!-- Selling Price -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 24px; color: #059669; font-weight: 700;">
+                <span>Selling Price Set</span>
+                <span>LKR 3,500</span>
+              </div>
             </div>
-          </div>
-          
-          <div class="lp-m-bottom trap-bottom">
-            <div class="lp-m-bottom-head">
-              <span>Final Outcome</span>
-              <span class="lp-m-bottom-stat">🛑 -LKR 706 Loss / Item</span>
+            
+            <!-- Shock Reveal Box -->
+            <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 12px; padding: 16px; margin-bottom: 16px; position: relative;">
+              <div style="position: absolute; top: -10px; left: 16px; background: #DC2626; color: #FFF; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; text-transform: uppercase;">Port Reality Shock</div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: #991B1B; font-weight: 700; margin-top: 4px;">
+                <span>Actual True Cost hit:</span>
+                <span>LKR 4,206</span>
+              </div>
+            </div>
+
+            <!-- Final Outcome -->
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #FFF1F2; border: 1px solid #FDA4AF; border-radius: 10px; padding: 14px 18px;">
+              <span style="font-size: 13px; font-weight: 700; color: #9F1239;">Final Outcome</span>
+              <span style="font-size: 15px; font-weight: 800; color: #BE123C;">🛑 -LKR 706 Loss / Item</span>
             </div>
           </div>
         </div>
 
         <!-- The Landed Cost Solution -->
-        <div class="lp-matrix-card lp-card-solution-master">
-          <div class="lp-m-top">
-            <div class="lp-m-pill solution-badge">✅ Landed Cost Manifest</div>
-            <h3 class="lp-m-title">Automated Precision</h3>
-            <p class="lp-m-desc">Drop your invoice. Instantly allocate exact freight, Duty, PAL, and VAT down to the decimal.</p>
+        <div class="lp-matrix-card lp-card-solution-master" style="padding: 0; overflow: hidden; border-color: #A7F3D0; box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.1);">
+          <div style="padding: 32px 28px 24px; border-bottom: 1px solid #F1F5F9; background: #FFFFFF;">
+            <div class="lp-m-pill solution-badge" style="margin-bottom: 16px;">✅ Landed Cost Manifest</div>
+            <h3 class="lp-m-title" style="font-size: 22px;">100% Margin Precision</h3>
+            <p class="lp-m-desc" style="margin-top: 8px;">Drop your invoice. Instantly allocate exact freight and Sri Lankan taxes down to the decimal.</p>
           </div>
           
-          <div class="lp-m-hero-box solution-bg">
-            <div class="lp-m-hero-label">True Landed Cost</div>
-            <div class="lp-m-hero-val">LKR 4,206 <span class="lp-m-sub-val">/ item</span></div>
-            <div class="lp-m-hero-tag solution-tag">100% Verified Accuracy 🔒</div>
-          </div>
-          
-          <div class="lp-m-flow">
-            <div class="lp-m-flow-title">Instant Calculation</div>
-            <div class="lp-m-chips">
-              <span class="lp-m-chip sol-chip">Air & Sea Splitting</span>
-              <span class="lp-m-chip sol-chip">SL Tax Bundle</span>
-              <span class="lp-m-chip sol-chip">Unit Costing</span>
+          <div style="padding: 24px 28px; background: #F8FAF9;">
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #475569;">
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span>Supplier Price</span>
+                <span style="color: #0F172A; font-weight: 600;">LKR 2,250</span>
+              </div>
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #059669;">
+                <span>Freight (Exact CBM)</span>
+                <span style="font-weight: 600;">LKR 480</span>
+              </div>
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #059669;">
+                <span>Duty & PAL (25%)</span>
+                <span style="font-weight: 600;">LKR 682</span>
+              </div>
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #059669;">
+                <span>Compounded VAT (18%)</span>
+                <span style="font-weight: 600;">LKR 614</span>
+              </div>
+              <!-- Ledger Row -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #059669;">
+                <span>Clearance & Transport</span>
+                <span style="font-weight: 600;">LKR 180</span>
+              </div>
+              
+              <!-- Divider -->
+              <div style="height: 1px; border-top: 1px dashed #6EE7B7; margin: 16px 0;"></div>
+              
+              <!-- Subtotal -->
+              <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                <span style="font-weight: 700; color: #0F172A;">100% True Cost</span>
+                <span style="font-weight: 800; color: #059669; font-size: 15px;">LKR 4,206</span>
+              </div>
             </div>
-          </div>
-          
-          <div class="lp-m-bottom solution-bottom">
-            <div class="lp-m-bottom-head">
-              <span>Optimized Selling Price</span>
-              <span class="lp-m-bottom-stat" style="color: #065F46;">💰 LKR 5,680 (+35% Margin)</span>
+            
+            <!-- Optimized Selling Box -->
+            <div style="background: #ECFDF5; border: 1px solid #6EE7B7; border-radius: 12px; padding: 16px; margin-bottom: 16px; position: relative;">
+              <div style="position: absolute; top: -10px; left: 16px; background: #059669; color: #FFF; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; text-transform: uppercase;">Intelligent Pricing</div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: #064E3B; font-weight: 700; margin-top: 4px;">
+                <span>Set Selling Price to:</span>
+                <span style="font-size: 15px;">LKR 5,680</span>
+              </div>
+            </div>
+
+            <!-- Final Outcome -->
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #10B981; border: 1px solid #059669; border-radius: 10px; padding: 14px 18px; color: #FFFFFF; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);">
+              <span style="font-size: 13px; font-weight: 700;">Guaranteed Profit</span>
+              <span style="font-size: 15px; font-weight: 800;">💰 +35% Net Margin</span>
             </div>
           </div>
         </div>
