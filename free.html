@@ -2219,9 +2219,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
                 <input type="number" id="cbmRate" step="any" placeholder="100000" class="mono">
                 <span class="input-suffix">/ CBM</span>
               </div>
-
             </div>
-
           </div>
 
         </div>
@@ -2649,12 +2647,12 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   if (freightCurrEl) {
     freightCurrEl.onchange = (e) => {
       current.freightCurrency = e.target.value;
-      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 100000)) {
+      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 35000)) {
         current.cbmRate = 115;
         document.getElementById('cbmRate').value = 115;
       } else if (current.freightCurrency === 'LKR' && current.cbmRate === 115) {
-        current.cbmRate = 100000;
-        document.getElementById('cbmRate').value = 100000;
+        current.cbmRate = 35000;
+        document.getElementById('cbmRate').value = 35000;
       }
       updateCurrencyLabels();
       calculate();
@@ -3161,13 +3159,34 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   document.getElementById('markupPercent').addEventListener('input', calculate);
 
   // ==== EXPORT ====
+  
+  // ==== PREMIUM EXPORT PAYWALL ====
+  function openExportPaywall(e) {
+    if(e) e.preventDefault();
+    const modal = document.getElementById('exportPaywallModal');
+    if (!modal) return;
+    const modalInner = modal.querySelector('.paywall-modal-content');
+    modal.style.display = 'flex';
+    void modal.offsetWidth;
+    modal.style.opacity = '1';
+    if (modalInner) modalInner.style.transform = 'translateY(0)';
+  }
+  window.openExportPaywall = openExportPaywall;
+
+  function closeExportPaywall() {
+    const modal = document.getElementById('exportPaywallModal');
+    if (!modal) return;
+    const modalInner = modal.querySelector('.paywall-modal-content');
+    modal.style.opacity = '0';
+    if (modalInner) modalInner.style.transform = 'translateY(20px)';
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+  }
+  window.closeExportPaywall = closeExportPaywall;
+
   document.getElementById('exportPdfBtn').onclick = openExportPaywall;
 
   document.getElementById('shareWaBtn').onclick = openExportPaywall;
-
-  
-  
-  // ==== STEP 4 MOBILE VIEW TOGGLE HANDLERS ====
+// ==== STEP 4 MOBILE VIEW TOGGLE HANDLERS ====
   function setupMobileViewToggle() {
     const btnCards = document.getElementById('btnViewCards');
     const btnTable = document.getElementById('btnViewTable');
@@ -3227,8 +3246,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   };
 
   document.getElementById('exportExcelBtn').onclick = openExportPaywall;
-
-  // ==== IMPORT & MAPPING ====
+// ==== IMPORT & MAPPING ====
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
     tab.onclick = () => {
@@ -4069,7 +4087,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 <!-- PREMIUM PAYWALL MODAL -->
 <div id="exportPaywallModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 99999; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease;">
-  <div style="background: #FFFFFF; border-radius: 20px; width: 100%; max-width: 480px; padding: 36px 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; border: 1px solid #E2E8F0; font-family: 'Inter', sans-serif; position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+  <div class="paywall-modal-content" style="background: #FFFFFF; border-radius: 20px; width: 100%; max-width: 480px; padding: 36px 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; border: 1px solid #E2E8F0; font-family: 'Inter', sans-serif; position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
     <button onclick="closeExportPaywall()" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9CA3AF; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
     </button>
@@ -4081,10 +4099,10 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
       Sharing to WhatsApp, generating professional PDFs, and Excel exports are available in the <strong>Pro Version</strong>. Upgrade now to impress your clients and streamline your workflow forever.
     </p>
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-      <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style="background: #E04D2D; color: #FFFFFF; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(224, 77, 45, 0.3); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+      <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style="background: #E04D2D; color: #FFFFFF; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(224, 77, 45, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
         <span>💳 Get Pro Lifetime License ($9)</span>
       </a>
-      <a href="pro.html" style="background: #F1F5F9; color: #334155; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; border: 1px solid #CBD5E1; transition: background 0.2s;" onmouseover="this.style.background='#E2E8F0'" onmouseout="this.style.background='#F1F5F9'">
+      <a href="pro.html" style="background: #F1F5F9; color: #334155; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; border: 1px solid #CBD5E1; transition: background 0.2s;">
         <span>Already have Pro? Log in</span>
       </a>
     </div>
@@ -4101,25 +4119,6 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     </ul>
   </div>
 </div>
-<script>
-  function openExportPaywall(e) {
-    if(e) e.preventDefault();
-    const modal = document.getElementById('exportPaywallModal');
-    const modalInner = modal.querySelector('div');
-    modal.style.display = 'flex';
-    // Trigger reflow
-    void modal.offsetWidth;
-    modal.style.opacity = '1';
-    modalInner.style.transform = 'translateY(0)';
-  }
-  function closeExportPaywall() {
-    const modal = document.getElementById('exportPaywallModal');
-    const modalInner = modal.querySelector('div');
-    modal.style.opacity = '0';
-    modalInner.style.transform = 'translateY(20px)';
-    setTimeout(() => { modal.style.display = 'none'; }, 300);
-  }
-</script>
-</body>
 
+</body>
 </html>
