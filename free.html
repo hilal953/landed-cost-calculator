@@ -2216,19 +2216,12 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
             <div style="display:flex; gap:6px; align-items:center;">
               <div class="input-field" style="margin:0; flex:1;">
                 <span class="input-prefix" id="cbmPrefix">LKR</span>
-                <input type="number" id="cbmRate" step="any" placeholder="35000" class="mono">
+                <input type="number" id="cbmRate" step="any" placeholder="100000" class="mono">
                 <span class="input-suffix">/ CBM</span>
               </div>
-              <div class="input-field" style="margin:0; width:95px;">
-                <select id="freightCurrency" style="padding:8px 4px; font-weight:700; font-size:12px;">
-                  <option value="LKR">LKR</option>
-                  <option value="USD">USD ($)</option>
-                </select>
-              </div>
+
             </div>
-            <div id="freightUsdNote" class="text-muted hidden" style="font-size:11px; margin-top:4px;">
-              Converted at $1 = 305 LKR
-            </div>
+
           </div>
 
         </div>
@@ -2400,14 +2393,14 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     baseCurrency: 'RMB', // RMB or USD
     exRate: 45.00, // Sensible pre-populated default so calculations run immediately
     freightCurrency: 'LKR', // LKR or USD
-    cbmRate: 35000, // Sensible default freight rate
+    cbmRate: 100000, // Sensible default freight rate
     usdToLkr: 305.00, // Standard conversion rate for USD freight
     items: [],
     fees: [
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
       { id: 'fe2', name: 'PAL (Port & Airport Levy)', type: 'percent', amount: 10, method: 'cbm', base: 'cif' },
       { id: 'fe3', name: 'VAT', type: 'percent', amount: 18, method: 'cbm', base: 'running' },
-      { id: 'fe4', name: 'Transport cost', type: 'flat', amount: 35000, method: 'cbm', base: 'cif' },
+      { id: 'fe4', name: 'Transport cost', type: 'flat', amount: 100000, method: 'cbm', base: 'cif' },
       { id: 'fe5', name: 'Clearing Agent', type: 'flat', amount: 15000, method: 'value', base: 'cif' }
     ],
     itemSeq: 1,
@@ -2602,7 +2595,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     document.getElementById('routeDest').value = current.route.dest || '';
     document.getElementById('baseCurrency').value = current.baseCurrency || 'RMB';
     document.getElementById('exRate').value = current.exRate !== undefined ? current.exRate : 45.00;
-    document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 35000;
+    document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 100000;
     if (document.getElementById('freightCurrency')) {
       document.getElementById('freightCurrency').value = current.freightCurrency || 'LKR';
     }
@@ -2656,12 +2649,12 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   if (freightCurrEl) {
     freightCurrEl.onchange = (e) => {
       current.freightCurrency = e.target.value;
-      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 35000)) {
+      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 100000)) {
         current.cbmRate = 115;
         document.getElementById('cbmRate').value = 115;
       } else if (current.freightCurrency === 'LKR' && current.cbmRate === 115) {
-        current.cbmRate = 35000;
-        document.getElementById('cbmRate').value = 35000;
+        current.cbmRate = 100000;
+        document.getElementById('cbmRate').value = 100000;
       }
       updateCurrencyLabels();
       calculate();
@@ -2787,7 +2780,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     { key: 'vat', name: 'VAT (18%)', check: 'vat', make: () => newFee('VAT (18%)', 'percent', 18, 'cbm', 'running') },
     { key: 'pal', name: 'PAL / Port Levy (10%)', check: 'pal', make: () => newFee('PAL (Port & Airport Levy 10%)', 'percent', 10, 'cbm', 'cif') },
     { key: 'duty', name: 'Customs Duty (15%)', check: 'duty', make: () => newFee('Customs Duty (15%)', 'percent', 15, 'cbm', 'cif') },
-    { key: 'transport', name: 'Transport cost (35k)', check: 'transport', make: () => newFee('Transport cost', 'flat', 35000, 'cbm', 'cif') },
+    { key: 'transport', name: 'Transport cost (100k)', check: 'transport', make: () => newFee('Transport cost', 'flat', 100000, 'cbm', 'cif') },
     { key: 'agent', name: 'Clearing Agent (15k)', check: 'agent', make: () => newFee('Clearing Agent Fee', 'flat', 15000, 'value', 'cif') },
     { key: 'insurance', name: 'Marine Insurance (1%)', check: 'insurance', make: () => newFee('Marine Insurance (1%)', 'percent', 1, 'cbm', 'cif') },
     { key: 'demurrage', name: 'Port Demurrage (10k)', check: 'demurrage', make: () => newFee('Port Demurrage & Storage', 'flat', 10000, 'cbm', 'cif') }
@@ -3168,21 +3161,9 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
   document.getElementById('markupPercent').addEventListener('input', calculate);
 
   // ==== EXPORT ====
-  document.getElementById('exportPdfBtn').onclick = () => window.print();
+  document.getElementById('exportPdfBtn').onclick = openExportPaywall;
 
-  document.getElementById('shareWaBtn').onclick = () => {
-    if(!current || !current.items.length) {
-      showToast("Nothing to share yet!", "error");
-      return;
-    }
-    const name = current.name || 'Shipment';
-    const cbm = lastTotals.cbm.toFixed(2);
-    const tot = fmt(lastTotals.total);
-    const qty = current.items.reduce((s,i) => s + i.qty, 0);
-    const text = `📦 *${name}*\nOrigin: ${current.route.origin}\nDest: ${current.route.dest}\n\n*Summary:*\nItems: ${current.items.length} (${qty} pcs)\nVolume: ${cbm} CBM\n*Total Landed Cost: LKR ${tot}*`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-  };
+  document.getElementById('shareWaBtn').onclick = openExportPaywall;
 
   
   
@@ -3245,18 +3226,7 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
     }
   };
 
-  document.getElementById('exportExcelBtn').onclick = () => {
-    if (typeof XLSX === 'undefined') {
-      showToast("Excel library loading, please try again in a moment.", "error");
-      return;
-    }
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.table_to_sheet(document.getElementById('resultsTable'));
-    XLSX.utils.book_append_sheet(wb, ws, "Landed Cost");
-    const filename = (current.name || "Shipment").replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".xlsx";
-    XLSX.writeFile(wb, filename);
-    showToast("Downloaded " + filename);
-  };
+  document.getElementById('exportExcelBtn').onclick = openExportPaywall;
 
   // ==== IMPORT & MAPPING ====
   // Tabs
@@ -4096,5 +4066,60 @@ tr:hover td { background: rgba(15, 23, 42, 0.015); }
 
 })();
 </script>
+
+<!-- PREMIUM PAYWALL MODAL -->
+<div id="exportPaywallModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 99999; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease;">
+  <div style="background: #FFFFFF; border-radius: 20px; width: 100%; max-width: 480px; padding: 36px 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; border: 1px solid #E2E8F0; font-family: 'Inter', sans-serif; position: relative; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+    <button onclick="closeExportPaywall()" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9CA3AF; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+    </button>
+    <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #FCEBE7 0%, #FEF2F2 100%); color: #E04D2D; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px; box-shadow: 0 8px 16px rgba(224, 77, 45, 0.12);">
+      💎
+    </div>
+    <h3 style="font-size: 24px; font-weight: 800; color: #0F172A; margin-bottom: 12px; letter-spacing: -0.02em;">Unlock Premium Exports</h3>
+    <p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 28px;">
+      Sharing to WhatsApp, generating professional PDFs, and Excel exports are available in the <strong>Pro Version</strong>. Upgrade now to impress your clients and streamline your workflow forever.
+    </p>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+      <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style="background: #E04D2D; color: #FFFFFF; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(224, 77, 45, 0.3); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <span>💳 Get Pro Lifetime License ($9)</span>
+      </a>
+      <a href="pro.html" style="background: #F1F5F9; color: #334155; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; border: 1px solid #CBD5E1; transition: background 0.2s;" onmouseover="this.style.background='#E2E8F0'" onmouseout="this.style.background='#F1F5F9'">
+        <span>Already have Pro? Log in</span>
+      </a>
+    </div>
+    <ul style="text-align: left; font-size: 13.5px; color: #64748B; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+      <li style="display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Beautiful WhatsApp sharing
+      </li>
+      <li style="display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Professional PDF printing
+      </li>
+      <li style="display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Export Excel spreadsheets
+      </li>
+    </ul>
+  </div>
+</div>
+<script>
+  function openExportPaywall(e) {
+    if(e) e.preventDefault();
+    const modal = document.getElementById('exportPaywallModal');
+    const modalInner = modal.querySelector('div');
+    modal.style.display = 'flex';
+    // Trigger reflow
+    void modal.offsetWidth;
+    modal.style.opacity = '1';
+    modalInner.style.transform = 'translateY(0)';
+  }
+  function closeExportPaywall() {
+    const modal = document.getElementById('exportPaywallModal');
+    const modalInner = modal.querySelector('div');
+    modal.style.opacity = '0';
+    modalInner.style.transform = 'translateY(20px)';
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+  }
+</script>
 </body>
+
 </html>
