@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "landed-costcalculator.vercel.app"
+        }
+      ],
+      "destination": "https://truelanded.dev/$1",
+      "permanent": true
+    }
+  ]
+}
