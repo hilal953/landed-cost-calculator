@@ -1314,22 +1314,59 @@ input[type="number"] {
 
 .results-mobile-cards {
   display: none;
-  padding: 12px;
-  flex-direction: column;
-  gap: 12px;
-  background: var(--bg-color);
+  padding: 14px 12px;
+  flex-direction: column !important;
+  gap: 14px !important;
+  background: #F1F5F9;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@keyframes rmcSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .result-mobile-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-radius: 16px;
+  padding: 16px 14px 14px 14px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.03);
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  position: relative;
+  overflow: hidden;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  animation: rmcSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+
+.result-mobile-card:active {
+  transform: scale(0.995);
+}
+
+/* Sleek top accent line */
+.result-mobile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #0F172A 0%, #2563EB 50%, #10B981 100%);
+}
+
 .rmc-header {
   display: flex;
   align-items: flex-start;
@@ -1341,38 +1378,69 @@ input[type="number"] {
   align-items: flex-start;
   gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 .rmc-badge {
-  background: #F1F5F9;
-  color: #475569;
+  background: #0F172A;
+  color: #FFFFFF;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   font-family: 'IBM Plex Mono', monospace;
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid #E2E8F0;
+  padding: 2px 7px;
+  border-radius: 6px;
   flex-shrink: 0;
   margin-top: 1px;
+  letter-spacing: 0.02em;
 }
 .rmc-desc {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 14.5px;
+  font-weight: 750;
   color: #0F172A;
   line-height: 1.35;
   word-break: break-word;
+  overflow-wrap: anywhere;
+  flex: 1;
 }
 .rmc-qty-pill {
-  background: #EEF2F6;
-  color: #334155;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #DBEAFE;
   font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 8px;
+  font-weight: 700;
+  padding: 3px 9px;
   border-radius: 20px;
   white-space: nowrap;
   font-family: 'IBM Plex Mono', monospace;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
+/* Meta Pill Strip below Title */
+.rmc-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: #475569;
+  font-family: 'IBM Plex Mono', monospace;
+  background: #F8FAFC;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #EEF2F6;
+}
+.rmc-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rmc-meta-dot {
+  color: #CBD5E1;
+}
+
+/* 2-Column Hero: Landed Cost & Selling Price */
 .rmc-hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1380,10 +1448,11 @@ input[type="number"] {
 }
 .rmc-hero-box {
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  box-sizing: border-box;
 }
 .rmc-cost-box {
   background: #F8FAFC;
@@ -1395,7 +1464,7 @@ input[type="number"] {
 }
 .rmc-hero-label {
   font-size: 9.5px;
-  font-weight: 700;
+  font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #64748B;
@@ -1410,52 +1479,206 @@ input[type="number"] {
   background: #10B981;
   color: #FFFFFF;
   font-size: 9px;
-  padding: 1px 4px;
+  padding: 1px 5px;
   border-radius: 4px;
   font-weight: 800;
 }
 .rmc-hero-val {
-  font-size: 15.5px;
+  font-size: 16.5px;
   font-weight: 800;
   font-family: 'IBM Plex Mono', monospace;
   color: #0F172A;
+  line-height: 1.2;
 }
 .rmc-sell-box .rmc-hero-val {
   color: #059669;
 }
 .rmc-hero-val .curr {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   opacity: 0.85;
 }
-
-.rmc-breakdown {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  background: #F8FAFC;
-  border-radius: 8px;
-  padding: 8px 10px;
-  border: 1px dashed #E2E8F0;
-}
-.rmc-b-item {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.rmc-b-lbl {
-  font-size: 9px;
-  font-weight: 700;
+.rmc-hero-sub {
+  font-size: 10px;
   color: #64748B;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-.rmc-b-val {
-  font-size: 11.5px;
-  color: #1E293B;
   font-weight: 600;
   font-family: 'IBM Plex Mono', monospace;
+  margin-top: 1px;
+}
+.rmc-sell-box .rmc-hero-sub {
+  color: #059669;
+  font-weight: 700;
+}
+
+/* Item-level Cost Composition Mini-Bar */
+.rmc-comp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  border: 1px solid #EEF2F6;
+}
+.rmc-comp-bar {
+  height: 6px;
+  width: 100%;
+  background: #E2E8F0;
+  border-radius: 6px;
+  display: flex;
+  overflow: hidden;
+}
+.rmc-comp-seg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.rmc-seg-goods { background: #3B82F6; }
+.rmc-seg-freight { background: #F59E0B; }
+.rmc-seg-fees { background: #8B5CF6; }
+.rmc-comp-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9.5px;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #64748B;
+}
+.rmc-comp-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rmc-comp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* 3-Column Micro-Ledger Table (The Ultimate Mobile Alternative to Desktop Table) */
+.rmc-ledger {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+.rmc-ledger-header {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  padding: 6px 8px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  font-size: 9px;
+  font-weight: 750;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.rmc-ledger-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  padding: 7px 8px;
+  border-bottom: 1px dashed #F1F5F9;
+  font-size: 11px;
+  align-items: center;
+}
+.rmc-ledger-row:last-child {
+  border-bottom: none;
+}
+.rmc-ledger-row.total-row {
+  background: #F8FAFC;
+  border-top: 1px solid #E2E8F0;
+  font-weight: 800;
+}
+.rmc-l-col {
+  display: flex;
+  flex-direction: column;
+}
+.rmc-l-name {
+  font-weight: 600;
+  color: #1E293B;
+  font-size: 10.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rmc-l-sub {
+  font-size: 9px;
+  color: #94A3B8;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.rmc-l-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+  text-align: right;
   white-space: nowrap;
+}
+.rmc-l-val.total-val {
+  color: #0F172A;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.rmc-l-head-right {
+  text-align: right;
+}
+
+/* Bottom Card Action / Batch Stats */
+.rmc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid #F1F5F9;
+  font-size: 10.5px;
+  color: #64748B;
+  gap: 8px;
+}
+.rmc-batch-stat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: #475569;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.rmc-batch-stat strong {
+  color: #0F172A;
+}
+.rmc-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rmc-copy-btn, .rmc-wa-btn {
+  border: none;
+  background: #F1F5F9;
+  color: #334155;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+.rmc-copy-btn:hover, .rmc-copy-btn:active {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+.rmc-wa-btn {
+  background: #DCFCE7;
+  color: #15803D;
+}
+.rmc-wa-btn:hover, .rmc-wa-btn:active {
+  background: #BBF7D0;
 }
 
 @media (max-width: 768px) {
@@ -1464,6 +1687,7 @@ input[type="number"] {
   }
   .results-mobile-cards {
     display: flex !important;
+    flex-direction: column !important;
   }
   #resultsTableContainer {
     display: none;
@@ -1960,29 +2184,15 @@ input[type="number"] {
   .summary-currency {
     font-size: 10.5px !important;
   }
+}
 
-  /* Step 4 Mobile Result Cards */
-  .result-mobile-card {
-    background: #FFFFFF !important;
-    border: 1px solid #E2E8F0 !important;
-    border-radius: 14px !important;
-    padding: 16px !important;
-    box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.05) !important;
-    gap: 12px !important;
+@media (min-width: 769px) {
+  .results-view-toggle-bar,
+  .results-mobile-cards {
+    display: none !important;
   }
-  .rmc-desc {
-    font-size: 14.5px !important;
-    font-weight: 800 !important;
-    color: #0F172A !important;
-    line-height: 1.4 !important;
-  }
-  .rmc-hero-val {
-    font-size: 16.5px !important;
-    font-weight: 800 !important;
-  }
-  .rmc-hero-box {
-    padding: 12px 14px !important;
-    border-radius: 10px !important;
+  #resultsTableContainer {
+    display: block !important;
   }
 }
 
@@ -3102,6 +3312,13 @@ input[type="number"] {
     const foot = document.getElementById('resultsFoot');
     const costBar = document.getElementById('costBarSection');
     const mobileCards = document.getElementById('resultsMobileCards');
+    const btnCards = document.getElementById('btnViewCards');
+    
+    if (btnCards) {
+      const label = perItem.length > 0 ? `Card View (${perItem.length})` : 'Card View';
+      const span = btnCards.querySelector('span');
+      if (span) span.textContent = label;
+    }
     
     if (body) body.innerHTML = '';
     if (mobileCards) mobileCards.innerHTML = '';
@@ -3111,10 +3328,10 @@ input[type="number"] {
       if (costBar) costBar.style.display = 'none';
       
       const emptyHtml = `
-        <div style="text-align:center; padding: 36px 16px; background:#fff; border-radius:12px; border:1px dashed var(--border);">
-          <div style="font-size:24px; margin-bottom:6px;">📦</div>
-          <div style="font-weight:700; font-size:14px; color:var(--ink); margin-bottom:2px;">Awaiting Line Items</div>
-          <div style="font-size:12px; color:var(--ink-soft); max-width:300px; margin:0 auto;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+        <div style="text-align:center; padding: 36px 16px; background:#fff; border-radius:14px; border:1px dashed var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+          <div style="font-size:32px; margin-bottom:8px;">📦</div>
+          <div style="font-weight:800; font-size:15px; color:var(--ink); margin-bottom:4px;">Awaiting Line Items</div>
+          <div style="font-size:12px; color:var(--ink-soft); max-width:300px; margin:0 auto; line-height:1.4;">Upload an Excel sheet, invoice image, or add items manually in Step 1 to generate landed costs.</div>
         </div>
       `;
       if (mobileCards) mobileCards.innerHTML = emptyHtml;
@@ -3124,9 +3341,9 @@ input[type="number"] {
         tr.innerHTML = `
           <td colspan="7" style="text-align:center; padding: 44px 16px;">
             <div style="display:inline-flex; flex-direction:column; align-items:center; gap:8px;">
-              <div style="width:38px; height:38px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:18px;">📦</div>
-              <div style="font-weight:600; font-size:13.5px; color:var(--ink);">Awaiting Line Items</div>
-              <div style="font-size:12px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
+              <div style="width:42px; height:42px; border-radius:50%; background:rgba(15,23,42,0.04); display:flex; align-items:center; justify-content:center; font-size:20px;">📦</div>
+              <div style="font-weight:700; font-size:14px; color:var(--ink);">Awaiting Line Items</div>
+              <div style="font-size:12.5px; color:var(--ink-soft); max-width:320px;">Add or import items in Step 1 to calculate landed costs and target selling prices.</div>
             </div>
           </td>
         `;
@@ -3138,9 +3355,33 @@ input[type="number"] {
     if (foot) foot.style.display = '';
     if (costBar) costBar.style.display = '';
 
+    const exRate = parseFloat(document.getElementById('exRate')?.value) || 0;
+    const currSym = getCurrencySymbol(current.baseCurrency || 'RMB');
+    const cargoMode = document.getElementById('cargoMode')?.value || 'sea';
+    const measureUnit = cargoMode === 'air' ? 'Kg' : 'CBM';
+
     perItem.forEach((row, idx) => {
-      const unitCost = row.it.qty > 0 ? row.running / row.it.qty : 0;
+      const qty = row.it.qty || 1;
+      const unitCost = qty > 0 ? row.running / qty : 0;
       const targetSell = unitCost * (1 + markupPct/100);
+      const profitPerUnit = targetSell - unitCost;
+      const batchTotalLanded = row.running;
+      const batchTotalRevenue = targetSell * qty;
+      const batchTotalProfit = profitPerUnit * qty;
+      
+      const unitGoodsLKR = qty > 0 ? row.valueLKR / qty : 0;
+      const unitFreightLKR = qty > 0 ? row.freightShare / qty : 0;
+      const unitFeesLKR = qty > 0 ? row.feesShare / qty : 0;
+      
+      const basePriceFormatted = (row.it.price > 0) ? `${currSym}${fmt2(row.it.price)}` : '';
+      const cbmVal = parseFloat(row.it.cbm) || 0;
+      const cbmFormatted = cbmVal > 0 ? `${cbmVal.toFixed(3)} ${measureUnit}` : '';
+      
+      // Breakdown percentages for mini progress bar
+      let goodsPct = batchTotalLanded > 0 ? Math.round((row.valueLKR / batchTotalLanded) * 100) : 0;
+      let freightPct = batchTotalLanded > 0 ? Math.round((row.freightShare / batchTotalLanded) * 100) : 0;
+      let feesPct = Math.max(0, 100 - goodsPct - freightPct);
+      if (goodsPct + freightPct + feesPct === 0) goodsPct = 100;
       
       // 1. Desktop Table Row
       if (body) {
@@ -3157,42 +3398,118 @@ input[type="number"] {
         body.appendChild(tr);
       }
 
-      // 2. Mobile God-Mode Card
+      // 2. God-Mode Mobile Result Card (True Table-Alternative Matrix)
       if (mobileCards) {
         const card = document.createElement('div');
         card.className = 'result-mobile-card';
+        card.style.animationDelay = `${Math.min(idx * 35, 300)}ms`;
         card.innerHTML = `
+          <!-- 1. Header with # Badge & Qty -->
           <div class="rmc-header">
             <div class="rmc-title-row">
-              <span class="rmc-badge">#${idx + 1}</span>
+              <span class="rmc-badge">#${idx + 1 < 10 ? '0' + (idx + 1) : idx + 1}</span>
               <span class="rmc-desc">${escapeHtml(row.it.desc || '(untitled item)')}</span>
             </div>
-            <div class="rmc-qty-pill">${fmt(row.it.qty)} units</div>
+            <div class="rmc-qty-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              <span>${fmt(qty)} units</span>
+            </div>
+          </div>
+
+          <!-- Meta Info Strip (FOB Price & Volume) -->
+          <div class="rmc-meta-bar">
+            <span class="rmc-meta-item">🏷️ FOB: <strong>${basePriceFormatted ? basePriceFormatted + '/ea (' + fmt(unitGoodsLKR) + ' LKR)' : 'LKR ' + fmt(unitGoodsLKR) + '/ea'}</strong></span>
+            ${cbmFormatted ? `<span class="rmc-meta-dot">•</span><span class="rmc-meta-item">📐 Vol: <strong>${cbmFormatted}</strong></span>` : ''}
+            <span class="rmc-meta-dot">•</span>
+            <span class="rmc-meta-item">📦 Total FOB: <strong>LKR ${fmt(row.valueLKR)}</strong></span>
           </div>
           
+          <!-- 2. Hero 2-Box Highlights: Unit Landed Cost & Target Selling Price -->
           <div class="rmc-hero-grid">
             <div class="rmc-hero-box rmc-cost-box">
               <div class="rmc-hero-label">Unit Landed Cost</div>
               <div class="rmc-hero-val"><span class="curr">LKR</span> ${fmt(unitCost)}</div>
+              <div class="rmc-hero-sub">Batch Total: LKR ${fmt(batchTotalLanded)}</div>
             </div>
             <div class="rmc-hero-box rmc-sell-box">
-              <div class="rmc-hero-label">Target Selling Price <span class="profit-tag">+${markupPct}%</span></div>
+              <div class="rmc-hero-label">
+                <span>Target Selling</span>
+                <span class="profit-tag">+${markupPct}% Margin</span>
+              </div>
               <div class="rmc-hero-val"><span class="curr">LKR</span> ${fmt(targetSell)}</div>
+              <div class="rmc-hero-sub">+LKR ${fmt(profitPerUnit)} profit/unit</div>
             </div>
           </div>
 
-          <div class="rmc-breakdown">
-            <div class="rmc-b-item">
-              <span class="rmc-b-lbl">Goods Value</span>
-              <span class="rmc-b-val">LKR ${fmt(row.valueLKR)}</span>
+          <!-- 3. Cost Composition Mini-Bar -->
+          <div class="rmc-comp-section">
+            <div class="rmc-comp-bar">
+              <div class="rmc-comp-seg rmc-seg-goods" style="width: ${goodsPct}%;" title="Goods: ${goodsPct}%"></div>
+              <div class="rmc-comp-seg rmc-seg-freight" style="width: ${freightPct}%;" title="Freight: ${freightPct}%"></div>
+              <div class="rmc-comp-seg rmc-seg-fees" style="width: ${feesPct}%;" title="Charges: ${feesPct}%"></div>
             </div>
-            <div class="rmc-b-item">
-              <span class="rmc-b-lbl">Freight</span>
-              <span class="rmc-b-val">LKR ${fmt(row.freightShare)}</span>
+            <div class="rmc-comp-legend">
+              <div class="rmc-comp-legend-item"><span class="rmc-comp-dot" style="background:#3B82F6;"></span> Goods ${goodsPct}%</div>
+              <div class="rmc-comp-legend-item"><span class="rmc-comp-dot" style="background:#F59E0B;"></span> Freight ${freightPct}%</div>
+              <div class="rmc-comp-legend-item"><span class="rmc-comp-dot" style="background:#8B5CF6;"></span> Charges ${feesPct}%</div>
             </div>
-            <div class="rmc-b-item">
-              <span class="rmc-b-lbl">Charges</span>
-              <span class="rmc-b-val">LKR ${fmt(row.feesShare)}</span>
+          </div>
+
+          <!-- 4. Complete Mobile Ledger Matrix (Table-Alternative) -->
+          <div class="rmc-ledger">
+            <div class="rmc-ledger-header">
+              <div>Cost Factor</div>
+              <div class="rmc-l-head-right">Per Unit</div>
+              <div class="rmc-l-head-right">Line Total</div>
+            </div>
+            <div class="rmc-ledger-row">
+              <div class="rmc-l-col">
+                <span class="rmc-l-name">🏷️ Goods (FOB)</span>
+                <span class="rmc-l-sub">Base Purchase</span>
+              </div>
+              <div class="rmc-l-val">LKR ${fmt(unitGoodsLKR)}</div>
+              <div class="rmc-l-val">LKR ${fmt(row.valueLKR)}</div>
+            </div>
+            <div class="rmc-ledger-row">
+              <div class="rmc-l-col">
+                <span class="rmc-l-name">⚓ Freight Share</span>
+                <span class="rmc-l-sub">Logistics Transit</span>
+              </div>
+              <div class="rmc-l-val">LKR ${fmt(unitFreightLKR)}</div>
+              <div class="rmc-l-val">LKR ${fmt(row.freightShare)}</div>
+            </div>
+            <div class="rmc-ledger-row">
+              <div class="rmc-l-col">
+                <span class="rmc-l-name">🏛️ Customs & Fees</span>
+                <span class="rmc-l-sub">Duty, Port, Tax</span>
+              </div>
+              <div class="rmc-l-val">LKR ${fmt(unitFeesLKR)}</div>
+              <div class="rmc-l-val">LKR ${fmt(row.feesShare)}</div>
+            </div>
+            <div class="rmc-ledger-row total-row">
+              <div class="rmc-l-col">
+                <span class="rmc-l-name" style="font-weight:800; color:#0F172A;">💎 Landed Cost</span>
+                <span class="rmc-l-sub" style="color:#64748B;">Total All-In Cost</span>
+              </div>
+              <div class="rmc-l-val total-val">LKR ${fmt(unitCost)}</div>
+              <div class="rmc-l-val total-val">LKR ${fmt(batchTotalLanded)}</div>
+            </div>
+          </div>
+
+          <!-- 5. Batch Financial Bottom Bar & Actions -->
+          <div class="rmc-footer">
+            <div class="rmc-batch-stat">
+              Revenue: <strong>LKR ${fmt(batchTotalRevenue)}</strong> • Profit: <strong style="color:#059669;">+LKR ${fmt(batchTotalProfit)}</strong>
+            </div>
+            <div class="rmc-btn-group">
+              <button type="button" class="rmc-copy-btn" onclick="copyCardItemSummary(${idx})" title="Copy item breakdown">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy</span>
+              </button>
+              <button type="button" class="rmc-wa-btn" onclick="shareCardItemWhatsapp(${idx})" title="Share to WhatsApp">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.941-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.101.005.232-.039.362.274.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.679.116-.174.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/></svg>
+                <span>Share</span>
+              </button>
             </div>
           </div>
         `;
@@ -3205,6 +3522,45 @@ input[type="number"] {
     document.getElementById('footFreight').textContent = fmt(tFr);
     document.getElementById('footCharges').textContent = fmt(tFee);
   }
+
+  // Helper to copy individual card item breakdown to clipboard
+  window.copyCardItemSummary = function(idx) {
+    if (!current || !current.items || !current.items[idx]) return;
+    const it = current.items[idx];
+    const markupPct = parseFloat(document.getElementById('markupPercent').value) || 0;
+    const cardElem = document.querySelectorAll('.result-mobile-card')[idx];
+    const unitCostText = cardElem ? cardElem.querySelector('.rmc-cost-box .rmc-hero-val')?.textContent?.replace(/\s+/g,' ').trim() : '';
+    const sellText = cardElem ? cardElem.querySelector('.rmc-sell-box .rmc-hero-val')?.textContent?.replace(/\s+/g,' ').trim() : '';
+    const profitText = cardElem ? cardElem.querySelector('.rmc-sell-box .rmc-hero-sub')?.textContent?.trim() : '';
+    const batchStat = cardElem ? cardElem.querySelector('.rmc-batch-stat')?.textContent?.replace(/\s+/g,' ').trim() : '';
+    
+    const text = `📦 *${it.desc || 'Item #' + (idx+1)}*\n• Quantity: ${fmt(it.qty)} units\n• Unit Landed Cost: ${unitCostText || 'LKR 0'}\n• Target Selling Price (+${markupPct}%): ${sellText || 'LKR 0'}\n• Profit: ${profitText}\n• Batch Summary: ${batchStat}\n_Calculated via TrueLanded FREE_`;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied Item #${idx+1} summary to clipboard!`);
+      }).catch(() => {
+        showToast(`Item #${idx+1} copied!`);
+      });
+    } else {
+      showToast(`Item #${idx+1}: Landed ${unitCostText}`);
+    }
+  };
+
+  // Helper to share individual card item via WhatsApp
+  window.shareCardItemWhatsapp = function(idx) {
+    if (!current || !current.items || !current.items[idx]) return;
+    const it = current.items[idx];
+    const markupPct = parseFloat(document.getElementById('markupPercent').value) || 0;
+    const cardElem = document.querySelectorAll('.result-mobile-card')[idx];
+    const unitCostText = cardElem ? cardElem.querySelector('.rmc-cost-box .rmc-hero-val')?.textContent?.replace(/\s+/g,' ').trim() : '';
+    const sellText = cardElem ? cardElem.querySelector('.rmc-sell-box .rmc-hero-val')?.textContent?.replace(/\s+/g,' ').trim() : '';
+    const profitText = cardElem ? cardElem.querySelector('.rmc-sell-box .rmc-hero-sub')?.textContent?.trim() : '';
+    
+    const text = `📦 *${it.desc || 'Item #' + (idx+1)}*\n• Quantity: ${fmt(it.qty)} pcs\n• *Unit Landed Cost: ${unitCostText}*\n• *Target Selling Price (+${markupPct}%): ${sellText}* (${profitText})\n\n_Calculated with TrueLanded FREE_`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
 
   document.getElementById('markupPercent').addEventListener('input', calculate);
 
