@@ -1543,27 +1543,31 @@ body {
     </div>
   </section>
 
-          <!-- Zero-BS Visual Receipt Comparison -->
-  <section class="lp-matrix-section" id="how-it-works" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; padding: 100px 0;">
-    <div class="lp-container">
+  <!-- Zero-BS Visual Receipt Comparison (Masterpiece Aesthetic) -->
+  <section id="how-it-works" style="background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%); padding: 110px 0; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; overflow: hidden; position: relative;">
+    
+    <!-- Decorative background glow -->
+    <div style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(16, 185, 129, 0.03) 0%, transparent 70%); pointer-events: none;"></div>
+
+    <div class="lp-container" style="position: relative; z-index: 2;">
       
-      <!-- Hyper-Minimal Header -->
-      <div class="lp-section-header" style="margin-bottom: 48px; max-width: 700px;">
-        <h2 class="lp-section-title" style="font-size: clamp(32px, 4.5vw, 44px); font-weight: 800; letter-spacing: -0.03em; color: #0F172A; margin-bottom: 12px;">Why Importers Lose Money</h2>
-        <p class="lp-section-sub" style="font-size: 18px; font-weight: 500; color: #64748B;">Stop guessing your shipping and taxes. See the difference.</p>
+      <!-- Elevated Header -->
+      <div style="text-align: center; margin-bottom: 64px; max-width: 720px; margin-left: auto; margin-right: auto;">
+        <h2 style="font-size: clamp(36px, 5vw, 52px); font-weight: 800; letter-spacing: -0.03em; color: #0F172A; margin-bottom: 16px; line-height: 1.1;">Why Importers Lose Money</h2>
+        <p style="font-size: 19px; font-weight: 400; color: #475569; line-height: 1.5;">Stop guessing your shipping and taxes. The truth is in the math. See the difference.</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; max-width: 960px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px; max-width: 960px; margin: 0 auto; align-items: stretch;">
         
-        <!-- WITHOUT APP CARD -->
-        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 36px 30px; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04); display: flex; flex-direction: column; transition: transform 0.2s ease;">
-          <div style="display: inline-flex; align-items: center; gap: 8px; background: #FEF2F2; color: #DC2626; font-size: 13.5px; font-weight: 800; padding: 8px 16px; border-radius: 30px; margin-bottom: 28px; width: fit-content; border: 1px solid #FECACA; letter-spacing: -0.01em;">
-            <span>❌</span>
-            <span>Manual Guessing (The Trap)</span>
+        <!-- THE TRAP CARD -->
+        <div style="background: #FFFFFF; border-radius: 24px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #E2E8F0; display: flex; flex-direction: column; position: relative;">
+          
+          <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #B91C1C; margin-bottom: 32px; letter-spacing: 0.02em; text-transform: uppercase;">
+            <span style="background: #FEE2E2; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">✕</span>
+            Manual Guessing (The Trap)
           </div>
 
-          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14.5px; color: #475569; display: flex; flex-direction: column; gap: 16px; flex: 1;">
-            
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #475569; display: flex; flex-direction: column; gap: 18px; flex: 1;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>Buy Price (Supplier)</span>
               <span style="color: #0F172A; font-weight: 600;">LKR 2,250</span>
@@ -1575,20 +1579,20 @@ body {
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; color: #DC2626;">
-              <span style="font-weight: 700;">Customs, PAL & VAT</span>
-              <span style="font-weight: 700; background: #FEF2F2; padding: 3px 8px; border-radius: 6px; font-size: 13px;">LKR 0 (Forgotten)</span>
+              <span style="font-weight: 600; text-decoration: line-through; opacity: 0.7;">Customs, PAL & VAT</span>
+              <span style="font-weight: 700; background: #FEF2F2; padding: 4px 10px; border-radius: 8px; font-size: 12px; border: 1px solid #FECACA;">LKR 0 (Forgotten)</span>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; color: #64748B;">
-              <span>Port Clearance</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #94A3B8;">
+              <span style="font-weight: 500;">Port Clearance</span>
               <span style="font-weight: 500;">LKR 0 (Ignored)</span>
             </div>
             
-            <div style="height: 1px; border-top: 1.5px dashed #CBD5E1; margin: 6px 0;"></div>
+            <div style="height: 1px; background: linear-gradient(90deg, transparent, #CBD5E1, transparent); margin: 8px 0;"></div>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-weight: 700; color: #0F172A;">Perceived Cost</span>
-              <span style="font-weight: 700; color: #0F172A; font-size: 16px;">LKR 2,600</span>
+              <span style="font-weight: 600; color: #64748B;">Perceived Cost</span>
+              <span style="font-weight: 700; color: #0F172A; font-size: 18px;">LKR 2,600</span>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1597,77 +1601,86 @@ body {
             </div>
           </div>
           
-          <div style="background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%); border: 1px solid #FDA4AF; border-radius: 14px; padding: 20px; margin-top: 28px; text-align: center;">
-            <div style="font-size: 12.5px; font-weight: 700; color: #9F1239; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Actual Cost at Port: LKR 4,206</div>
-            <div style="font-size: 22px; font-weight: 900; color: #BE123C; letter-spacing: -0.02em;">💸 REAL LOSS: -LKR 706 / pc</div>
+          <div style="background: #FAFAFA; border: 1px solid #F1F5F9; border-radius: 16px; padding: 24px; margin-top: 32px; text-align: center; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #EF4444;"></div>
+            <div style="font-size: 13px; font-weight: 600; color: #64748B; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Actual Cost at Port: LKR 4,206</div>
+            <div style="font-size: 22px; font-weight: 800; color: #DC2626; letter-spacing: -0.01em;">💸 REAL LOSS: -LKR 706 / pc</div>
           </div>
         </div>
 
-        <!-- WITH TRUELANDED CARD (GOD LEVEL ART) -->
-        <div style="background: #FFFFFF; border: 2px solid #10B981; border-radius: 20px; padding: 36px 30px; box-shadow: 0 20px 45px -10px rgba(16, 185, 129, 0.18), 0 0 0 1px rgba(16, 185, 129, 0.2); display: flex; flex-direction: column; position: relative;">
+        <!-- THE GOD TIER TRUELANDED CARD -->
+        <div style="background: #0F172A; border-radius: 24px; padding: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #1E293B; display: flex; flex-direction: column; position: relative; overflow: hidden; transform: scale(1.02); z-index: 10;">
           
-          <div style="position: absolute; top: -13px; right: 28px; background: linear-gradient(135deg, #059669 0%, #10B981 100%); color: #FFF; font-size: 11px; font-weight: 800; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
-            ⚡ 100% PRECISE
+          <!-- Glossy gradient glow behind card -->
+          <div style="position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%; background: conic-gradient(from 180deg at 50% 50%, #0F172A 0deg, rgba(16, 185, 129, 0.4) 180deg, #0F172A 360deg); opacity: 0.25; filter: blur(60px); pointer-events: none;"></div>
+          
+          <div style="position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 60%; height: 2px; background: linear-gradient(90deg, transparent, #10B981, transparent);"></div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; position: relative; z-index: 2;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #10B981; letter-spacing: 0.02em; text-transform: uppercase;">
+              <span style="background: rgba(16, 185, 129, 0.1); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">✓</span>
+              TrueLanded (Exact)
+            </div>
+            <div style="background: linear-gradient(135deg, #059669 0%, #10B981 100%); color: #FFF; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);">
+              ⚡ 100% PRECISE
+            </div>
           </div>
 
-          <div style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); color: #047857; font-size: 14.5px; font-weight: 800; padding: 8px 18px; border-radius: 30px; margin-bottom: 28px; width: fit-content; border: 1.5px solid #6EE7B7; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12);">
-            <span style="font-size: 16px;">🚢</span>
-            <span>TrueLanded (Exact)</span>
-          </div>
-
-          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14.5px; color: #475569; display: flex; flex-direction: column; gap: 16px; flex: 1;">
-            
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #94A3B8; display: flex; flex-direction: column; gap: 18px; flex: 1; position: relative; z-index: 2;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>Buy Price (Supplier)</span>
-              <span style="color: #0F172A; font-weight: 600;">LKR 2,250</span>
+              <span style="color: #F8FAFC; font-weight: 600;">LKR 2,250</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; color: #059669;">
-              <span style="font-weight: 600;">✓ Exact CBM Freight</span>
-              <span style="font-weight: 700; color: #047857;">LKR 480</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #34D399;">
+              <span style="font-weight: 600; display: flex; align-items: center; gap: 6px;"><span style="color: #10B981;">+</span> Exact CBM Freight</span>
+              <span style="font-weight: 700; color: #F8FAFC;">LKR 480</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; color: #059669;">
-              <span style="font-weight: 600;">✓ Customs, PAL & VAT</span>
-              <span style="font-weight: 700; color: #047857;">LKR 1,296</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #34D399;">
+              <span style="font-weight: 600; display: flex; align-items: center; gap: 6px;"><span style="color: #10B981;">+</span> Customs, PAL & VAT</span>
+              <span style="font-weight: 700; color: #F8FAFC;">LKR 1,296</span>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; color: #059669;">
-              <span style="font-weight: 600;">✓ Port Clearance</span>
-              <span style="font-weight: 700; color: #047857;">LKR 180</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #34D399;">
+              <span style="font-weight: 600; display: flex; align-items: center; gap: 6px;"><span style="color: #10B981;">+</span> Port Clearance</span>
+              <span style="font-weight: 700; color: #F8FAFC;">LKR 180</span>
             </div>
             
-            <div style="height: 1px; border-top: 1.5px dashed #A7F3D0; margin: 6px 0;"></div>
+            <div style="height: 1px; background: linear-gradient(90deg, transparent, #334155, transparent); margin: 8px 0;"></div>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-weight: 800; color: #0F172A;">True Landed Cost</span>
-              <span style="font-weight: 800; color: #047857; font-size: 17px;">LKR 4,206</span>
+              <span style="font-weight: 600; color: #CBD5E1;">True Landed Cost</span>
+              <span style="font-weight: 700; color: #F8FAFC; font-size: 18px;">LKR 4,206</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; color: #0F172A;">
-              <span style="font-weight: 700;">Safe Target Price</span>
-              <span style="font-weight: 800; font-size: 16px; background: #FEF3C7; color: #92400E; padding: 3px 8px; border-radius: 6px; border: 1px solid #FDE68A;">LKR 5,680</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #F8FAFC;">Safe Target Price</span>
+              <span style="font-weight: 700; font-size: 16px; background: rgba(245, 158, 11, 0.1); color: #FBBF24; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2);">LKR 5,680</span>
             </div>
           </div>
           
-          <div style="background: linear-gradient(135deg, #059669 0%, #10B981 100%); border: 1px solid #047857; border-radius: 14px; padding: 20px; margin-top: 28px; text-align: center; color: #FFF; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);">
-            <div style="font-size: 12.5px; font-weight: 700; margin-bottom: 4px; opacity: 0.92; text-transform: uppercase; letter-spacing: 0.05em;">Calculated in 3 Seconds</div>
-            <div style="font-size: 22px; font-weight: 900; letter-spacing: -0.02em;">💰 LOCKED PROFIT: +LKR 1,474 / pc</div>
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 16px; padding: 24px; margin-top: 32px; text-align: center; position: relative; z-index: 2; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+            <div style="font-size: 12px; font-weight: 600; color: #6EE7B7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Calculated in 3 Seconds</div>
+            <div style="font-size: 22px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.01em;">💰 LOCKED PROFIT: +LKR 1,474 / pc</div>
           </div>
         </div>
 
       </div>
-    </div>
-  
-      <!-- Free Tool Demo Image -->
-      <div style="margin-top: 64px; margin-bottom: 32px; border-radius: 12px; overflow: hidden; border: 1px solid #E2E8F0; box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.05); max-width: 800px; margin-left: auto; margin-right: auto;">
-        <img src="images/app_demo_2.png" alt="TrueLanded Free Calculator" style="width: 100%; display: block;">
-      </div>
+    
+      <!-- Free Tool Demo Image & CTA -->
+      <div style="margin-top: 80px; position: relative; z-index: 2;">
+        <div style="border-radius: 20px; overflow: hidden; border: 1px solid #E2E8F0; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15); max-width: 860px; margin: 0 auto 40px; background: #0F172A; padding: 4px;">
+          <div style="border-radius: 16px; overflow: hidden; background: #FFF;">
+            <img src="images/app_demo_2.PNG" alt="TrueLanded Free Calculator" style="width: 100%; display: block; border-radius: 16px;">
+          </div>
+        </div>
 
-      <div style="text-align: center; margin-top: 32px;">
-        <a href="free.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #0F172A; font-size: 16px; font-weight: 700; padding: 16px 32px; border-radius: 30px; text-decoration: none; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08); transition: all 0.2s;">
-          ⚡ Try the Free Calculator Now
-        </a>
+        <div style="text-align: center;">
+          <a href="free.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #0F172A; color: #FFFFFF; font-size: 16px; font-weight: 600; padding: 18px 40px; border-radius: 12px; text-decoration: none; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2); transition: all 0.3s ease;">
+            ⚡ Try the Free Calculator Now
+          </a>
+        </div>
       </div>
     </div>
   </section>
