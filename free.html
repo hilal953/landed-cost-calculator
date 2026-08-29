@@ -2863,6 +2863,15 @@ input[type="number"] {
     renderFees();
   }
 
+  function getCurrencySymbol(code) {
+    const symbols = {
+      USD: '$', RMB: '¥', EUR: '€', GBP: '£', INR: '₹', 
+      AED: 'د.إ', JPY: '¥', AUD: '$', CAD: '$', SGD: '$', 
+      CHF: 'Fr', HKD: '$', MYR: 'RM', THB: '฿'
+    };
+    return symbols[code] || code || '¥';
+  }
+
   function updateCurrencyLabels() {
     const curr = document.getElementById('baseCurrency').value;
     const sym = curr === 'USD' ? '$' : '¥';
