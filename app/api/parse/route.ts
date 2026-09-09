@@ -1,22 +1,33 @@
-// Vercel Serverless Function: /api/parse
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+import { NextResponse } from 'next/server';
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
 
+function corsResponse(body: any, status: number = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
+export async function POST(req: Request) {
   try {
-    const { base64, mimeType, isPdf, apiKey: clientApiKey } = req.body || {};
+    const { base64, mimeType, isPdf, apiKey: clientApiKey } = await req.json().catch(() => ({}));
 
     if (!base64) {
-      return res.status(400).json({ error: 'Missing base64 document data' });
+      return corsResponse({ error: 'Missing base64 document data' }, 400);
     }
 
     const geminiKey = (process.env.GEMINI_API_KEY || (clientApiKey && clientApiKey.startsWith('AIza') ? clientApiKey : '')).trim();
@@ -24,9 +35,9 @@ export default async function handler(req, res) {
     const claudeKey = (process.env.ANTHROPIC_API_KEY || (clientApiKey && clientApiKey.startsWith('sk-ant') ? clientApiKey : '')).trim();
 
     if (!geminiKey && !openAiKey && !claudeKey) {
-      return res.status(400).json({ 
+      return corsResponse({ 
         error: 'No AI API Key configured on server. Please ensure GEMINI_API_KEY is set in Vercel Environment Variables.' 
-      });
+      }, 400);
     }
 
     const prompt = `Analyze this ${isPdf ? 'PDF' : 'image'}.
@@ -90,8 +101,8 @@ Respond with ONLY valid JSON without markdown formatting:
           const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
           const clean = rawText.replace(/```json|```/g, '').trim();
           const parsed = JSON.parse(clean);
-          return res.status(200).json(parsed);
-        } catch (e) {
+          return corsResponse(parsed);
+        } catch (e: any) {
           errors.push(`${model} exception: ${e.message}`);
         }
       }
@@ -131,7 +142,7 @@ Respond with ONLY valid JSON without markdown formatting:
       const data = await aiRes.json();
       const rawText = data?.choices?.[0]?.message?.content || '';
       const parsed = JSON.parse(rawText);
-      return res.status(200).json(parsed);
+      return corsResponse(parsed);
     }
 
     // 3. Anthropic Claude
@@ -161,15 +172,15 @@ Respond with ONLY valid JSON without markdown formatting:
       }
 
       const data = await aiRes.json();
-      const text = (data.content || []).map(b => b.text || '').join('\n');
+      const text = (data.content || []).map((b: any) => b.text || '').join('\n');
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
-      return res.status(200).json(parsed);
+      return corsResponse(parsed);
     }
 
-    return res.status(400).json({ error: 'Unrecognized API Key format' });
-  } catch (error) {
+    return corsResponse({ error: 'Unrecognized API Key format' }, 400);
+  } catch (error: any) {
     console.error('API Parse error:', error);
-    return res.status(500).json({ error: error.message || 'Internal server error' });
+    return corsResponse({ error: error.message || 'Internal server error' }, 500);
   }
 }

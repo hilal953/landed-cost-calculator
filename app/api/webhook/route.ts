@@ -1,30 +1,41 @@
+import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Signature');
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Signature',
+    },
+  });
+}
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+function corsResponse(body: any, status: number = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Signature',
+    },
+  });
+}
 
-  if (req.method === 'GET') {
-    return res.status(200).json({ 
-      status: 'active', 
-      service: 'TrueLanded Lemon Squeezy Webhook',
-      time: new Date().toISOString()
-    });
-  }
+export async function GET() {
+  return corsResponse({ 
+    status: 'active', 
+    service: 'TrueLanded Lemon Squeezy Webhook',
+    time: new Date().toISOString()
+  });
+}
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function POST(req: Request) {
   try {
     const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
-    const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-    const signature = req.headers['x-signature'];
+    const rawBody = await req.text();
+    const signature = req.headers.get('x-signature');
 
     if (signature && secret) {
       const hmac = crypto.createHmac('sha256', secret);
@@ -34,7 +45,7 @@ export default async function handler(req, res) {
       }
     }
 
-    const payload = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const payload = JSON.parse(rawBody);
     const eventName = payload?.meta?.event_name;
     const data = payload?.data;
     const customData = payload?.meta?.custom_data;
@@ -79,15 +90,15 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({
+    return corsResponse({
       success: true,
       event: eventName,
       email: email,
       orderId: orderId
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[Webhook Exception]:', error);
-    return res.status(500).json({ error: error.message });
+    return corsResponse({ error: error.message }, 500);
   }
 }
