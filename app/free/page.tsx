@@ -436,14 +436,6 @@ Headlight  50  38.5  1.2"></textarea>
 <div className="toast-container" id="toastContainer"></div>
 
 
-{/*  PDF.js for in-browser PDF parsing  */}
-
-
-{/*  Tesseract.js for in-browser OCR  */}
-
-
-
-
 {/*  PREMIUM PAYWALL MODAL  */}
 <div id="exportPaywallModal" style={{"display":"none","position":"fixed","inset":"0","background":"rgba(15, 23, 42, 0.75)","backdropFilter":"blur(10px)","WebkitBackdropFilter":"blur(10px)","zIndex":"99999","alignItems":"center","justifyContent":"center","padding":"20px","opacity":"0","transition":"opacity 0.3s ease"}}>
   <div className="paywall-modal-content" style={{"background":"#FFFFFF","borderRadius":"20px","width":"100%","maxWidth":"480px","padding":"36px 32px","boxShadow":"0 25px 50px -12px rgba(0,0,0,0.25)","textAlign":"center","border":"1px solid #E2E8F0","fontFamily":"'Inter', sans-serif","position":"relative","transform":"translateY(20px)","transition":"transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)"}}>

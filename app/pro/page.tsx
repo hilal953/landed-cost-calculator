@@ -457,20 +457,6 @@ Headlight  50  38.5  1.2"></textarea>
 
 <div className="toast-container" id="toastContainer"></div>
 
-{/*  SheetJS for XLSX support  */}
-
-{/*  PDF.js for in-browser PDF parsing  */}
-
-
-{/*  Tesseract.js for in-browser OCR  */}
-
-
-
-
-
-
-{/*  SUPABASE CDN  */}
-
 
 {/*  PRO ACCESS SECURITY GATE & LOGIN MODAL  */}
 <div id="proAccessGate" style={{"display":"none","position":"fixed","inset":"0","background":"rgba(15, 23, 42, 0.75)","backdropFilter":"blur(10px)","WebkitBackdropFilter":"blur(10px)","zIndex":"99999","alignItems":"center","justifyContent":"center","padding":"20px"}}>
