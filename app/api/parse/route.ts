@@ -49,24 +49,28 @@ export async function POST(req: Request) {
    - qty: Total quantity as a number
    - price: Unit price as a number
    - cbm: Total CBM volume for that line as a number (use total CBM / 总体积 / t/cbm column if available, else 0)
+   Also, look for any delivery charges, shipping costs, or other additional expenses on the invoice.
    Return JSON with:
    "isDocument": true,
    "documentType": "e.g. Proforma Invoice / Packing List",
-   "items": [{ "desc": "...", "qty": 20, "price": 75, "cbm": 0 }]
+   "items": [{ "desc": "...", "qty": 20, "price": 75, "cbm": 0 }],
+   "extraCharges": [{ "name": "Delivery Cost", "amount": 100 }]
 
 2. If this image is NOT a commercial invoice, packing list, or business document (for example: a photo of a person, selfie, food, animal, car, landscape, receipt without items, meme, or random object):
    Return JSON with:
    "isDocument": false,
    "documentType": "Invalid Image",
    "message": "This image appears to be a [detailed description of what is in the photo, e.g. photo of a car/scenery/person], not a commercial invoice or packing list. Please upload a supplier invoice or packing list.",
-   "items": []
+   "items": [],
+   "extraCharges": []
 
 Respond with ONLY valid JSON without markdown formatting:
 {
   "isDocument": true,
   "documentType": "string",
   "message": "string",
-  "items": []
+  "items": [],
+  "extraCharges": []
 }`;
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)

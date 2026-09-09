@@ -716,6 +716,10 @@
     document.getElementById('footValue').textContent = fmt(tVal);
     document.getElementById('footFreight').textContent = fmt(tFr);
     document.getElementById('footCharges').textContent = fmt(tFee);
+    const footSellingPriceEl = document.getElementById('footSellingPrice');
+    if (footSellingPriceEl) {
+      footSellingPriceEl.textContent = fmt(tTot * (1 + markupPct/100));
+    }
   }
 
   document.getElementById('markupPercent').addEventListener('input', calculate);
@@ -1330,6 +1334,22 @@
           const items = Array.isArray(result) ? result : (result?.items || []);
           if (items && items.length > 0) {
             loadExtractedItems(items, file.name);
+            if (result?.extraCharges && Array.isArray(result.extraCharges)) {
+              result.extraCharges.forEach(charge => {
+                if (charge.name && charge.amount > 0) {
+                  current.fees.push({
+                    id: 'fe' + (current.feeSeq++),
+                    name: charge.name,
+                    type: 'flat',
+                    amount: charge.amount,
+                    method: 'cbm',
+                    base: 'cif'
+                  });
+                }
+              });
+              renderFees();
+              calculate();
+            }
             return;
           } else {
             showParseStatus("No product line items could be detected in this document. Please check the photo or paste rows manually.", false, true);

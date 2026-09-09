@@ -71,7 +71,7 @@ export default function FreeDashboard() {
         <input type="text" id="shipmentName" className="topbar-title" value="Shipment 1" placeholder="Name this shipment..." />
         <div className="manifest-route-ribbon">
           <div className="route-station">
-            <span className="station-flag">CN</span>
+            <span className="station-flag" style={{"fontSize":"10px","fontWeight":"800","color":"#64748B","textTransform":"uppercase","background":"transparent","border":"none","padding":"0 4px"}}>FROM</span>
             <input type="text" id="routeOrigin" value="GUANGZHOU" className="station-input" title="Origin City" />
           </div>
           <div className="route-transit">
@@ -80,7 +80,7 @@ export default function FreeDashboard() {
             <span className="transit-line"></span>
           </div>
           <div className="route-station">
-            <span className="station-flag">LK</span>
+            <span className="station-flag" style={{"fontSize":"10px","fontWeight":"800","color":"#64748B","textTransform":"uppercase","background":"transparent","border":"none","padding":"0 4px"}}>PORT</span>
             <input type="text" id="routePort" value="COLOMBO" className="station-input" title="Customs Port" />
           </div>
           <div className="route-transit">
@@ -89,7 +89,7 @@ export default function FreeDashboard() {
             <span className="transit-line"></span>
           </div>
           <div className="route-station">
-            <span className="station-flag dest">📍</span>
+            <span className="station-flag dest" style={{"fontSize":"10px","fontWeight":"800","color":"#64748B","textTransform":"uppercase","background":"transparent","border":"none","padding":"0 4px"}}>TO</span>
             <input type="text" id="routeDest" value="MATARA" className="station-input" title="Final Destination" />
           </div>
         </div>
@@ -406,7 +406,8 @@ Headlight  50  38.5  1.2"></textarea>
                 <td className="num" id="footValue">0</td>
                 <td className="num" id="footFreight">0</td>
                 <td className="num" id="footCharges">0</td>
-                <td className="num" colSpan={2}></td>
+                <td className="num"></td>
+                <td className="num" id="footSellingPrice">0</td>
               </tr>
             </tfoot>
           </table>

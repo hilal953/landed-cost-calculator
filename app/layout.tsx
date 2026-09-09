@@ -8,6 +8,9 @@ const ibmPlexMono = IBM_Plex_Mono({ weight: ["400", "500", "600", "700"], subset
 export const metadata: Metadata = {
   title: "TrueLanded",
   description: "Landed cost calculator",
+  icons: {
+    icon: '/images/favicon.svg',
+  }
 };
 
 export default function RootLayout({
