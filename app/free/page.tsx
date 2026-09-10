@@ -5,6 +5,15 @@ import Script from 'next/script';
 export default function FreeDashboard() {
   return (
     <>
+      {/* SheetJS for XLSX support */}
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" strategy="afterInteractive" />
+      {/* PDF.js for in-browser PDF parsing */}
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" strategy="afterInteractive" />
+      <Script id="pdfjs-worker-free" strategy="afterInteractive">
+        {`if (typeof pdfjsLib !== 'undefined') { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }`}
+      </Script>
+      {/* Tesseract.js for in-browser OCR */}
+      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="afterInteractive" />
       <Script src="/app.js" strategy="afterInteractive" />
       
 
@@ -439,7 +448,7 @@ Headlight  50  38.5  1.2"></textarea>
 {/*  PREMIUM PAYWALL MODAL  */}
 <div id="exportPaywallModal" style={{"display":"none","position":"fixed","inset":"0","background":"rgba(15, 23, 42, 0.75)","backdropFilter":"blur(10px)","WebkitBackdropFilter":"blur(10px)","zIndex":"99999","alignItems":"center","justifyContent":"center","padding":"20px","opacity":"0","transition":"opacity 0.3s ease"}}>
   <div className="paywall-modal-content" style={{"background":"#FFFFFF","borderRadius":"20px","width":"100%","maxWidth":"480px","padding":"36px 32px","boxShadow":"0 25px 50px -12px rgba(0,0,0,0.25)","textAlign":"center","border":"1px solid #E2E8F0","fontFamily":"'Inter', sans-serif","position":"relative","transform":"translateY(20px)","transition":"transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)"}}>
-    <button style={{"position":"absolute","top":"16px","right":"16px","background":"transparent","border":"none","color":"#9CA3AF","cursor":"pointer","padding":"4px","display":"flex","alignItems":"center","justifyContent":"center","borderRadius":"50%","transition":"all 0.2s"}}>
+    <button id="closePaywallBtn" style={{"position":"absolute","top":"16px","right":"16px","background":"transparent","border":"none","color":"#9CA3AF","cursor":"pointer","padding":"4px","display":"flex","alignItems":"center","justifyContent":"center","borderRadius":"50%","transition":"all 0.2s"}}>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
     </button>
     <div style={{"width":"64px","height":"64px","borderRadius":"50%","background":"linear-gradient(135deg, #FCEBE7 0%, #FEF2F2 100%)","color":"#E04D2D","display":"flex","alignItems":"center","justifyContent":"center","fontSize":"30px","margin":"0 auto 20px","boxShadow":"0 8px 16px rgba(224, 77, 45, 0.12)"}}>
@@ -470,6 +479,53 @@ Headlight  50  38.5  1.2"></textarea>
     </ul>
   </div>
 </div>
+
+<Script id="free-paywall-script" strategy="afterInteractive">
+{`
+(function() {
+  function openExportPaywall(e) {
+    if (e) e.preventDefault();
+    const modal = document.getElementById('exportPaywallModal');
+    if (!modal) return;
+    const modalInner = modal.querySelector('.paywall-modal-content');
+    modal.style.display = 'flex';
+    void modal.offsetWidth;
+    modal.style.opacity = '1';
+    if (modalInner) modalInner.style.transform = 'translateY(0)';
+  }
+  window.openExportPaywall = openExportPaywall;
+
+  function closeExportPaywall() {
+    const modal = document.getElementById('exportPaywallModal');
+    if (!modal) return;
+    const modalInner = modal.querySelector('.paywall-modal-content');
+    modal.style.opacity = '0';
+    if (modalInner) modalInner.style.transform = 'translateY(20px)';
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+  }
+  window.closeExportPaywall = closeExportPaywall;
+
+  const pdfBtn = document.getElementById('exportPdfBtn');
+  if (pdfBtn) pdfBtn.onclick = openExportPaywall;
+
+  const waBtn = document.getElementById('shareWaBtn');
+  if (waBtn) waBtn.onclick = openExportPaywall;
+
+  const xlsBtn = document.getElementById('exportExcelBtn');
+  if (xlsBtn) xlsBtn.onclick = openExportPaywall;
+
+  const closeBtn = document.getElementById('closePaywallBtn');
+  if (closeBtn) closeBtn.onclick = closeExportPaywall;
+
+  const modal = document.getElementById('exportPaywallModal');
+  if (modal) {
+    modal.onclick = (e) => {
+      if (e.target === modal) closeExportPaywall();
+    };
+  }
+})();
+`}
+</Script>
 
 
 

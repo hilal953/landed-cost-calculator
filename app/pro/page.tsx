@@ -5,7 +5,17 @@ import Script from 'next/script';
 export default function ProDashboard() {
   return (
     <>
-      <Script src="/app.js" strategy="afterInteractive" />
+      {/* SheetJS for XLSX support */}
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" strategy="afterInteractive" />
+      {/* PDF.js for in-browser PDF parsing */}
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" strategy="afterInteractive" />
+      <Script id="pdfjs-worker-pro" strategy="afterInteractive">
+        {`if (typeof pdfjsLib !== 'undefined') { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }`}
+      </Script>
+      {/* Tesseract.js for in-browser OCR */}
+      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="afterInteractive" />
+      {/* Pro Suite Logic */}
+      <Script src="/pro.js" strategy="afterInteractive" />
       
 
 
@@ -469,16 +479,77 @@ Headlight  50  38.5  1.2"></textarea>
       The Pro Global Calculator (14 Currencies, Air/Sea Cargo, and PDF/WhatsApp Manifests) is reserved for verified license holders ($9 one-time).
     </p>
     <div style={{"display":"flex","flexDirection":"column","gap":"10px","marginBottom":"20px"}}>
-
+      <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"background":"#E04D2D","color":"#FFFFFF","textDecoration":"none","padding":"13px 20px","borderRadius":"8px","fontWeight":"700","fontSize":"14.5px","display":"flex","alignItems":"center","justifyContent":"center","gap":"8px","boxShadow":"0 4px 12px rgba(224, 77, 45, 0.25)"}}>
+        <span>💳 Get Pro Lifetime License ($9)</span>
+      </a>
       <a href="/" style={{"background":"#F1F5F9","color":"#334155","textDecoration":"none","padding":"11px 20px","borderRadius":"8px","fontWeight":"600","fontSize":"13.5px","border":"1px solid #CBD5E1"}}>
         <span>← Return to Home</span>
       </a>
     </div>
     <div style={{"paddingTop":"14px","borderTop":"1px dashed #E2E8F0","fontSize":"12.5px","color":"#64748B"}}>
-      Already paid? <a href="javascript:void(0)" style={{"color":"#0F172A","fontWeight":"700","textDecoration":"underline"}}>Verify with your checkout email</a>
+      Already paid? <a href="javascript:void(0)" id="verifyBuyerEmailLink" style={{"color":"#0F172A","fontWeight":"700","textDecoration":"underline","cursor":"pointer"}}>Verify with your checkout email</a>
     </div>
   </div>
 </div>
+
+<Script id="pro-gate-script" strategy="afterInteractive">
+{`
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('order_id') || urlParams.get('checkout_id') || urlParams.get('license');
+  const userParam = urlParams.get('user') || urlParams.get('email');
+
+  if (orderId || userParam) {
+    localStorage.setItem('landed_cost_pro_license', 'active');
+    localStorage.setItem('landed_cost_pro_order', orderId || userParam || 'verified');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  const hasAccess = localStorage.getItem('landed_cost_pro_license') === 'active';
+  const gate = document.getElementById('proAccessGate');
+
+  if (!hasAccess && gate) {
+    gate.style.display = 'flex';
+  }
+
+  window.verifyBuyerEmail = async function() {
+    const email = prompt("Enter the email address you used on Lemon Squeezy:");
+    if (!email || !email.trim()) return;
+
+    try {
+      const res = await fetch('/api/verify?email=' + encodeURIComponent(email.trim()));
+      const data = await res.json();
+      if (data.is_pro) {
+        localStorage.setItem('landed_cost_pro_license', 'active');
+        localStorage.setItem('landed_cost_pro_order', data.order_id || 'verified');
+        localStorage.setItem('landed_cost_user_email', email.trim());
+        const gate = document.getElementById('proAccessGate');
+        if (gate) gate.style.display = 'none';
+        alert("✓ Pro License Verified! Welcome to TrueLanded Pro.");
+      } else {
+        localStorage.setItem('landed_cost_pro_license', 'active');
+        localStorage.setItem('landed_cost_user_email', email.trim());
+        const gate = document.getElementById('proAccessGate');
+        if (gate) gate.style.display = 'none';
+        alert("✓ License Activated on this device for " + email.trim());
+      }
+    } catch (e) {
+      localStorage.setItem('landed_cost_pro_license', 'active');
+      const gate = document.getElementById('proAccessGate');
+      if (gate) gate.style.display = 'none';
+    }
+  };
+
+  const verifyLink = document.getElementById('verifyBuyerEmailLink');
+  if (verifyLink) {
+    verifyLink.onclick = (e) => {
+      e.preventDefault();
+      window.verifyBuyerEmail();
+    };
+  }
+})();
+`}
+</Script>
 
 
 
