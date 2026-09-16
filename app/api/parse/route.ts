@@ -30,6 +30,11 @@ export async function POST(req: Request) {
       return corsResponse({ error: 'Missing base64 document data' }, 400);
     }
 
+    // Reject oversized payloads before calling paid AI APIs (~10MB decoded limit).
+    if (base64.length > 14_000_000) {
+      return corsResponse({ error: 'Document too large. Please upload a file under 10MB.' }, 413);
+    }
+
     const geminiKey = (process.env.GEMINI_API_KEY || (clientApiKey && clientApiKey.startsWith('AIza') ? clientApiKey : '')).trim();
     const openAiKey = (process.env.OPENAI_API_KEY || (clientApiKey && clientApiKey.startsWith('sk-') && !clientApiKey.startsWith('sk-ant') ? clientApiKey : '')).trim();
     const claudeKey = (process.env.ANTHROPIC_API_KEY || (clientApiKey && clientApiKey.startsWith('sk-ant') ? clientApiKey : '')).trim();
@@ -75,7 +80,7 @@ Respond with ONLY valid JSON without markdown formatting:
 
     // 1. Google Gemini Flash (Preferred - Fast & Free tier)
     if (geminiKey) {
-      const geminiModels = ['gemini-3.6-flash', 'gemini-3.6-pro', 'gemini-2.0-flash-001', 'gemini-2.5-flash'];
+      const geminiModels = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-1.5-flash'];
       const errors = [];
 
       for (const model of geminiModels) {

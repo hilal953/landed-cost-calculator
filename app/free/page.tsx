@@ -12,8 +12,8 @@ export default function FreeDashboard() {
       <Script id="pdfjs-worker-free" strategy="afterInteractive">
         {`if (typeof pdfjsLib !== 'undefined') { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }`}
       </Script>
-      {/* Tesseract.js for in-browser OCR */}
-      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="afterInteractive" />
+      {/* Tesseract.js OCR — lazy-loaded on demand (photo/scan uploads only) */}
+      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="lazyOnload" />
       <Script src="/app.js" strategy="afterInteractive" />
       
 

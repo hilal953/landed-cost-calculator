@@ -37,11 +37,13 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const signature = req.headers.get('x-signature');
 
-    if (signature && secret) {
+    if (secret) {
       const hmac = crypto.createHmac('sha256', secret);
       const digest = hmac.update(rawBody).digest('hex');
-      if (signature !== digest) {
-        console.warn('Webhook signature mismatch');
+      // Lemon Squeezy sends the hex HMAC in `X-Signature`. Reject forgeries.
+      if (!signature || signature !== digest) {
+        console.warn('Webhook signature mismatch — rejecting');
+        return corsResponse({ error: 'Invalid signature' }, 401);
       }
     }
 
@@ -60,9 +62,15 @@ export async function POST(req: Request) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+    // Refunds / chargebacks revoke access; paid orders grant it.
+    const revokeEvents = new Set(['order_refunded', 'order_partially_refunded', 'subscription_cancelled', 'subscription_expired']);
+    const grantEvents = new Set(['order_created', 'order_updated', 'order_confirmed', 'order_paid', 'subscription_created', 'subscription_updated']);
+    const shouldRevoke = (eventName && revokeEvents.has(eventName)) || status === 'refunded' || status === 'dispute';
+    const shouldGrant = !shouldRevoke && (!eventName || grantEvents.has(eventName) || status === 'paid' || status === 'active' || status === 'on_trial');
+
     if (supabaseUrl && supabaseKey && email) {
       try {
-        const response = await fetch(`${supabaseUrl}/rest/v1/profiles`, {
+        const response = await fetch(`${supabaseUrl}/rest/v1/profiles?on_conflict=email`, {
           method: 'POST',
           headers: {
             'apikey': supabaseKey,
@@ -72,7 +80,7 @@ export async function POST(req: Request) {
           },
           body: JSON.stringify({
             email: email,
-            is_pro: true,
+            is_pro: shouldGrant,
             lemon_order_id: orderId,
             lemon_customer_id: customerId,
             updated_at: new Date().toISOString()

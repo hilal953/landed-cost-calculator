@@ -12,8 +12,8 @@ export default function ProDashboard() {
       <Script id="pdfjs-worker-pro" strategy="afterInteractive">
         {`if (typeof pdfjsLib !== 'undefined') { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }`}
       </Script>
-      {/* Tesseract.js for in-browser OCR */}
-      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="afterInteractive" />
+      {/* Tesseract.js OCR — lazy-loaded on demand (photo/scan uploads only) */}
+      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="lazyOnload" />
       {/* Pro Suite Logic */}
       <Script src="/pro.js" strategy="afterInteractive" />
       
@@ -519,7 +519,7 @@ Headlight  50  38.5  1.2"></textarea>
     try {
       const res = await fetch('/api/verify?email=' + encodeURIComponent(email.trim()));
       const data = await res.json();
-      if (data.is_pro) {
+      if (res.ok && data.is_pro) {
         localStorage.setItem('landed_cost_pro_license', 'active');
         localStorage.setItem('landed_cost_pro_order', data.order_id || 'verified');
         localStorage.setItem('landed_cost_user_email', email.trim());
@@ -527,16 +527,10 @@ Headlight  50  38.5  1.2"></textarea>
         if (gate) gate.style.display = 'none';
         alert("✓ Pro License Verified! Welcome to TrueLanded Pro.");
       } else {
-        localStorage.setItem('landed_cost_pro_license', 'active');
-        localStorage.setItem('landed_cost_user_email', email.trim());
-        const gate = document.getElementById('proAccessGate');
-        if (gate) gate.style.display = 'none';
-        alert("✓ License Activated on this device for " + email.trim());
+        alert("No Pro license found for " + email.trim() + ". Please complete checkout first, then verify again.");
       }
     } catch (e) {
-      localStorage.setItem('landed_cost_pro_license', 'active');
-      const gate = document.getElementById('proAccessGate');
-      if (gate) gate.style.display = 'none';
+      alert("Could not verify license right now. Check your connection and try again.");
     }
   };
 

@@ -22,10 +22,12 @@ const POLICIES: Record<string, { title: string; body: string }> = {
     title: 'Privacy Policy',
     body: `
       <h4>1. Confidentiality & Data Privacy</h4>
-      <p>Your privacy is strictly protected. TrueLanded operates 100% client-side in your web browser. We do not transmit, store, track, or sell your commercial invoices, supplier prices, product lists, or shipment numbers.</p>
-      <h4>2. Payment Information</h4>
+      <p>Your privacy is strictly protected. TrueLanded calculations run client-side in your web browser, and your shipments are saved only in your own browser's localStorage. We do not track, store, or sell your commercial invoices, supplier prices, product lists, or shipment numbers on our servers.</p>
+      <h4>2. Optional AI Invoice Parsing</h4>
+      <p>If you choose to use AI-powered photo/PDF parsing, that single document image is sent securely to our AI provider solely to extract line items, then discarded. Excel/paste parsing never leaves your browser. You can always use manual entry or Excel paste to keep everything 100% local.</p>
+      <h4>3. Payment Information</h4>
       <p>All payment transactions are securely processed by Lemon Squeezy (our Merchant of Record) using industry-standard 256-bit encryption. We never store or have access to your credit card or billing details.</p>
-      <h4>3. Local Storage</h4>
+      <h4>4. Local Storage</h4>
       <p>We use standard browser localStorage solely to save your calculations locally on your own device for your convenience.</p>
     `
   },
@@ -81,6 +83,12 @@ export default function LandingPage() {
       const res = await fetch('/api/verify?email=' + encodeURIComponent(email));
       const data = await res.json();
 
+      if (!res.ok || !data.is_pro) {
+        setLoginStatus({ msg: 'No Pro license found for this email. Please complete checkout first, then try again.' });
+        setLoginLoading(false);
+        return;
+      }
+
       localStorage.setItem('landed_cost_pro_license', 'active');
       localStorage.setItem('landed_cost_pro_order', data.order_id || 'verified');
       localStorage.setItem('landed_cost_user_email', email);
@@ -90,12 +98,9 @@ export default function LandingPage() {
         window.location.href = '/pro';
       }, 600);
     } catch (err) {
-      localStorage.setItem('landed_cost_pro_license', 'active');
-      localStorage.setItem('landed_cost_user_email', email);
-      setLoginStatus({ msg: '✓ Access granted! Redirecting...', success: true });
-      setTimeout(() => {
-        window.location.href = '/pro';
-      }, 600);
+      setLoginStatus({ msg: 'Could not verify license right now. Check your connection and try again.' });
+      setLoginLoading(false);
+      return;
     }
   };
 
@@ -385,7 +390,7 @@ export default function LandingPage() {
           <div style={{"display":"flex","alignItems":"center","gap":"8px","fontWeight":"700","color":"#0F172A","marginBottom":"6px","fontSize":"14.5px"}}>
             <span>🔒</span> 100% Private
           </div>
-          <div style={{"color":"#64748B","fontSize":"13.5px","lineHeight":"1.5"}}>Engine runs entirely in your local browser. Your supplier prices are never uploaded to any server.</div>
+          <div style={{"color":"#64748B","fontSize":"13.5px","lineHeight":"1.5"}}>Core math runs entirely in your local browser. Optional AI photo/PDF parsing sends only that one document to extract line items.</div>
         </div>
 
       </div>

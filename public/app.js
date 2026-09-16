@@ -936,8 +936,30 @@
     });
   }
 
-  // In-Browser OCR using Tesseract.js
+  // In-Browser OCR using Tesseract.js (loaded on demand to keep initial page fast)
+  function ensureTesseractLoaded() {
+    if (typeof Tesseract !== 'undefined') return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-tesseract]');
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', () => reject(new Error('Failed to load OCR engine. Check your connection and try again.')), { once: true });
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+      s.async = true;
+      s.setAttribute('data-tesseract', '1');
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('Failed to load OCR engine. Check your connection and try again.'));
+      document.head.appendChild(s);
+    });
+  }
   async function runBrowserOcr(fileOrCanvas, progressCb) {
+    if (typeof Tesseract === 'undefined') {
+      if (progressCb) progressCb({ status: 'Loading OCR engine (one-time download)...', progress: 0.05 });
+      await ensureTesseractLoaded();
+    }
     if (typeof Tesseract === 'undefined') {
       throw new Error("OCR engine is still loading. Please check your internet connection and try again.");
     }

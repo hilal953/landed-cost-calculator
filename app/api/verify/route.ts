@@ -48,7 +48,8 @@ async function handleVerify(req: Request) {
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    return corsResponse({ is_pro: true, note: 'permissive_dev_mode' });
+    // Fail closed: without a configured license database, do NOT grant Pro.
+    return corsResponse({ is_pro: false, note: 'license_db_not_configured' });
   }
 
   try {
