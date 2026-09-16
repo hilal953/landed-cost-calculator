@@ -1,6 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#0F172A",
+};
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const ibmPlexMono = IBM_Plex_Mono({ weight: ["400", "500", "600", "700"], subsets: ["latin"], variable: "--font-ibm" });
@@ -29,7 +33,11 @@ export const metadata: Metadata = {
     images: ['/images/app_demo_1.png'],
   },
   icons: {
-    icon: '/images/favicon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/images/favicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/icon.svg',
   }
 };
 
