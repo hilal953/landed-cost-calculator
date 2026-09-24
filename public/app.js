@@ -1106,6 +1106,9 @@
       return await res.json();
     } else {
       const err = await res.json().catch(() => ({}));
+      // Server now sends short `error` + full `details`. Never paste the full
+      // chain into the UI banner (err.jpeg proved it fills the screen).
+      if (err && err.details) console.warn('AI parse details:', err.details);
       throw new Error(err?.error || `Server error (${res.status})`);
     }
   }
@@ -1254,16 +1257,19 @@
   }
 
   // ---- Explicit OCR opt-in: NEVER auto-fallback after AI failure ----
-  // Root cause of the Aadhil incident: /api/parse failed (personal free-tier
-  // Gemini key → 429/quota/404, plus a non-existent gemini-3.6-flash tried
-  // first), the catch block silently ran Tesseract, Tesseract misread the
+  // Root cause of the first incident: /api/parse failed (dead 2.x/1.5 models,
+  // quota/404), the catch block silently ran Tesseract, Tesseract misread the
   // 7-row photo table as 2 garbage rows, and loadExtractedItems showed a green
-  // "Scanned and imported 2 item(s)!" success. This function surfaces the AI
-  // error and requires the user to explicitly choose the less-accurate path.
+  // "Scanned and imported 2 item(s)!" success. Second incident (err.jpeg):
+  // models fixed wrongly back to dead 2.x, so AI hard-failed with a
+  // screen-filling 3-model chain. This function shows a SHORT friendly message
+  // (full chain goes to console) and requires explicit opt-in to OCR.
   function showAiFailureWithOcrOptIn(file, isImg, isPdf, aiErr) {
-    const reason = (aiErr && aiErr.message) ? aiErr.message : 'AI service unreachable';
-    showParseStatus(`AI extraction failed (${reason}). No items were imported.`, false, true);
-    showToast(`AI failed: ${reason}. Retry, or use Excel/paste. Offline OCR is last resort.`, "error");
+    const full = (aiErr && aiErr.message) ? aiErr.message : 'AI service unreachable';
+    if (full.length > 220) console.warn('AI failure details:', full);
+    const short = full.length > 220 ? full.slice(0, 200).trim() + '…' : full;
+    showParseStatus(`AI extraction failed (${short}). No items were imported.`, false, true);
+    showToast('AI failed. Retry, or use Excel/paste. Offline OCR is last resort.', "error");
     try {
       const statusDiv = document.getElementById('parseStatus');
       if (!statusDiv || document.getElementById('tryOcrFallbackBtn')) return;

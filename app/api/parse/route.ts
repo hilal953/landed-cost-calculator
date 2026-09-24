@@ -195,11 +195,11 @@ const INVOICE_SCHEMA = {
 
 // Models that support responseSchema in generateContent (per Google docs).
 // Models NOT in this set still get responseMimeType: application/json as a strong JSON hint.
-// NOTE: gemini-3.x names are NOT real (no such public model as of 2026) — using
-// them first only guarantees a 404 "model not found" on every request, which is
-// exactly what pushed Aadhil's upload into the silent OCR fallback. Keep only
-// models that actually exist.
-const SCHEMA_MODELS = new Set(['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']);
+// PROVEN 2026-09-24 (err.jpeg): Google retired 2.x/1.5 for new users — the API
+// itself replies "update your code to use models/gemini-3.6-flash". 3.6-flash
+// went GA 2026-07-21 (1M context, structured outputs supported) and is the
+// stable workhorse; 3.5-flash / 3.5-flash-lite are the documented fallbacks.
+const SCHEMA_MODELS = new Set(['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash']);
 
 const EXTRACTION_PROMPT = (isPdf: boolean) => `Extract this ${isPdf ? 'PDF' : 'image'} into structured JSON.
 
@@ -250,9 +250,14 @@ export async function POST(req: Request) {
 
     // 1. Google Gemini (Structured output preferred - ordered most capable first)
     if (geminiKey) {
-      // Only models that actually exist. gemini-2.5-flash is the current
-      // stable workhorse; 2.0/1.5 kept purely as fallbacks for quota spikes.
-      const geminiModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      // CORRECT 2026 lineup (see err.jpeg + ai.google.dev/models):
+      // primary gemini-3.6-flash (GA Jul 2026, named by Google's own error),
+      // then 3.5-flash, then 3.5-flash-lite. 2.x/1.5 are dead for new users.
+      // generateContent v1beta remains supported (Interactions API is the new
+      // default but NOT required), so we keep the same endpoint + structured
+      // schema and just fix the model strings. No temperature/topK/topP:
+      // 3.x ignores them.
+      const geminiModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
       const errors = [];
 
       for (const model of geminiModels) {
@@ -317,7 +322,18 @@ export async function POST(req: Request) {
         }
       }
 
-      throw new Error(`Gemini failed on all models: ${errors.join(' | ')}`);
+      // Friendly short message for the UI banner + full chain in `details`
+      // (err.jpeg proved dumping the raw 3-model chain into red text is
+      // unreadable). Frontend shows `error`, logs `details` to console.
+      const detail = errors.join(' | ');
+      console.error('Gemini all-models failed:', detail);
+      return corsResponse(
+        {
+          error: `AI extraction failed after trying ${geminiModels.join(', ')}. No items were imported. Please retry, or use Excel/paste.`,
+          details: detail.slice(0, 2000),
+        },
+        502,
+      );
     }
 
     // 2. OpenAI GPT-4o-mini
