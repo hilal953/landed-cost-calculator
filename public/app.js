@@ -1502,9 +1502,19 @@
     return parsedItems;
   }
 
-  // Sanitize a single parsed item (clamps absurd/hallucinated values before they hit calculations)
+  // Sanitize a single parsed item (clamps absurd/hallucinated values before they hit calculations).
+  // Robust parse: strips ¥ $ , spaces and unit/currency text so "¥55.00" →
+  // 55 and "1,100.00" → 1100 instead of NaN → 0 (the "doesn't pick the price"
+  // bug that also dropped whole rows down to a single survivor).
   function sanitizeItem(it) {
-    const n = (v, cap) => { const x = Number(v); return Math.min(isFinite(x) && x > 0 ? x : 0, cap); };
+    const n = (v, cap) => {
+      if (typeof v === 'number') return Math.min(isFinite(v) && v > 0 ? v : 0, cap);
+      if (v === null || v === undefined) return 0;
+      let s = String(v).trim().replace(/[^0-9.\-]/g, '');
+      if (!s || s === '.' || s === '-' || s === '-.') return 0;
+      const x = Number(s);
+      return Math.min(isFinite(x) && x > 0 ? x : 0, cap);
+    };
     return {
       desc: String((it && it.desc) || '').trim(),
       qty: n(it && it.qty, 1000000),

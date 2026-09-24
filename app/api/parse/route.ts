@@ -30,7 +30,23 @@ const MAX_QTY = 1_000_000;
 const MAX_PRICE = 100_000_000;
 
 function toNum(v: any, max: number = Number.MAX_SAFE_INTEGER): number {
-  const n = Number(v);
+  // Robust: models often return formatted strings ("¥55.00", "1,100.00",
+  // "55 RMB") despite the numeric schema. Raw Number() turns ALL of those
+  // into NaN → silently stored as 0 ("doesn't pick the price"). Strip
+  // currency symbols, commas, spaces and letter suffixes first.
+  let s: string;
+  if (typeof v === 'number') {
+    if (!isFinite(v) || v < 0) return 0;
+    return Math.min(max, v);
+  }
+  if (v === null || v === undefined) return 0;
+  s = String(v).trim();
+  if (!s) return 0;
+  // Keep only digits, decimal point and minus (drops ¥ $ , spaces RMB/USD/CNY).
+  s = s.replace(/[^0-9.\-]/g, '');
+  // Guard against ".." / "--" / trailing-dot artefacts producing NaN.
+  if (!s || s === '.' || s === '-' || s === '-.') return 0;
+  const n = Number(s);
   if (!isFinite(n) || n < 0) return 0;
   return Math.min(max, n);
 }
@@ -75,12 +91,13 @@ function sanitizeResult(raw: any) {
   const invoiceCurrency = String(raw.invoiceCurrency || raw.currency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB');
   const items: CleanItem[] = [];
   const seen = new Set<string>();
+  let dropped = 0;
 
   (Array.isArray(raw.items) ? raw.items : []).forEach((it: any) => {
     if (!it || typeof it !== 'object') return;
 
-    const qty = toNum(it.qty, MAX_QTY);
-    const price = toNum(it.price, MAX_PRICE);
+    let qty = toNum(it.qty, MAX_QTY);
+    let price = toNum(it.price, MAX_PRICE);
     const cbm = toNum(it.cbm, MAX_QTY);
     const amountRaw = it.amount;
     const amount = amountRaw !== undefined && amountRaw !== null ? toNum(amountRaw, 1e13) : NaN;
@@ -88,8 +105,32 @@ function sanitizeResult(raw: any) {
       .replace(/\s+/g, ' ')
       .trim();
 
-    // Drop empty rows and rows with neither qty nor price (headers, notes, blank lines)
-    if (!desc || (qty <= 0 && price <= 0)) return;
+    // Price recovery: model sometimes returns qty + line amount but leaves the
+    // unit price empty/formatted ("doesn't pick the price"). amount ÷ qty is
+    // exact on clean invoices, so recover instead of importing price 0.
+    if (desc && !(qty <= 0 && price <= 0)) {
+      if (!(price > 0) && qty > 0 && isFinite(amount) && amount > 0) {
+        const recovered = Math.round((amount / qty) * 100) / 100;
+        if (isFinite(recovered) && recovered > 0 && recovered <= MAX_PRICE) {
+          price = recovered;
+          warnings.push(`"${desc}": unit price was unreadable, recovered as amount ÷ qty (${amount} ÷ ${qty} = ${recovered}). Verify it below.`);
+        }
+      }
+      if (!(qty > 0) && isFinite(amount) && amount > 0) {
+        warnings.push(`"${desc}": quantity unreadable but line amount is ${amount} — check the QTY column below.`);
+      }
+      if (!(price > 0) && !(qty > 0 && isFinite(amount) && amount > 0)) {
+        warnings.push(`"${desc}": unit price unreadable — check the Unit Price column below.`);
+      }
+    }
+
+    // Drop empty rows and rows with neither qty nor price (headers, notes, blank lines).
+    // Count them: silent drops are exactly how "uploaded 7 rows, only 1 came"
+    // happens — the user must be told rows went missing.
+    if (!desc || (qty <= 0 && price <= 0)) {
+      dropped++;
+      return;
+    }
 
     // Cross-check the "Amount" column against qty * price whenever the model gave us both
     if (isFinite(amount) && amount > 0 && qty > 0 && price * qty > 0) {
@@ -110,6 +151,12 @@ function sanitizeResult(raw: any) {
   if (items.length === 0) {
     warnings.push('No product line items could be extracted from this document.');
   }
+  if (dropped > 0 && items.length > 0) {
+    warnings.push(`${dropped} row(s) had no readable qty/price and were skipped — the document shows more rows than imported. Fix them below or re-upload a clearer photo/Excel.`);
+  }
+  if (items.length > 0 && items.every(i => !(i.cbm > 0))) {
+    warnings.push('No CBM column was detected (all CBM = 0) — this supplier sheet has no volume column. Enter Total CBM per line manually so sea freight allocates, or add freight as a flat fee spread By Value.');
+  }
 
   // If the model was able to count the "No." column on the document, surface a row-count mismatch.
   const expectedRows = Number(raw.expectedRows);
@@ -118,7 +165,7 @@ function sanitizeResult(raw: any) {
   }
 
   // Grand-total reconciliation check
-  const documentTotal = Number(raw.documentTotal);
+  const documentTotal = toNum((raw as any).documentTotal, 1e13);
   if (Number.isFinite(documentTotal) && documentTotal > 0 && items.length > 0) {
     const sumAmounts = items.reduce((s, i) => s + (i.amount !== undefined ? i.amount : i.qty * i.price), 0);
     if (sumAmounts > 0 && Math.abs(sumAmounts - documentTotal) / documentTotal > 0.05) {
@@ -215,11 +262,12 @@ STRICT RULES:
    - amount: the line Amount if there is one, i.e. qty x unit price.
    - cbm: the CBM/总CBM/体积 column value, or 0 when the document has no CBM column.
    - unit: the Unit column (PC, SET...), or "".
-4. Do NOT merge rows. Do NOT invent rows. Do NOT treat the header row, the numbering column, totals rows, "FREIGHT" rows, or the Remark column as line items.
-5. Set invoiceCurrency from the column header currency sign (e.g. "Unit Price (RMB)" -> "RMB", "USD" -> "USD"). If ambiguous use "UNKNOWN".
-6. extraCharges: delivery/shipping/packaging/insurance/other charges printed separately on the document (e.g. a "FREIGHT 250.00" line). Use the same invoice currency.
-7. documentTotal: the grand total printed on the document, or 0 if no total is shown.
-8. If this is NOT a commercial document (e.g. a selfie, food, animal, car, landscape, or random object photo): set isDocument to false, describe the image briefly in message, and return empty items and extraCharges.
+4. Do NOT merge rows. Do NOT invent rows. Do NOT treat the header row, the numbering column, totals rows, "FREIGHT" rows, or the Remark column as line items. Return one entry per numbered row so a 7-row table yields 7 entries.
+5. Return qty/price/cbm/amount/documentTotal as bare numbers only — no currency symbols, no units, no commas (e.g. 55 not ¥55.00, 1100 not ¥1,100.00).
+6. Set invoiceCurrency from the column header currency sign (e.g. "Unit Price (RMB)" -> "RMB", "USD" -> "USD"). If ambiguous use "UNKNOWN".
+7. extraCharges: delivery/shipping/packaging/insurance/other charges printed separately on the document (e.g. a "FREIGHT 250.00" line). Use the same invoice currency.
+8. documentTotal: the grand total printed on the document, or 0 if no total is shown.
+9. If this is NOT a commercial document (e.g. a selfie, food, animal, car, landscape, or random object photo): set isDocument to false, describe the image briefly in message, and return empty items and extraCharges.
 
 Respond ONLY with the JSON object.`;
 
