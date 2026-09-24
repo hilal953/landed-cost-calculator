@@ -250,14 +250,13 @@ export async function POST(req: Request) {
 
     // 1. Google Gemini (Structured output preferred - ordered most capable first)
     if (geminiKey) {
-      // CORRECT 2026 lineup (see err.jpeg + ai.google.dev/models):
-      // primary gemini-3.6-flash (GA Jul 2026, named by Google's own error),
-      // then 3.5-flash, then 3.5-flash-lite. 2.x/1.5 are dead for new users.
-      // generateContent v1beta remains supported (Interactions API is the new
-      // default but NOT required), so we keep the same endpoint + structured
-      // schema and just fix the model strings. No temperature/topK/topP:
-      // 3.x ignores them.
-      const geminiModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+      // LIVE 2026 lineup (verified Sep 2026: 3.8-flash GA + err.jpeg + docs):
+      // gemini-3.8-flash (preferred, most intelligent Flash) →
+      // gemini-3.6-flash → gemini-3.5-flash-lite. Short 3-model chain.
+      // NEVER 2.x/1.5: Google blocks them for new keys. generateContent
+      // v1beta remains supported, same endpoint + schema. No
+      // temperature/topK/topP: 3.x ignores them.
+      const geminiModels = ['gemini-3.8-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite'];
       const errors = [];
 
       for (const model of geminiModels) {
@@ -322,14 +321,14 @@ export async function POST(req: Request) {
         }
       }
 
-      // Friendly short message for the UI banner + full chain in `details`
-      // (err.jpeg proved dumping the raw 3-model chain into red text is
-      // unreadable). Frontend shows `error`, logs `details` to console.
+      // Short banner-safe message (NEVER dump model names or the raw chain
+      // into the UI — err.jpeg proved it fills the screen). Full chain goes
+      // to `details` (console + server logs) only.
       const detail = errors.join(' | ');
       console.error('Gemini all-models failed:', detail);
       return corsResponse(
         {
-          error: `AI extraction failed after trying ${geminiModels.join(', ')}. No items were imported. Please retry, or use Excel/paste.`,
+          error: 'AI extraction failed. No items were imported. Please retry, or use Excel/paste.',
           details: detail.slice(0, 2000),
         },
         502,
