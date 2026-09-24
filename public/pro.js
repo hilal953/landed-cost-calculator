@@ -1583,6 +1583,60 @@
     showToast("AI import cancelled. You can paste rows or upload again.");
   }
 
+  // ---- Explicit OCR opt-in: NEVER auto-fallback after AI failure ----
+  // Root cause of the Aadhil incident: /api/parse failed (personal free-tier
+  // Gemini key → 429/quota/404, plus a non-existent gemini-3.6-flash tried
+  // first), the catch block silently ran Tesseract, Tesseract misread the
+  // 7-row photo table as 2 garbage rows, and loadExtractedItems showed a green
+  // "Scanned and imported 2 item(s)!" success. This function surfaces the AI
+  // error and requires the user to explicitly choose the less-accurate path.
+  function showAiFailureWithOcrOptIn(file, isImg, isPdf, aiErr) {
+    const reason = (aiErr && aiErr.message) ? aiErr.message : 'AI service unreachable';
+    showParseStatus(`AI extraction failed (${reason}). No items were imported.`, false, true);
+    showToast(`AI failed: ${reason}. Retry, or use Excel/paste. Offline OCR is last resort.`, "error");
+    try {
+      const statusDiv = document.getElementById('parseStatus');
+      if (!statusDiv || document.getElementById('tryOcrFallbackBtn')) return;
+      const btn = document.createElement('button');
+      btn.id = 'tryOcrFallbackBtn';
+      btn.className = 'btn-secondary';
+      btn.style.marginTop = '10px';
+      btn.style.fontSize = '12.5px';
+      btn.textContent = 'Try offline OCR anyway (less accurate — verify every row)';
+      btn.onclick = () => { try { btn.remove(); } catch (e) {} runLocalExtraction(file, isImg, isPdf); };
+      statusDiv.appendChild(btn);
+    } catch (e) {}
+  }
+
+  // ---- Review-gated OCR: garbage can never again import with "success" ----
+  // Even perfect OCR text breaks parseInvoiceAndPackingListText on this layout:
+  // the "No." column (1,2,3...) and the split MIKI suffix ("AE101 99" → 99)
+  // pollute the numbers array, so qty becomes 1 and price becomes 99 instead of
+  // qty 15 / price 55, and Remark "4L+4R" leaks into the description. Real phone
+  // photos are worse: 7 rows collapsed to 2 ("A ; 让 COROLLA JP" qty 1,
+  // "0] VIOS OER or [ec" qty 1009). Routing OCR through the same review panel
+  // forces the user to see and fix that before anything reaches the calculation.
+  function showOcrReview(items, fileName) {
+    const clean = (Array.isArray(items) ? items : []).map(sanitizeItem).filter(it => it.desc && (it.qty > 0 || it.price > 0));
+    if (clean.length === 0) {
+      showParseStatus('Offline extraction could not detect product rows in this file. Retake a flatter, better-lit photo, or upload the Excel/PDF instead — no items were imported.', false, true);
+      showToast('Offline extraction found no rows', "error");
+      return;
+    }
+    const warnings = [
+      `Local/offline extraction found ${clean.length} row(s) — accuracy is much lower than AI on photo tables. Check every Description, Qty and Price before importing.`,
+      'Tip: the supplier Excel (.xlsx) or a digital PDF imports exactly; photos of tables with product pictures often misread.'
+    ];
+    clean.forEach(it => {
+      if (/[;\]\[]|让|OER|\[ec/i.test(it.desc) || it.qty >= 1000) {
+        warnings.push(`Suspicious row "${it.desc}" (qty ${it.qty}) looks misread — fix or delete it before importing.`);
+      }
+    });
+    const reviewed = showAiReview({ items: clean, extraCharges: [], invoiceCurrency: 'UNKNOWN', expectedRows: 0, warnings }, fileName + ' (offline)');
+    if (reviewed > 0) bindAiReviewInputs();
+    else showParseStatus('Offline extraction found no valid rows. No items were imported.', false, true);
+  }
+
   // Universal unit and currency matchers
   const UNIT_TOKENS = /^(pcs|pc|set|sets|ctn|ctns|box|boxes|pkg|pkgs|units?|prs|pairs?|只|个|件|套|箱|包|张|条|台|本|把|对|支|袋)$/i;
   const CURRENCY_TOKENS = /^[¥$£€₩]|^(rmb|usd|eur|gbp|lkr|cny|cif|fob)$/i;
@@ -1871,10 +1925,16 @@
           showToast("No product rows found", "error");
           return;
         } catch (aiErr) {
-          console.warn("AI Vision notice, falling back to local OCR:", aiErr);
+          console.warn("AI Vision failed:", aiErr);
+          // NEVER silently fall back to offline OCR here. That silent fallback
+          // is exactly how a 7-row invoice became 2 garbage rows
+          // ("A ; 让 COROLLA JP" qty 1 / "0] VIOS OER or [ec" qty 1009) with a
+          // green "Scanned and imported!" success message. Tesseract cannot read
+          // this table layout (Picture column, split MIKI NO. like "AE101 99",
+          // Remark column like "4L+4R"), so OCR output must be opt-in + reviewed.
+          showAiFailureWithOcrOptIn(file, isImg, isPdf, aiErr);
+          return;
         }
-        // Fallback to local OCR if AI is unreachable
-        runLocalExtraction(file, isImg, isPdf);
       };
       reader.readAsDataURL(file);
       return;
@@ -1891,7 +1951,7 @@
           showParseStatus(p.status, true, false, p.progress);
         });
         const items = parseInvoiceAndPackingListText(ocrData.text || '');
-        loadExtractedItems(items, file.name);
+        showOcrReview(items, file.name);
       } catch (err) {
         console.error("Image OCR error:", err);
         showParseStatus(`Image Scan Notice: ${err.message}`, false, true);
@@ -1906,7 +1966,7 @@
           showParseStatus(p.status, true, false, p.progress);
         });
         const items = parseInvoiceAndPackingListText(pdfText);
-        loadExtractedItems(items, file.name);
+        showOcrReview(items, file.name);
       } catch (err) {
         console.error("PDF Extraction error:", err);
         showParseStatus(`PDF Parse Error: ${err.message}`, false, true);

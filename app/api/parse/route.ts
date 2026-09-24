@@ -195,7 +195,11 @@ const INVOICE_SCHEMA = {
 
 // Models that support responseSchema in generateContent (per Google docs).
 // Models NOT in this set still get responseMimeType: application/json as a strong JSON hint.
-const SCHEMA_MODELS = new Set(['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-pro']);
+// NOTE: gemini-3.x names are NOT real (no such public model as of 2026) — using
+// them first only guarantees a 404 "model not found" on every request, which is
+// exactly what pushed Aadhil's upload into the silent OCR fallback. Keep only
+// models that actually exist.
+const SCHEMA_MODELS = new Set(['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']);
 
 const EXTRACTION_PROMPT = (isPdf: boolean) => `Extract this ${isPdf ? 'PDF' : 'image'} into structured JSON.
 
@@ -246,44 +250,70 @@ export async function POST(req: Request) {
 
     // 1. Google Gemini (Structured output preferred - ordered most capable first)
     if (geminiKey) {
-      // Current stable models first; legacy ones kept only as fallbacks.
-      const geminiModels = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      // Only models that actually exist. gemini-2.5-flash is the current
+      // stable workhorse; 2.0/1.5 kept purely as fallbacks for quota spikes.
+      const geminiModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
       const errors = [];
 
       for (const model of geminiModels) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
-          const payload: Record<string, any> = {
-            contents: [{
-              parts: [
-                { text: prompt },
-                { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } }
-              ]
-            }],
-            // Note: sampling params (temperature/topP) are deprecated on Gemini 3 models and are omitted.
-            generationConfig: SCHEMA_MODELS.has(model)
-              ? { responseMimeType: 'application/json', responseSchema: INVOICE_SCHEMA }
-              : { responseMimeType: 'application/json' }
-          };
+        // Overload (429 / "high demand") is transient — retry the SAME model with
+        // backoff before giving up, rather than skipping to dead fallback models.
+        // Capped at 2 retries: Vercel Hobby functions time out at ~10s, so
+        // 4 retries (≈15s of pure sleep) would always time out instead of recovering.
+        const MAX_RETRIES = model === geminiModels[0] ? 2 : 1;
+        // Only hard-fail a model on genuine "model not found / invalid key / not
+        // available to this account" errors. Capacity errors are retried.
+        const OVERLOAD_RE = /high demand|overloaded|congested|RESOURCE_EXHAUSTED|429|temporarily|too many requests|try again later/i;
 
-          const aiRes = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
+        for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+          try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+            const payload: Record<string, any> = {
+              contents: [{
+                parts: [
+                  { text: prompt },
+                  { inlineData: { mimeType: isPdf ? 'application/pdf' : (mimeType || 'image/jpeg'), data: base64 } }
+                ]
+              }],
+              // Structured JSON output where supported; plain JSON hint otherwise.
+              // (Sampling params like temperature are intentionally omitted.)
+              generationConfig: SCHEMA_MODELS.has(model)
+                ? { responseMimeType: 'application/json', responseSchema: INVOICE_SCHEMA }
+                : { responseMimeType: 'application/json' }
+            };
 
-          const data = await aiRes.json();
-          if (!aiRes.ok) {
-            errors.push(`${model}: ${data?.error?.message || aiRes.status}`);
-            continue;
+            const aiRes = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            const data = await aiRes.json();
+            if (!aiRes.ok) {
+              const msg = data?.error?.message || String(aiRes.status);
+              if (OVERLOAD_RE.test(msg) && attempt < MAX_RETRIES) {
+                errors.push(`${model}: overload (attempt ${attempt + 1}/${MAX_RETRIES + 1}) - backing off`);
+                await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+                continue; // retry the same (working) model — capacity spikes are transient
+              }
+              errors.push(`${model}: ${msg}`);
+              break; // real error -> try the next model
+            }
+
+            const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            const clean = rawText.replace(/```json|```/g, '').trim();
+            const parsed = JSON.parse(clean);
+            return corsResponse(sanitizeResult(parsed));
+          } catch (e: any) {
+            const em = e?.message || String(e);
+            if (OVERLOAD_RE.test(em) && attempt < MAX_RETRIES) {
+              errors.push(`${model}: overload (attempt ${attempt + 1}/${MAX_RETRIES + 1}) - backing off`);
+              await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+              continue;
+            }
+            errors.push(`${model} exception: ${em}`);
+            break;
           }
-
-          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          const clean = rawText.replace(/```json|```/g, '').trim();
-          const parsed = JSON.parse(clean);
-          return corsResponse(sanitizeResult(parsed));
-        } catch (e: any) {
-          errors.push(`${model} exception: ${e.message}`);
         }
       }
 
