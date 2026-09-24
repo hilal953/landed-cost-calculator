@@ -211,6 +211,30 @@ export default function FreeDashboard() {
               <span id="mappingNote" className="text-sm text-muted mono ml-auto" style={{"marginLeft":"auto"}}></span>
             </div>
           </div>
+
+          {/*  AI EXTRACTION REVIEW PANEL  */}
+          <div id="aiReviewPanel" className="hidden mt-4" style={{"border":"1px solid var(--border-strong)","borderRadius":"var(--radius)","padding":"20px","background":"var(--surface)"}}>
+            <h3 style={{"fontSize":"16px","fontWeight":"600","marginBottom":"4px"}}>Review AI Extracted Items</h3>
+            <p className="text-sm text-muted mb-4" id="aiReviewNote"></p>
+            <div id="aiReviewWarnings" className="hidden mb-4" style={{"background":"#fffbeb","border":"1px solid #fde68a","borderRadius":"var(--radius-sm)","padding":"10px 14px","color":"#92400e","fontSize":"12.5px","fontWeight":"600","lineHeight":"1.5"}}></div>
+            <div className="table-container mb-4">
+              <table id="aiReviewTable">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th className="num" style={{"width":"110px"}}>Qty</th>
+                    <th className="num" style={{"width":"130px"}}>Unit Price</th>
+                    <th className="num" style={{"width":"120px"}}>Total CBM</th>
+                  </tr>
+                </thead>
+                <tbody id="aiReviewBody"></tbody>
+              </table>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="btn-primary" id="aiConfirmImportBtn">Import Items</button>
+              <button className="btn-secondary" id="aiCancelImportBtn">Cancel</button>
+            </div>
+          </div>
         </div>
 
         <div className="tab-content" id="tab-paste">

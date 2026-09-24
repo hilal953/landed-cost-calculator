@@ -1110,6 +1110,149 @@
     }
   }
 
+  // ==== AI EXTRACTION REVIEW FLOW ====
+  // AI never imports silently: the user must see & confirm what was extracted.
+  // This is the guard that stops wrong qty/price/merged rows from reaching the calculation.
+  let pendingAiImport = null;
+
+  function showAiReview(result, fileName) {
+    const panel = document.getElementById('aiReviewPanel');
+    if (!panel) return 0; // no review UI -> caller falls back to legacy direct import
+
+    pendingAiImport = {
+      fileName,
+      items: Array.isArray(result.items) ? result.items : [],
+      extraCharges: Array.isArray(result.extraCharges) ? result.extraCharges : [],
+      invoiceCurrency: result.invoiceCurrency || 'UNKNOWN',
+      expectedRows: result.expectedRows,
+      warnings: Array.isArray(result.warnings) ? result.warnings : []
+    };
+
+    const body = document.getElementById('aiReviewBody');
+    body.innerHTML = '';
+    pendingAiImport.items.forEach((it, idx) => {
+      const clean = sanitizeItem(it);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" class="inline-input" data-rf="desc" data-ri="${idx}" value="${escapeAttr(clean.desc)}" placeholder="Item description"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-rf="qty" data-ri="${idx}" value="${clean.qty}" min="0" step="1"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-rf="price" data-ri="${idx}" value="${clean.price}" min="0" step="0.01"></td>
+        <td class="num"><input type="number" class="inline-input mono num" data-rf="cbm" data-ri="${idx}" value="${clean.cbm}" min="0" step="0.001"></td>
+      `;
+      body.appendChild(tr);
+    });
+
+    const note = document.getElementById('aiReviewNote');
+    let noteTxt = `AI extracted ${pendingAiImport.items.length} line item(s) from ${fileName}. Please check the values below, then click Import.`;
+    if (pendingAiImport.invoiceCurrency && pendingAiImport.invoiceCurrency !== 'UNKNOWN') {
+      noteTxt += ` Invoice currency: ${pendingAiImport.invoiceCurrency}.`;
+    }
+    if (pendingAiImport.expectedRows > 0 && pendingAiImport.expectedRows !== pendingAiImport.items.length) {
+      noteTxt += ` The document appears to have ${pendingAiImport.expectedRows} rows — only ${pendingAiImport.items.length} were extracted.`;
+    }
+    note.textContent = noteTxt;
+
+    const warnEl = document.getElementById('aiReviewWarnings');
+    if (pendingAiImport.warnings.length) {
+      warnEl.classList.remove('hidden');
+      warnEl.innerHTML = pendingAiImport.warnings.map(w => '⚠️ ' + escapeHtml(w)).join('<br>');
+    } else {
+      warnEl.classList.add('hidden');
+    }
+
+    const statusDiv = document.getElementById('parseStatus');
+    if (statusDiv) statusDiv.classList.add('hidden');
+    panel.classList.remove('hidden');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return pendingAiImport.items.length;
+  }
+
+  function bindAiReviewInputs() {
+    document.querySelectorAll('#aiReviewBody input').forEach(inp => {
+      inp.oninput = (e) => {
+        const ri = Number(e.target.getAttribute('data-ri'));
+        const rf = e.target.getAttribute('data-rf');
+        if (!pendingAiImport || !pendingAiImport.items[ri]) return;
+        if (rf === 'desc') pendingAiImport.items[ri].desc = e.target.value;
+        else pendingAiImport.items[ri][rf] = parseFloat(e.target.value) || 0;
+      };
+    });
+  }
+
+  // Convert document "extra charges" (invoice currency) into flat LKR fees.
+  function convertExtraCharges(charges, invoiceCurrency) {
+    const toLkr = [];
+    const skipped = [];
+    const baseCurr = document.getElementById('baseCurrency').value;
+    const exRate = parseFloat(document.getElementById('exRate').value) || 0;
+
+    (Array.isArray(charges) ? charges : []).forEach(c => {
+      const name = String((c && c.name) || '').trim();
+      const amount = Number((c && c.amount) || 0);
+      if (!name || !isFinite(amount) || amount <= 0) return;
+      const curr = String((c && c.currency) || invoiceCurrency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB');
+      if (curr === 'LKR') {
+        toLkr.push({ name, amount });
+      } else if (curr === baseCurr && exRate > 0) {
+        toLkr.push({ name, amount: Math.round(amount * exRate) });
+      } else {
+        skipped.push(`${name} (${curr} ${amount})`);
+      }
+    });
+    return { toLkr, skipped };
+  }
+
+  function confirmAiImport() {
+    const panel = document.getElementById('aiReviewPanel');
+    try {
+      if (!pendingAiImport) return;
+
+      // Base currency auto-detect from the invoice currency (same as the OCR flow)
+      const baseCurrEl = document.getElementById('baseCurrency');
+      const invCurr = String(pendingAiImport.invoiceCurrency || '').toUpperCase().replace('CNY', 'RMB');
+      if (baseCurrEl && (invCurr === 'RMB' || invCurr === 'USD') && baseCurrEl.value !== invCurr) {
+        baseCurrEl.value = invCurr;
+        // Fire the bound onchange handler so the exchange rate default follows the currency
+        baseCurrEl.dispatchEvent(new Event('change'));
+      }
+
+      const items = pendingAiImport.items.map(sanitizeItem).filter(it => it.desc && (it.qty > 0 || it.price > 0));
+      if (items.length === 0) throw new Error("No valid items to import. Please fix the rows above or cancel.");
+
+      loadExtractedItems(items, pendingAiImport.fileName || 'AI Vision');
+
+      const charges = convertExtraCharges(pendingAiImport.extraCharges, invCurr);
+      if (charges.toLkr.length) {
+        charges.toLkr.forEach(c => {
+          current.fees.push({ id: 'fe' + (current.feeSeq++), name: c.name, type: 'flat', amount: c.amount, method: 'cbm', base: 'cif' });
+        });
+        renderFees();
+        calculate();
+        debouncedSave();
+        showToast(`Added ${charges.toLkr.length} charge(s) from document`);
+      }
+      if (charges.skipped.length) {
+        showToast("Skipped charge(s) left in invoice currency: " + charges.skipped.join(', '), "error");
+      }
+    } catch (e) {
+      showParseStatus(`⚠️ ${e.message}`, false, true);
+      showToast(e.message, "error");
+      return;
+    } finally {
+      if (panel) panel.classList.add('hidden');
+      pendingAiImport = null;
+    }
+  }
+
+  function cancelAiImport() {
+    const panel = document.getElementById('aiReviewPanel');
+    if (panel) panel.classList.add('hidden');
+    pendingAiImport = null;
+    const statusDiv = document.getElementById('parseStatus');
+    if (statusDiv) statusDiv.classList.add('hidden');
+    showToast("AI import cancelled. You can paste rows or upload again.");
+  }
+
   // Universal unit and currency matchers
   const UNIT_TOKENS = /^(pcs|pc|set|sets|ctn|ctns|box|boxes|pkg|pkgs|units?|prs|pairs?|只|个|件|套|箱|包|张|条|台|本|把|对|支|袋)$/i;
   const CURRENCY_TOKENS = /^[¥$£€₩]|^(rmb|usd|eur|gbp|lkr|cny|cif|fob)$/i;
@@ -1153,15 +1296,14 @@
       const baseCurrEl = document.getElementById('baseCurrency');
       if (baseCurrEl && baseCurrEl.value !== 'RMB') {
         baseCurrEl.value = 'RMB';
-        if (current) current.baseCurrency = 'RMB';
-        updateCurrencyLabels();
+        // Fire the bound onchange handler so the exchange rate default follows the currency
+        baseCurrEl.dispatchEvent(new Event('change'));
       }
     } else if (lowerFull.includes('usd') || lowerFull.includes('$')) {
       const baseCurrEl = document.getElementById('baseCurrency');
       if (baseCurrEl && baseCurrEl.value !== 'USD') {
         baseCurrEl.value = 'USD';
-        if (current) current.baseCurrency = 'USD';
-        updateCurrencyLabels();
+        baseCurrEl.dispatchEvent(new Event('change'));
       }
     }
 
@@ -1300,19 +1442,32 @@
     return parsedItems;
   }
 
+  // Sanitize a single parsed item (clamps absurd/hallucinated values before they hit calculations)
+  function sanitizeItem(it) {
+    const n = (v, cap) => { const x = Number(v); return Math.min(isFinite(x) && x > 0 ? x : 0, cap); };
+    return {
+      desc: String((it && it.desc) || '').trim(),
+      qty: n(it && it.qty, 1000000),
+      price: n(it && it.price, 100000000),
+      cbm: n(it && it.cbm, 1000000)
+    };
+  }
+
   // Load structured items into manifest
   function loadExtractedItems(items, sourceName) {
     if (!items || items.length === 0) {
       throw new Error("No product line items could be detected. Please check the photo or paste rows manually.");
     }
     
-    items.forEach(it => {
+    items.forEach(rawIt => {
+      const it = sanitizeItem(rawIt);
+      if (!it.desc) return;
       current.items.push({
         id: 'it' + (current.itemSeq++),
-        desc: it.desc || '',
-        qty: it.qty || 0,
-        price: it.price || 0,
-        cbm: it.cbm || 0
+        desc: it.desc,
+        qty: it.qty,
+        price: it.price,
+        cbm: it.cbm
       });
     });
     
@@ -1352,7 +1507,15 @@
             showToast(reason, "error");
             return;
           }
-          
+
+          // Show what the AI extracted and let the user confirm before importing.
+          const reviewed = showAiReview(result, file.name);
+          if (reviewed > 0) {
+            bindAiReviewInputs();
+            return;
+          }
+
+          // No review panel on this page -> legacy direct import (kept as safety).
           const items = Array.isArray(result) ? result : (result?.items || []);
           if (items && items.length > 0) {
             loadExtractedItems(items, file.name);
@@ -1373,11 +1536,10 @@
               calculate();
             }
             return;
-          } else {
-            showParseStatus("No product line items could be detected in this document. Please check the photo or paste rows manually.", false, true);
-            showToast("No product rows found", "error");
-            return;
           }
+          showParseStatus("No product line items could be detected in this document. Please check the photo or paste rows manually.", false, true);
+          showToast("No product rows found", "error");
+          return;
         } catch (aiErr) {
           console.warn("AI Vision notice, falling back to local OCR:", aiErr);
         }
@@ -1610,6 +1772,11 @@
   document.getElementById('cancelImportBtn').onclick = () => {
     document.getElementById('mappingPanel').classList.add('hidden');
   };
+
+  const aiConfirmBtn = document.getElementById('aiConfirmImportBtn');
+  if (aiConfirmBtn) aiConfirmBtn.onclick = confirmAiImport;
+  const aiCancelBtn = document.getElementById('aiCancelImportBtn');
+  if (aiCancelBtn) aiCancelBtn.onclick = cancelAiImport;
 
   // Paste logic
   document.getElementById('parseBtn').onclick = () => {
