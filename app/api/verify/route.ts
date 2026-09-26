@@ -1,25 +1,22 @@
 import { NextResponse } from 'next/server';
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://www.truelanded.dev';
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+}
+
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
 function corsResponse(body: any, status: number = 200) {
-  return NextResponse.json(body, {
-    status,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
+  return NextResponse.json(body, { status, headers: corsHeaders() });
 }
 
 export async function POST(req: Request) {

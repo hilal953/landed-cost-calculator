@@ -1,26 +1,23 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://www.truelanded.dev';
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Signature',
+    'Vary': 'Origin',
+  };
+}
+
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Signature',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
 function corsResponse(body: any, status: number = 200) {
-  return NextResponse.json(body, {
-    status,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Signature',
-    },
-  });
+  return NextResponse.json(body, { status, headers: corsHeaders() });
 }
 
 export async function GET() {
@@ -41,7 +38,10 @@ export async function POST(req: Request) {
       const hmac = crypto.createHmac('sha256', secret);
       const digest = hmac.update(rawBody).digest('hex');
       // Lemon Squeezy sends the hex HMAC in `X-Signature`. Reject forgeries.
-      if (!signature || signature !== digest) {
+      // Use constant-time comparison to prevent timing attacks
+      const signatureBuffer = Buffer.from(signature || '', 'utf8');
+      const digestBuffer = Buffer.from(digest, 'utf8');
+      if (!signature || signatureBuffer.length !== digestBuffer.length || !crypto.timingSafeEqual(signatureBuffer, digestBuffer)) {
         console.warn('Webhook signature mismatch — rejecting');
         return corsResponse({ error: 'Invalid signature' }, 401);
       }

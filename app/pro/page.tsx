@@ -5,15 +5,9 @@ import Script from 'next/script';
 export default function ProDashboard() {
   return (
     <>
-      {/* SheetJS for XLSX support */}
+      {/* SheetJS for XLSX support (needed for export) */}
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" strategy="afterInteractive" />
-      {/* PDF.js for in-browser PDF parsing */}
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" strategy="afterInteractive" />
-      <Script id="pdfjs-worker-pro" strategy="afterInteractive">
-        {`if (typeof pdfjsLib !== 'undefined') { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }`}
-      </Script>
-      {/* Tesseract.js OCR — lazy-loaded on demand (photo/scan uploads only) */}
-      <Script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" strategy="lazyOnload" />
+      {/* PDF.js and Tesseract.js are lazy-loaded on demand in pro.js */}
       {/* Pro Suite Logic */}
       <Script src="/pro.js" strategy="afterInteractive" />
       

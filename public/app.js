@@ -2,8 +2,7 @@
   // ==== STATE MANAGEMENT ====
   let state = {
     history: {}, // id -> shipment data
-    currentId: null,
-    apiKey: localStorage.getItem('landed-cost-anthropic-key') || ''
+    currentId: null
   };
 
   const DEFAULT_SHIPMENT = (name = 'Guangzhou Cargo') => ({
@@ -79,14 +78,34 @@
     requestAnimationFrame(update);
   }
 
+  const SCHEMA_VERSION = 2;
+
   // ==== STORAGE & HISTORY ====
+  function migrateState(saved) {
+    if (!saved.schemaVersion) {
+      // v1 -> v2: add missing fields with defaults
+      console.log('[Migration] Migrating from v1 to v2');
+      Object.values(saved.history || {}).forEach(shipment => {
+        shipment.freightCurrency = shipment.freightCurrency || 'LKR';
+        shipment.usdToLkr = shipment.usdToLkr || 305.00;
+        shipment.cargoMode = shipment.cargoMode || 'sea';
+        shipment.fees = shipment.fees || [];
+        shipment.itemSeq = shipment.itemSeq || 1;
+        shipment.feeSeq = shipment.feeSeq || 1;
+      });
+      saved.schemaVersion = 2;
+    }
+    return saved;
+  }
+
   function loadState() {
     try {
       const saved = localStorage.getItem('landed-cost-v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        state.history = parsed.history || {};
-        state.currentId = parsed.currentId;
+        const migrated = migrateState(parsed);
+        state.history = migrated.history || {};
+        state.currentId = migrated.currentId;
       }
     } catch (e) { console.error("Could not load state", e); }
 
@@ -114,7 +133,11 @@
     
     state.history[state.currentId] = current;
     try {
-      localStorage.setItem('landed-cost-v2', JSON.stringify({ history: state.history, currentId: state.currentId }));
+      localStorage.setItem('landed-cost-v2', JSON.stringify({ 
+        history: state.history, 
+        currentId: state.currentId,
+        schemaVersion: SCHEMA_VERSION
+      }));
       const status = document.getElementById('saveStatus');
       status.textContent = `Auto-saved at ${new Date().toLocaleTimeString()}`;
     } catch (e) {}
@@ -581,10 +604,17 @@
   function calculate() {
     if (!current) return;
     
-    const exRate = parseFloat(document.getElementById('exRate').value) || 0;
-    const cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+    // Input validation with guards against NaN/Infinity and reasonable bounds
+    const rawExRate = parseFloat(document.getElementById('exRate').value);
+    const exRate = (isFinite(rawExRate) && rawExRate > 0 && rawExRate <= 10000) ? rawExRate : 0;
+    
+    const rawCbmRate = parseFloat(document.getElementById('cbmRate').value);
+    const cbmRate = (isFinite(rawCbmRate) && rawCbmRate >= 0 && rawCbmRate <= 10000000) ? rawCbmRate : 0;
+    
     const fCurr = document.getElementById('freightCurrency')?.value || 'LKR';
-    const markupPct = parseFloat(document.getElementById('markupPercent').value) || 0;
+    
+    const rawMarkupPct = parseFloat(document.getElementById('markupPercent').value);
+    const markupPct = (isFinite(rawMarkupPct) && rawMarkupPct >= 0 && rawMarkupPct <= 1000) ? rawMarkupPct : 0;
     
     // Incomplete Step 2 warning alert
     const alertBanner = document.getElementById('step2AlertBanner');
@@ -955,6 +985,33 @@
       document.head.appendChild(s);
     });
   }
+
+  // In-Browser PDF.js (loaded on demand)
+  function ensurePdfJsLoaded() {
+    if (typeof pdfjsLib !== 'undefined') return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-pdfjs]');
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', () => reject(new Error('Failed to load PDF reader. Check your connection and try again.')), { once: true });
+        return;
+      }
+      // Load PDF.js main library
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.async = true;
+      s.setAttribute('data-pdfjs', '1');
+      s.onload = () => {
+        // Configure worker after library loads
+        if (typeof pdfjsLib !== 'undefined') {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        resolve();
+      };
+      s.onerror = () => reject(new Error('Failed to load PDF reader. Check your connection and try again.'));
+      document.head.appendChild(s);
+    });
+  }
   async function runBrowserOcr(fileOrCanvas, progressCb) {
     if (typeof Tesseract === 'undefined') {
       if (progressCb) progressCb({ status: 'Loading OCR engine (one-time download)...', progress: 0.05 });
@@ -1010,7 +1067,11 @@
   // In-Browser PDF Parser using PDF.js
   async function runPdfExtraction(file, progressCb) {
     if (typeof pdfjsLib === 'undefined') {
-      throw new Error("PDF Reader library is loading. Please try again in a few seconds.");
+      if (progressCb) progressCb({ status: 'Loading PDF reader (one-time download)...', progress: 0.05 });
+      await ensurePdfJsLoaded();
+    }
+    if (typeof pdfjsLib === 'undefined') {
+      throw new Error("PDF reader is still loading. Please check your internet connection and try again.");
     }
     
     if (progressCb) progressCb({ status: 'Reading PDF document structure...', progress: 0.1 });
@@ -1854,14 +1915,14 @@
   const aiCancelBtn = document.getElementById('aiCancelImportBtn');
   if (aiCancelBtn) aiCancelBtn.onclick = cancelAiImport;
 
-  // Paste logic
+  // Paste logic - now uses review panel for consistency
   document.getElementById('parseBtn').onclick = () => {
     const raw = document.getElementById('pasteBox').value;
     if(!raw.trim()) return;
     let lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
     if(document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
     
-    let added = 0;
+    const items = [];
     lines.forEach(line => {
       const parts = line.split(/\t|,(?![^()]*\))/).map(p=>p.trim());
       if(parts.length < 2) return;
@@ -1870,17 +1931,24 @@
       const price = parseFloat((parts[2]||'').replace(/[^0-9.\-]/g,'')) || 0;
       const cbm = parseFloat((parts[3]||'').replace(/[^0-9.\-]/g,'')) || 0;
       if(!desc) return;
-      current.items.push({ id: 'it'+(current.itemSeq++), desc, qty, price, cbm });
-      added++;
+      items.push({ desc, qty, price, cbm });
     });
     
-    if(added) {
+    if(items.length) {
       document.getElementById('pasteBox').value = '';
-      showToast(`Pasted ${added} items`);
-      renderItems();
-      debouncedSave();
+      // Use the same review panel as AI/OCR for consistency
+      const reviewed = showAiReview({ 
+        items, 
+        extraCharges: [], 
+        invoiceCurrency: document.getElementById('baseCurrency').value,
+        expectedRows: items.length,
+        warnings: []
+      }, 'Pasted Data');
+      if (reviewed > 0) {
+        bindAiReviewInputs();
+      }
     } else {
-      showToast("Could not parse rows. Check format.", "error");
+      showToast("Could not parse rows. Check format (tab or comma separated: Desc, Qty, Price, CBM).", "error");
     }
   };
 

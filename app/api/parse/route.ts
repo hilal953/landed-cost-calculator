@@ -1,25 +1,41 @@
 import { NextResponse } from 'next/server';
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://www.truelanded.dev';
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Vary': 'Origin',
+  };
+}
+
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
 function corsResponse(body: any, status: number = 200) {
-  return NextResponse.json(body, {
-    status,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return NextResponse.json(body, { status, headers: corsHeaders() });
+}
+
+// ---- Rate Limiting (in-memory, per IP, 10 req/min) ----
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT) {
+    return false;
+  }
+  entry.count++;
+  return true;
 }
 
 // ---- Sanitization & validation of AI-extracted line items ----
@@ -242,11 +258,11 @@ const INVOICE_SCHEMA = {
 
 // Models that support responseSchema in generateContent (per Google docs).
 // Models NOT in this set still get responseMimeType: application/json as a strong JSON hint.
-// PROVEN 2026-09-24 (err.jpeg): Google retired 2.x/1.5 for new users — the API
-// itself replies "update your code to use models/gemini-3.6-flash". 3.6-flash
-// went GA 2026-07-21 (1M context, structured outputs supported) and is the
-// stable workhorse; 3.5-flash / 3.5-flash-lite are the documented fallbacks.
-const SCHEMA_MODELS = new Set(['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash']);
+// Configurable via GEMINI_MODELS env var (comma-separated).
+const DEFAULT_GEMINI_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash'];
+const GEMINI_MODELS = new Set(
+  (process.env.GEMINI_MODELS?.split(',').map(m => m.trim()).filter(Boolean) || DEFAULT_GEMINI_MODELS)
+);
 
 const EXTRACTION_PROMPT = (isPdf: boolean) => `Extract this ${isPdf ? 'PDF' : 'image'} into structured JSON.
 
@@ -273,6 +289,14 @@ Respond ONLY with the JSON object.`;
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+               req.headers.get('x-real-ip') || 
+               'unknown';
+    if (!checkRateLimit(ip)) {
+      return corsResponse({ error: 'Rate limited. Max 10 requests per minute.' }, 429);
+    }
+
     const { base64, mimeType, isPdf, apiKey: clientApiKey } = await req.json().catch(() => ({}));
 
     if (!base64) {
@@ -298,13 +322,19 @@ export async function POST(req: Request) {
 
     // 1. Google Gemini (Structured output preferred - ordered most capable first)
     if (geminiKey) {
-      // LIVE 2026 lineup (verified Sep 2026: 3.8-flash GA + err.jpeg + docs):
-      // gemini-3.8-flash (preferred, most intelligent Flash) →
-      // gemini-3.6-flash → gemini-3.5-flash-lite. Short 3-model chain.
-      // NEVER 2.x/1.5: Google blocks them for new keys. generateContent
-      // v1beta remains supported, same endpoint + schema. No
-      // temperature/topK/topP: 3.x ignores them.
-      const geminiModels = ['gemini-3.8-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite'];
+      // Model priority order (most capable first). Configurable via GEMINI_MODELS env var.
+      // Falls back to DEFAULT_GEMINI_MODELS if not set.
+      const geminiModels = Array.from(GEMINI_MODELS).sort((a, b) => {
+        // Priority: 3.8-flash > 3.7-flash > 3.6-flash > 3.5-flash > 3.5-flash-lite
+        const priority: Record<string, number> = {
+          'gemini-3.8-flash': 5,
+          'gemini-3.7-flash': 4,
+          'gemini-3.6-flash': 3,
+          'gemini-3.5-flash': 2,
+          'gemini-3.5-flash-lite': 1,
+        };
+        return (priority[b] || 0) - (priority[a] || 0);
+      });
       const errors = [];
 
       for (const model of geminiModels) {
@@ -329,7 +359,7 @@ export async function POST(req: Request) {
               }],
               // Structured JSON output where supported; plain JSON hint otherwise.
               // (Sampling params like temperature are intentionally omitted.)
-              generationConfig: SCHEMA_MODELS.has(model)
+              generationConfig: GEMINI_MODELS.has(model)
                 ? { responseMimeType: 'application/json', responseSchema: INVOICE_SCHEMA }
                 : { responseMimeType: 'application/json' }
             };
