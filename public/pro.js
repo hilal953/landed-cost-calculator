@@ -1307,8 +1307,10 @@
         return;
       }
       const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+      s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
       s.async = true;
+      s.crossOrigin = 'anonymous';
+      s.integrity = 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F';
       s.setAttribute('data-tesseract', '1');
       s.onload = () => resolve();
       s.onerror = () => reject(new Error('Failed to load OCR engine. Check your connection and try again.'));
@@ -1330,6 +1332,8 @@
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
       s.async = true;
+      s.crossOrigin = 'anonymous';
+      s.integrity = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
       s.setAttribute('data-pdfjs', '1');
       s.onload = () => {
         // Configure worker after library loads

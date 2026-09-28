@@ -52,9 +52,11 @@ const POLICIES: Record<string, { title: string; body: string }> = {
   }
 };
 
+const CHECKOUT_URL =
+  'https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0';
+
 export default function LandingPage() {
-  const router = useRouter();
-  const [policyModal, setPolicyModal] = useState<string | null>(null);
+  const router = useRouter();  const [policyModal, setPolicyModal] = useState<string | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<Record<number, boolean>>({});
@@ -130,7 +132,7 @@ export default function LandingPage() {
           }
           setLoginModalOpen(true);
         }}>🔑 Log In</button>
-        <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" className="lp-btn-nav-pro">Unlock Pro ($9)</a>
+        <a href={CHECKOUT_URL} className="lp-btn-nav-pro">Unlock Pro ($9)</a>
         <button className={`lp-menu-toggle ${mobileMenuOpen ? 'open' : ''}`} id="lpMenuToggle" aria-label="Toggle Navigation Menu" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
           <span className="bar"></span>
           <span className="bar"></span>
@@ -148,7 +150,7 @@ export default function LandingPage() {
       <li><a href="#pricing"><span className="nav-icon">🏷️</span> Pricing ($9 One-Time)</a></li>
       <li><a href="#faq"><span className="nav-icon">❓</span> Common Questions</a></li>
     </ul>
-    <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" className="lp-mobile-drawer-cta">🚀 Unlock Pro Lifetime Access ($9)</a>
+    <a href={CHECKOUT_URL} className="lp-mobile-drawer-cta">🚀 Unlock Pro Lifetime Access ($9)</a>
   </nav>
 
   {/*  Hero Section  */}
@@ -166,7 +168,7 @@ export default function LandingPage() {
         Calculate exact shipping fees, customs duties, and taxes in seconds. Stop losing profit on hidden import costs.
       </p>
       <div className="lp-cta-wrap">
-        <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" className="lp-btn-main">🚀 Stop Losing Profit ($9)</a>
+        <a href={CHECKOUT_URL} className="lp-btn-main">🚀 Stop Losing Profit ($9)</a>
         <Link href="/free" className="lp-btn-secondary">⚡ Launch Free Calculator</Link>
       </div>
       <p style={{"marginTop":"14px","fontSize":"13.5px","color":"#64748B","fontWeight":"500"}}>One-time payment. Lifetime access. 14-day money-back guarantee.</p>
@@ -446,7 +448,7 @@ export default function LandingPage() {
             <li><span className="chk">✓</span> 1-Click WhatsApp &amp; PDF Export</li>
           </ul>
           
-          <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" className="lp-btn-price pro">⚡ Get Pro Access ($9)</a>
+          <a href={CHECKOUT_URL} className="lp-btn-price pro">⚡ Get Pro Access ($9)</a>
         </div>
 
       </div>
@@ -555,7 +557,7 @@ export default function LandingPage() {
     </form>
     
     <div style={{"marginTop":"18px","paddingTop":"14px","borderTop":"1px dashed #E2E8F0","fontSize":"12px","color":"#64748B"}}>
-      Don&apos;t have a license yet? <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"color":"#E04D2D","fontWeight":"700","textDecoration":"underline"}}>Unlock Pro for $9</a>
+      Don&apos;t have a license yet? <a href={CHECKOUT_URL} style={{"color":"#E04D2D","fontWeight":"700","textDecoration":"underline"}}>Unlock Pro for $9</a>
     </div>
   </div>
 </div>

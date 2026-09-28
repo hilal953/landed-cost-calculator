@@ -6,8 +6,8 @@ import Script from 'next/script';
 export default function ProDashboard() {
   return (
     <>
-      {/* SheetJS for XLSX support (needed for export) */}
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" strategy="afterInteractive" />
+      {/* SheetJS for XLSX support (SRI-pinned; pro.js shows a toast if the CDN is slow/blocked) */}
+      <script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw" crossOrigin="anonymous" />
       {/* PDF.js and Tesseract.js are lazy-loaded on demand in pro.js */}
       {/* Pro Suite Logic */}
       <Script src="/pro.js" strategy="afterInteractive" />
