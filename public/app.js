@@ -486,7 +486,7 @@
       row.className = 'fee-item';
       row.innerHTML = `
         <div class="input-field" style="margin:0;">
-          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeHtml(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
+          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeAttr(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
         </div>
         <div class="input-field" style="margin:0;">
           <select data-field="type" data-id="${fe.id}">

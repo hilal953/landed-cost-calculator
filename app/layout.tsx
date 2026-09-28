@@ -4,6 +4,8 @@ import "./globals.css";
 
 export const viewport: Viewport = {
   themeColor: "#0F172A",
+  width: "device-width",
+  initialScale: 1,
 };
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -38,6 +40,9 @@ export const metadata: Metadata = {
       { url: '/images/favicon.svg', type: 'image/svg+xml' },
     ],
     shortcut: '/icon.svg',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   }
 };
 
@@ -48,9 +53,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-      </head>
       <body className={`${inter.variable} ${ibmPlexMono.variable}`}>
         {children}
       </body>

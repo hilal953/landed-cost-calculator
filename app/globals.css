@@ -1075,7 +1075,7 @@ input[type="number"] {
 
 /* PRINT */
 @media print {
-  .sidebar, .topbar button, .step-num, .import-tabs, .tab-content, 
+  .sidebar, .topbar button, .step-num, .tabs, .tab-content, 
   .btn-primary, .btn-secondary, .btn-danger, .btn-ghost, 
   .toast-container, .dropzone, #addFeeBtn, #addRowBtn, .col-actions, .api-key-row { display: none !important; }
   

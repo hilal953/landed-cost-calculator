@@ -77,7 +77,12 @@ export default function LandingPage() {
     setLoginStatus({ msg: 'Checking license status...' });
 
     try {
-      const res = await fetch('/api/verify?email=' + encodeURIComponent(email));
+      // POST keeps the email out of URLs, proxies and server logs.
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
       const data = await res.json();
 
       if (!res.ok || !data.is_pro) {
@@ -318,7 +323,7 @@ export default function LandingPage() {
             </div>
             <div style={{"flex":"1","textAlign":"center","marginRight":"48px"}}>
               <span style={{"background":"#FFFFFF","border":"1px solid #CBD5E1","fontSize":"11px","fontFamily":"'IBM Plex Mono', monospace","color":"#64748B","padding":"3px 18px","borderRadius":"6px","display":"inline-block","fontWeight":"500"}}>
-                app.truelanded.com/calculator
+                app.truelanded.dev/free
               </span>
             </div>
           </div>
@@ -460,22 +465,22 @@ export default function LandingPage() {
 
       <div className="lp-faq-wrap">
         <div className={`lp-faq-item ${openFaq[0] ? "open" : ""}`}>
-          <div className="lp-faq-q" onClick={() => toggleFaq(0)}><span>Do I pay every month or just once?</span><span className="lp-faq-icon">+</span></div>
+          <button type="button" className="lp-faq-q" onClick={() => toggleFaq(0)} aria-expanded={!!openFaq[0]}><span>Do I pay every month or just once?</span><span className="lp-faq-icon" aria-hidden="true">+</span></button>
           <div className="lp-faq-a">You only pay <strong>$9 one time</strong>. There are no monthly charges and no subscriptions. You keep lifetime access.</div>
         </div>
 
         <div className={`lp-faq-item ${openFaq[1] ? "open" : ""}`}>
-          <div className="lp-faq-q" onClick={() => toggleFaq(1)}><span>How does Air Cargo weight work?</span><span className="lp-faq-icon">+</span></div>
+          <button type="button" className="lp-faq-q" onClick={() => toggleFaq(1)} aria-expanded={!!openFaq[1]}><span>How does Air Cargo weight work?</span><span className="lp-faq-icon" aria-hidden="true">+</span></button>
           <div className="lp-faq-a">Airlines charge for full kilograms (for example, 2.1 kg is charged as 3.0 kg). Pro automatically calculates this so you never lose money on shipping.</div>
         </div>
 
         <div className={`lp-faq-item ${openFaq[2] ? "open" : ""}`}>
-          <div className="lp-faq-q" onClick={() => toggleFaq(2)}><span>Can I upload my supplier&apos;s Excel sheet?</span><span className="lp-faq-icon">+</span></div>
+          <button type="button" className="lp-faq-q" onClick={() => toggleFaq(2)} aria-expanded={!!openFaq[2]}><span>Can I upload my supplier&apos;s Excel sheet?</span><span className="lp-faq-icon" aria-hidden="true">+</span></button>
           <div className="lp-faq-a">Yes. Drop your Excel file or paste rows of text. The calculator automatically reads the item name, quantity, and price.</div>
         </div>
 
         <div className={`lp-faq-item ${openFaq[3] ? "open" : ""}`}>
-          <div className="lp-faq-q" onClick={() => toggleFaq(3)}><span>What if I am not happy with it?</span><span className="lp-faq-icon">+</span></div>
+          <button type="button" className="lp-faq-q" onClick={() => toggleFaq(3)} aria-expanded={!!openFaq[3]}><span>What if I am not happy with it?</span><span className="lp-faq-icon" aria-hidden="true">+</span></button>
           <div className="lp-faq-a">We give you a <strong>14-day money-back guarantee</strong>. If you want a refund, email aadil.mohomed786@gmail.com and we will refund your $9.</div>
         </div>
       </div>

@@ -536,7 +536,12 @@ Headlight  50  38.5  1.2"></textarea>
     if (!email || !email.trim()) return;
 
     try {
-      const res = await fetch('/api/verify?email=' + encodeURIComponent(email.trim()));
+      // POST keeps the email out of URLs, proxies and server logs.
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() })
+      });
       const data = await res.json();
       if (res.ok && data.is_pro) {
         localStorage.setItem('landed_cost_pro_license', 'active');
