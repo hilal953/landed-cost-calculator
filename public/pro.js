@@ -113,7 +113,7 @@
     if (!state.currentId || !state.history[state.currentId]) {
       const id = generateId();
       state.currentId = id;
-      state.history[id] = DEFAULT_SHIPMENT('Guangzhou Cargo');
+      state.history[id] = DEFAULT_SHIPMENT();
     }
     current = state.history[state.currentId];
     renderHistory();
@@ -333,12 +333,12 @@
   if (freightCurrEl) {
     freightCurrEl.onchange = (e) => {
       current.freightCurrency = e.target.value;
-      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 35000)) {
+      if (current.freightCurrency === 'USD' && (!current.cbmRate || current.cbmRate === 100000)) {
         current.cbmRate = 115;
         document.getElementById('cbmRate').value = 115;
       } else if (current.freightCurrency === 'LKR' && current.cbmRate === 115) {
-        current.cbmRate = 35000;
-        document.getElementById('cbmRate').value = 35000;
+        current.cbmRate = 100000;
+        document.getElementById('cbmRate').value = 100000;
       }
       updateCurrencyLabels();
       calculate();
@@ -355,12 +355,12 @@
       current.cargoMode = e.target.value;
       const cbmRateInput = document.getElementById('cbmRate');
       const rate = parseFloat(cbmRateInput.value);
-      if (oldMode === 'sea' && current.cargoMode === 'air' && (isNaN(rate) || rate === 35000)) {
+      if (oldMode === 'sea' && current.cargoMode === 'air' && (isNaN(rate) || rate === 100000)) {
          current.cbmRate = 3400;
          cbmRateInput.value = 3400;
       } else if (oldMode === 'air' && current.cargoMode === 'sea' && (isNaN(rate) || rate === 3400)) {
-         current.cbmRate = 35000;
-         cbmRateInput.value = 35000;
+         current.cbmRate = 100000;
+         cbmRateInput.value = 100000;
       }
       updateCurrencyLabels();
       calculate();
@@ -550,7 +550,7 @@
       row.className = 'fee-item';
       row.innerHTML = `
         <div class="input-field" style="margin:0;">
-          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeHtml(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
+          <input type="text" data-field="name" data-id="${fe.id}" value="${escapeAttr(fe.name)}" placeholder="Charge Name (e.g. Customs Duty, Transport)">
         </div>
         <div class="input-field" style="margin:0;">
           <select data-field="type" data-id="${fe.id}">
@@ -2245,14 +2245,7 @@
   const aiCancelBtn = document.getElementById('aiCancelImportBtn');
   if (aiCancelBtn) aiCancelBtn.onclick = cancelAiImport;
 
-  // Paste logic
-  document.getElementById('parseBtn').onclick = () => {
-    const raw = document.getElementById('pasteBox').value;
-    if(!raw.trim()) return;
-    let lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(document.getElementById('hasHeader').checked && lines.length) lines = lines.slice(1);
-    
-    // Paste logic - now uses review panel for consistency
+  // Paste logic - now uses review panel for consistency
   document.getElementById('parseBtn').onclick = () => {
     const raw = document.getElementById('pasteBox').value;
     if(!raw.trim()) return;
