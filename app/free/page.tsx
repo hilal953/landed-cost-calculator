@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 
 export default function FreeDashboard() {
@@ -17,9 +18,9 @@ export default function FreeDashboard() {
     
     {/*  Left: Free Brand & Global Status  */}
     <div className="free-nav-brand-group">
-      <a href="/" className="free-nav-brand" aria-label="TrueLanded Home">
+      <Link href="/" className="free-nav-brand" aria-label="TrueLanded Home">
         <img src="/images/logo.svg" alt="TrueLanded" style={{"height":"26px","width":"auto","display":"block"}} />
-      </a>
+      </Link>
       <span className="free-nav-badge">FREE EDITION</span>
       <div className="free-nav-status">
         <span className="free-status-dot"></span>
@@ -35,10 +36,10 @@ export default function FreeDashboard() {
         <span>🚀</span>
         <span>Unlock Pro ($9)</span>
       </a>
-      <a href="/" className="free-nav-back-btn">
+      <Link href="/" className="free-nav-back-btn">
         <span>←</span>
         <span>Back to Home</span>
-      </a>
+      </Link>
     </div>
 
   </div>
@@ -480,9 +481,9 @@ Headlight  50  38.5  1.2"></textarea>
       <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"background":"#E04D2D","color":"#FFFFFF","textDecoration":"none","padding":"14px 24px","borderRadius":"12px","fontWeight":"700","fontSize":"15px","display":"flex","alignItems":"center","justifyContent":"center","gap":"8px","boxShadow":"0 4px 14px rgba(224, 77, 45, 0.3)","transition":"transform 0.2s, box-shadow 0.2s"}}>
         <span>💳 Get Pro Lifetime License ($9)</span>
       </a>
-      <a href="/pro" style={{"background":"#F1F5F9","color":"#334155","textDecoration":"none","padding":"12px 24px","borderRadius":"12px","fontWeight":"600","fontSize":"14px","border":"1px solid #CBD5E1","transition":"background 0.2s"}}>
+      <Link href="/pro" style={{"background":"#F1F5F9","color":"#334155","textDecoration":"none","padding":"12px 24px","borderRadius":"12px","fontWeight":"600","fontSize":"14px","border":"1px solid #CBD5E1","transition":"background 0.2s"}}>
         <span>Already have Pro? Log in</span>
-      </a>
+      </Link>
     </div>
     <ul style={{"textAlign":"left","fontSize":"13.5px","color":"#64748B","margin":"0","padding":"0","listStyle":"none","display":"flex","flexDirection":"column","gap":"10px"}}>
       <li style={{"display":"flex","alignItems":"center","gap":"8px"}}>

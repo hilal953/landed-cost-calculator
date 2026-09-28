@@ -15,7 +15,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
-function corsResponse(body: any, status: number = 200) {
+function corsResponse(body: Record<string, unknown>, status: number = 200) {
   return NextResponse.json(body, { status, headers: corsHeaders() });
 }
 
@@ -45,7 +45,7 @@ function checkRateLimit(ip: string): boolean {
 const MAX_QTY = 1_000_000;
 const MAX_PRICE = 100_000_000;
 
-function toNum(v: any, max: number = Number.MAX_SAFE_INTEGER): number {
+function toNum(v: unknown, max: number = Number.MAX_SAFE_INTEGER): number {
   // Robust: models often return formatted strings ("¥55.00", "1,100.00",
   // "55 RMB") despite the numeric schema. Raw Number() turns ALL of those
   // into NaN → silently stored as 0 ("doesn't pick the price"). Strip
@@ -75,7 +75,7 @@ interface CleanItem {
   amount?: number;
 }
 
-function sanitizeResult(raw: any) {
+function sanitizeResult(raw: unknown) {
   const warnings: string[] = [];
 
   if (!raw || typeof raw !== 'object') {
@@ -90,13 +90,15 @@ function sanitizeResult(raw: any) {
     };
   }
 
-  const isDocument = raw.isDocument === true || raw.isDocument === 'true';
+  const doc = raw as Record<string, unknown>;
+
+  const isDocument = doc.isDocument === true || doc.isDocument === 'true';
 
   if (!isDocument) {
     return {
       isDocument: false,
-      documentType: String(raw.documentType || 'Invalid Image'),
-      message: String(raw.message || 'This image does not appear to be a commercial invoice or packing list.'),
+      documentType: String(doc.documentType || 'Invalid Image'),
+      message: String(doc.message || 'This image does not appear to be a commercial invoice or packing list.'),
       items: [],
       extraCharges: [],
       warnings: [],
@@ -104,20 +106,21 @@ function sanitizeResult(raw: any) {
     };
   }
 
-  const invoiceCurrency = String(raw.invoiceCurrency || raw.currency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB');
+  const invoiceCurrency = String(doc.invoiceCurrency || doc.currency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB');
   const items: CleanItem[] = [];
   const seen = new Set<string>();
   let dropped = 0;
 
-  (Array.isArray(raw.items) ? raw.items : []).forEach((it: any) => {
+  (Array.isArray(doc.items) ? doc.items : []).forEach((it: unknown) => {
     if (!it || typeof it !== 'object') return;
+    const row = it as { qty?: unknown; price?: unknown; cbm?: unknown; amount?: unknown; desc?: unknown; description?: unknown; name?: unknown };
 
-    let qty = toNum(it.qty, MAX_QTY);
-    let price = toNum(it.price, MAX_PRICE);
-    const cbm = toNum(it.cbm, MAX_QTY);
-    const amountRaw = it.amount;
+    const qty = toNum(row.qty, MAX_QTY);
+    let price = toNum(row.price, MAX_PRICE);
+    const cbm = toNum(row.cbm, MAX_QTY);
+    const amountRaw = row.amount;
     const amount = amountRaw !== undefined && amountRaw !== null ? toNum(amountRaw, 1e13) : NaN;
-    const desc = String(it.desc || it.description || it.name || '')
+    const desc = String(row.desc || row.description || row.name || '')
       .replace(/\s+/g, ' ')
       .trim();
 
@@ -175,13 +178,13 @@ function sanitizeResult(raw: any) {
   }
 
   // If the model was able to count the "No." column on the document, surface a row-count mismatch.
-  const expectedRows = Number(raw.expectedRows);
+  const expectedRows = Number(doc.expectedRows);
   if (Number.isFinite(expectedRows) && expectedRows > 0 && expectedRows !== items.length) {
     warnings.push(`The document appears to have ${expectedRows} line item(s), but only ${items.length} could be extracted. Review them below before importing.`);
   }
 
   // Grand-total reconciliation check
-  const documentTotal = toNum((raw as any).documentTotal, 1e13);
+  const documentTotal = toNum(doc.documentTotal, 1e13);
   if (Number.isFinite(documentTotal) && documentTotal > 0 && items.length > 0) {
     const sumAmounts = items.reduce((s, i) => s + (i.amount !== undefined ? i.amount : i.qty * i.price), 0);
     if (sumAmounts > 0 && Math.abs(sumAmounts - documentTotal) / documentTotal > 0.05) {
@@ -189,20 +192,24 @@ function sanitizeResult(raw: any) {
     }
   }
 
-  const extraCharges = (Array.isArray(raw.extraCharges) ? raw.extraCharges : [])
-    .map((c: any) => ({
-      name: String((c && c.name) || '').replace(/\s+/g, ' ').trim(),
-      amount: c && c.amount !== undefined && c.amount !== null ? toNum(c.amount, 1e13) : 0,
-      currency: String((c && c.currency) || invoiceCurrency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB'),
-    }))
-    .filter((c: any) => c.name && c.amount > 0);
+  const extraCharges = (Array.isArray(doc.extraCharges) ? doc.extraCharges : [])
+    .map((c: unknown) => {
+      if (!c || typeof c !== 'object') return { name: '', amount: 0, currency: 'UNKNOWN' };
+      const charge = c as { name?: unknown; amount?: unknown; currency?: unknown };
+      return {
+        name: String(charge.name || '').replace(/\s+/g, ' ').trim(),
+        amount: charge.amount !== undefined && charge.amount !== null ? toNum(charge.amount, 1e13) : 0,
+        currency: String(charge.currency || invoiceCurrency || 'UNKNOWN').toUpperCase().replace('CNY', 'RMB'),
+      };
+    })
+    .filter((c) => c.name && c.amount > 0);
 
   const confidence: 'high' | 'medium' | 'low' =
     warnings.length === 0 ? 'high' : warnings.length <= 2 ? 'medium' : 'low';
 
   return {
     isDocument: true,
-    documentType: String(raw.documentType || 'Invoice / Packing List'),
+    documentType: String(doc.documentType || 'Invoice / Packing List'),
     invoiceCurrency,
     expectedRows: Number.isFinite(expectedRows) ? expectedRows : 0,
     items,
@@ -350,7 +357,7 @@ export async function POST(req: Request) {
         for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
           try {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
-            const payload: Record<string, any> = {
+            const payload: Record<string, unknown> = {
               contents: [{
                 parts: [
                   { text: prompt },
@@ -386,8 +393,8 @@ export async function POST(req: Request) {
             const clean = rawText.replace(/```json|```/g, '').trim();
             const parsed = JSON.parse(clean);
             return corsResponse(sanitizeResult(parsed));
-          } catch (e: any) {
-            const em = e?.message || String(e);
+          } catch (e: unknown) {
+            const em = e instanceof Error ? e.message : String(e);
             if (OVERLOAD_RE.test(em) && attempt < MAX_RETRIES) {
               errors.push(`${model}: overload (attempt ${attempt + 1}/${MAX_RETRIES + 1}) - backing off`);
               await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
@@ -476,15 +483,15 @@ export async function POST(req: Request) {
       }
 
       const data = await aiRes.json();
-      const text = (data.content || []).map((b: any) => b.text || '').join('\n');
+      const text = (data.content || []).map((b: { text?: unknown }) => (typeof b.text === 'string' ? b.text : '')).join('\n');
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
       return corsResponse(sanitizeResult(parsed));
     }
 
     return corsResponse({ error: 'Unrecognized API Key format' }, 400);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('API Parse error:', error);
-    return corsResponse({ error: error.message || 'Internal server error' }, 500);
+    return corsResponse({ error: error instanceof Error ? error.message : 'Internal server error' }, 500);
   }
 }

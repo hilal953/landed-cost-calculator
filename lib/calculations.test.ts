@@ -426,4 +426,21 @@ describe('calculateLandedCost', () => {
       expect(item.feesPct).toBeGreaterThan(0);
     });
   });
+
+  describe('Totals quantity guard', () => {
+    it('never produces NaN sumQty from invalid quantities', () => {
+      const data = createBaseShipment({
+        items: [
+          createBaseItem({ qty: 10, price: 100, cbm: 1 }),
+          createBaseItem({ id: 'it2', qty: NaN, price: 50, cbm: 0.5 }),
+          createBaseItem({ id: 'it3', qty: Infinity, price: 50, cbm: 0.5 }),
+        ],
+      });
+
+      const result = calculateLandedCost(data);
+
+      expect(result.totals.sumQty).toBe(10);
+      expect(Number.isFinite(result.totals.sumQty)).toBe(true);
+    });
+  });
 });

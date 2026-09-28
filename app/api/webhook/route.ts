@@ -16,7 +16,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
-function corsResponse(body: any, status: number = 200) {
+function corsResponse(body: Record<string, unknown>, status: number = 200) {
   return NextResponse.json(body, { status, headers: corsHeaders() });
 }
 
@@ -34,7 +34,14 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const signature = req.headers.get('x-signature');
 
-    if (secret) {
+    // Fail closed: without a configured secret the signature cannot be
+    // verified, so reject rather than granting licenses on faith.
+    if (!secret) {
+      console.warn('Webhook secret not configured — rejecting');
+      return corsResponse({ error: 'Webhook not configured' }, 401);
+    }
+
+    {
       const hmac = crypto.createHmac('sha256', secret);
       const digest = hmac.update(rawBody).digest('hex');
       // Lemon Squeezy sends the hex HMAC in `X-Signature`. Reject forgeries.
@@ -105,8 +112,8 @@ export async function POST(req: Request) {
       orderId: orderId
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Webhook Exception]:', error);
-    return corsResponse({ error: error.message }, 500);
+    return corsResponse({ error: error instanceof Error ? error.message : 'Webhook failed' }, 500);
   }
 }

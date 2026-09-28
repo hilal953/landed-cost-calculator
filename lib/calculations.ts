@@ -161,7 +161,7 @@ export function calculateLandedCost(data: ShipmentData): CalculationResult {
   perItem.forEach(row => {
     grandTotal += row.running;
     grandFees += row.feesShare;
-    sumQty += row.item.qty;
+    sumQty += validateNumber(row.item.qty, 0, 1000000);
   });
 
   // Calculate per-item derived values

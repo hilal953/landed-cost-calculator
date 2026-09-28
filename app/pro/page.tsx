@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 
 export default function ProDashboard() {
@@ -19,9 +20,9 @@ export default function ProDashboard() {
     
     {/*  Left: Pro Brand & Global Status  */}
     <div className="pro-nav-brand-group">
-      <a href="/" className="pro-nav-brand" aria-label="TrueLanded Home">
+      <Link href="/" className="pro-nav-brand" aria-label="TrueLanded Home">
         <img src="/images/logo.svg" alt="TrueLanded" style={{"height":"26px","width":"auto","display":"block"}} />
-      </a>
+      </Link>
       <span className="pro-nav-badge">PRO</span>
       <div className="pro-nav-status">
         <span className="pro-status-dot"></span>
@@ -38,9 +39,9 @@ export default function ProDashboard() {
         <span className="license-text">$9 LIFETIME LICENSE</span>
       </div>
 
-      <a href="/" className="pro-nav-back-btn">
+      <Link href="/" className="pro-nav-back-btn">
         <span>← Home</span>
-      </a>
+      </Link>
     </div>
 
   </div>
@@ -500,12 +501,12 @@ Headlight  50  38.5  1.2"></textarea>
       <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"background":"#E04D2D","color":"#FFFFFF","textDecoration":"none","padding":"13px 20px","borderRadius":"8px","fontWeight":"700","fontSize":"14.5px","display":"flex","alignItems":"center","justifyContent":"center","gap":"8px","boxShadow":"0 4px 12px rgba(224, 77, 45, 0.25)"}}>
         <span>💳 Get Pro Lifetime License ($9)</span>
       </a>
-      <a href="/" style={{"background":"#F1F5F9","color":"#334155","textDecoration":"none","padding":"11px 20px","borderRadius":"8px","fontWeight":"600","fontSize":"13.5px","border":"1px solid #CBD5E1"}}>
+      <Link href="/" style={{"background":"#F1F5F9","color":"#334155","textDecoration":"none","padding":"11px 20px","borderRadius":"8px","fontWeight":"600","fontSize":"13.5px","border":"1px solid #CBD5E1"}}>
         <span>← Return to Home</span>
-      </a>
+      </Link>
     </div>
     <div style={{"paddingTop":"14px","borderTop":"1px dashed #E2E8F0","fontSize":"12.5px","color":"#64748B"}}>
-      Already paid? <a href="javascript:void(0)" id="verifyBuyerEmailLink" style={{"color":"#0F172A","fontWeight":"700","textDecoration":"underline","cursor":"pointer"}}>Verify with your checkout email</a>
+      Already paid? <button type="button" id="verifyBuyerEmailLink" style={{"background":"none","border":"none","padding":"0","color":"#0F172A","fontWeight":"700","fontSize":"inherit","fontFamily":"inherit","textDecoration":"underline","cursor":"pointer"}}>Verify with your checkout email</button>
     </div>
   </div>
 </div>

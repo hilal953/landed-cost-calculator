@@ -15,7 +15,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 200, headers: corsHeaders() });
 }
 
-function corsResponse(body: any, status: number = 200) {
+function corsResponse(body: Record<string, unknown>, status: number = 200) {
   return NextResponse.json(body, { status, headers: corsHeaders() });
 }
 
@@ -63,7 +63,7 @@ async function handleVerify(req: Request) {
     }
 
     return corsResponse({ is_pro: false });
-  } catch (e: any) {
-    return corsResponse({ error: e.message }, 500);
+  } catch (e: unknown) {
+    return corsResponse({ error: e instanceof Error ? e.message : 'License check failed' }, 500);
   }
 }

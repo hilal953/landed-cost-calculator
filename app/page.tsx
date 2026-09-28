@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import './landing.css';
 
 const POLICIES: Record<string, { title: string; body: string }> = {
@@ -52,20 +53,16 @@ const POLICIES: Record<string, { title: string; body: string }> = {
 };
 
 export default function LandingPage() {
+  const router = useRouter();
   const [policyModal, setPolicyModal] = useState<string | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<Record<number, boolean>>({});
-  const [loginEmail, setLoginEmail] = useState('');
+  const [loginEmail, setLoginEmail] = useState<string>(() =>
+    typeof window !== 'undefined' ? (localStorage.getItem('landed_cost_user_email') ?? '') : ''
+  );
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginStatus, setLoginStatus] = useState<{ msg: string; success?: boolean } | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('landed_cost_user_email');
-      if (saved) setLoginEmail(saved);
-    }
-  }, []);
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -95,9 +92,9 @@ export default function LandingPage() {
 
       setLoginStatus({ msg: '✓ Pro License Verified! Redirecting to Pro manifest...', success: true });
       setTimeout(() => {
-        window.location.href = '/pro';
+        router.push('/pro');
       }, 600);
-    } catch (err) {
+    } catch {
       setLoginStatus({ msg: 'Could not verify license right now. Check your connection and try again.' });
       setLoginLoading(false);
       return;
@@ -112,9 +109,9 @@ export default function LandingPage() {
   {/*  Top Navigation  */}
   <header className="lp-nav">
     <div className="lp-nav-inner">
-      <a href="#" className="lp-brand" aria-label="TrueLanded Home">
+      <Link href="/" className="lp-brand" aria-label="TrueLanded Home">
         <img src="/images/logo.svg" alt="TrueLanded" style={{"height":"30px","width":"auto","display":"block"}} />
-      </a>
+      </Link>
       <ul className="lp-nav-links">
         <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#pricing">Pricing</a></li>
@@ -123,7 +120,7 @@ export default function LandingPage() {
       <div className="lp-nav-right">
         <button type="button" className="lp-btn-nav-login" onClick={() => {
           if (typeof window !== 'undefined' && localStorage.getItem('landed_cost_pro_license') === 'active') {
-            window.location.href = '/pro';
+            router.push('/pro');
             return;
           }
           setLoginModalOpen(true);
@@ -165,7 +162,7 @@ export default function LandingPage() {
       </p>
       <div className="lp-cta-wrap">
         <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" className="lp-btn-main">🚀 Stop Losing Profit ($9)</a>
-        <a href="/free" className="lp-btn-secondary">⚡ Launch Free Calculator</a>
+        <Link href="/free" className="lp-btn-secondary">⚡ Launch Free Calculator</Link>
       </div>
       <p style={{"marginTop":"14px","fontSize":"13.5px","color":"#64748B","fontWeight":"500"}}>One-time payment. Lifetime access. 14-day money-back guarantee.</p>
       
@@ -333,9 +330,9 @@ export default function LandingPage() {
 
       {/*  Clean High-Conversion CTA Button  */}
       <div style={{"textAlign":"center","marginTop":"36px"}}>
-        <a href="/free" className="lp-btn-main" style={{"fontSize":"15.5px","padding":"14px 32px","borderRadius":"8px","textDecoration":"none","fontWeight":"700","boxShadow":"0 4px 14px rgba(224, 77, 45, 0.28)"}}>
+        <Link href="/free" className="lp-btn-main" style={{"fontSize":"15.5px","padding":"14px 32px","borderRadius":"8px","textDecoration":"none","fontWeight":"700","boxShadow":"0 4px 14px rgba(224, 77, 45, 0.28)"}}>
           ⚡ Launch Free Import Calculator
-        </a>
+        </Link>
       </div>
 
     </div>
@@ -424,7 +421,7 @@ export default function LandingPage() {
             <li className="off"><span className="chk" style={{"color":"#94A3B8"}}>✕</span> 1-Click WhatsApp &amp; PDF Sharing</li>
           </ul>
           
-          <a href="/free" className="lp-btn-price free">Launch Free Calculator →</a>
+          <Link href="/free" className="lp-btn-price free">Launch Free Calculator →</Link>
         </div>
 
         {/*  Pro Card  */}
@@ -473,7 +470,7 @@ export default function LandingPage() {
         </div>
 
         <div className={`lp-faq-item ${openFaq[2] ? "open" : ""}`}>
-          <div className="lp-faq-q" onClick={() => toggleFaq(2)}><span>Can I upload my supplier's Excel sheet?</span><span className="lp-faq-icon">+</span></div>
+          <div className="lp-faq-q" onClick={() => toggleFaq(2)}><span>Can I upload my supplier&apos;s Excel sheet?</span><span className="lp-faq-icon">+</span></div>
           <div className="lp-faq-a">Yes. Drop your Excel file or paste rows of text. The calculator automatically reads the item name, quantity, and price.</div>
         </div>
 
@@ -553,7 +550,7 @@ export default function LandingPage() {
     </form>
     
     <div style={{"marginTop":"18px","paddingTop":"14px","borderTop":"1px dashed #E2E8F0","fontSize":"12px","color":"#64748B"}}>
-      Don't have a license yet? <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"color":"#E04D2D","fontWeight":"700","textDecoration":"underline"}}>Unlock Pro for $9</a>
+      Don&apos;t have a license yet? <a href="https://built-by-aadil.lemonsqueezy.com/checkout/buy/b789412f-3a44-4c06-a3f6-4dc36eb391d8?logo=0" style={{"color":"#E04D2D","fontWeight":"700","textDecoration":"underline"}}>Unlock Pro for $9</a>
     </div>
   </div>
 </div>
