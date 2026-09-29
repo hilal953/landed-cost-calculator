@@ -14,6 +14,7 @@
     freightCurrency: 'LKR',
     cbmRate: 100000,
     usdToLkr: 305.00,
+    markupPct: 30, // Per-shipment target margin (persisted, restored in populateUI)
     items: [],
     fees: [
       { id: 'fe1', name: 'Customs Duty', type: 'percent', amount: 15, method: 'cbm', base: 'cif' },
@@ -79,7 +80,7 @@
     requestAnimationFrame(update);
   }
 
-  const SCHEMA_VERSION = 2;
+  const SCHEMA_VERSION = 3;
 
   // ==== STORAGE & HISTORY ====
   function migrateState(saved) {
@@ -95,6 +96,14 @@
         shipment.feeSeq = shipment.feeSeq || 1;
       });
       saved.schemaVersion = 2;
+    }
+    if (saved.schemaVersion === 2) {
+      // v2 -> v3: per-shipment markup target (older saves predate the field)
+      console.log('[Migration] Migrating from v2 to v3');
+      Object.values(saved.history || {}).forEach(shipment => {
+        if (shipment.markupPct === undefined || shipment.markupPct === null) shipment.markupPct = 30;
+      });
+      saved.schemaVersion = 3;
     }
     return saved;
   }
@@ -132,6 +141,8 @@
     current.exRate = parseFloat(document.getElementById('exRate').value) || 0;
     current.freightCurrency = document.getElementById('freightCurrency')?.value || 'LKR';
     current.cbmRate = parseFloat(document.getElementById('cbmRate').value) || 0;
+    const rawMarkup = parseFloat(document.getElementById('markupPercent')?.value);
+    current.markupPct = (isFinite(rawMarkup) && rawMarkup >= 0 && rawMarkup <= 1000) ? rawMarkup : 30;
     
     state.history[state.currentId] = current;
     try {
@@ -241,6 +252,7 @@
     document.getElementById('baseCurrency').value = current.baseCurrency || 'RMB';
     document.getElementById('exRate').value = current.exRate !== undefined ? current.exRate : 45.00;
     document.getElementById('cbmRate').value = current.cbmRate !== undefined ? current.cbmRate : 100000;
+    document.getElementById('markupPercent').value = (current.markupPct !== undefined && current.markupPct !== null) ? current.markupPct : 30;
     if (document.getElementById('freightCurrency')) {
       document.getElementById('freightCurrency').value = current.freightCurrency || 'LKR';
     }
@@ -1036,7 +1048,11 @@
     window.open(url, '_blank');
   };
 
-  document.getElementById('markupPercent').addEventListener('input', calculate);
+  // Markup target is per-shipment state: recalc live AND persist (covers
+  // mobile number spinners / autofill that may fire change without input).
+  const onMarkupChange = () => { calculate(); debouncedSave(); };
+  document.getElementById('markupPercent').addEventListener('input', onMarkupChange);
+  document.getElementById('markupPercent').addEventListener('change', onMarkupChange);
 
   // ==== EXPORT ====
   document.getElementById('exportPdfBtn').onclick = () => window.print();
